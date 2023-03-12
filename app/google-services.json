@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "233105168338",
+    "firebase_url": "https://restdam-20f86-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "restdam-20f86",
+    "storage_bucket": "restdam-20f86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233105168338:android:aa4ba2a71433424d375a0b",
+        "android_client_info": {
+          "package_name": "com.example.proyector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233105168338-db9q0u621cdndej9h1iblp5fgp61dlik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnckstlNQkD6csLCLspNmVkC_WraY-BjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233105168338-db9q0u621cdndej9h1iblp5fgp61dlik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
