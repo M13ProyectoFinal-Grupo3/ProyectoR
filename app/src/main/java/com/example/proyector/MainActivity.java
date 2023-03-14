@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 //Comentario de prueba
+//Comentario de prueba2
 public class MainActivity extends AppCompatActivity {
 
     @Override
