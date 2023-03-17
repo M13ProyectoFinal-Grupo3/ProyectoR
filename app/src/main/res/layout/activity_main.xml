@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/imgQR"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -24,5 +25,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ACCEDER" />
+
+        <Button
+            android:id="@+id/btnLeerQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LEER QR" />
+
+        <Button
+            android:id="@+id/btnGenQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GENERAR QR" />
+
+        <ImageView
+            android:id="@+id/imageQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
