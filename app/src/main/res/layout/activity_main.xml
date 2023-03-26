@@ -38,6 +38,12 @@
             android:layout_height="wrap_content"
             android:text="GENERAR QR" />
 
+        <Button
+            android:id="@+id/btnCarta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CARTA" />
+
         <ImageView
             android:id="@+id/imageQR"
             android:layout_width="match_parent"

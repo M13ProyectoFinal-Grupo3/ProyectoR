@@ -16,14 +16,9 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 public class MainActivity extends AppCompatActivity {
     ImageView imageView;
@@ -39,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnAccess = (Button) findViewById(R.id.btnAcceso);
         Button btnLeerQR = (Button) findViewById(R.id.btnLeerQR);
         Button btnGenQR = (Button) findViewById(R.id.btnGenQR);
+        Button btnCarta = (Button) findViewById(R.id.btnCarta);
         imageView= (ImageView) findViewById(R.id.imageQR);
 
         btnForm.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageView.setImageBitmap(generateQRCodeImage("12324567890"));
+            }
+        });
+
+        btnCarta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ListCarta.class);
+                startActivity(intent);
             }
         });
 
