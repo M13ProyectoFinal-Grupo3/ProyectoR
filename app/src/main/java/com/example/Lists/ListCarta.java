@@ -1,4 +1,4 @@
-package com.example.proyector;
+package com.example.Lists;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,8 +6,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.example.carta.AdapterProducto;
+import com.example.adapters.AdapterProducto;
 import com.example.pojos.Producto;
+import com.example.proyector.R;
 
 import java.util.ArrayList;
 

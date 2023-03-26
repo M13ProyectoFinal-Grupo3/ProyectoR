@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.Forms.FormCarta;
+import com.example.Forms.FormUser;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         btnCarta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListCarta.class);
+                Intent intent = new Intent(MainActivity.this, FormCarta.class);
                 startActivity(intent);
             }
         });

@@ -1,4 +1,4 @@
-package com.example.carta;
+package com.example.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;

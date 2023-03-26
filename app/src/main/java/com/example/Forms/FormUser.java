@@ -1,4 +1,4 @@
-package com.example.proyector;
+package com.example.Forms;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.pojos.User;
-import com.example.utils.FirebaseCrud;
+import com.example.cruds.FirebaseCrud;
+import com.example.proyector.R;
 
 public class FormUser extends AppCompatActivity {
 

@@ -10,8 +10,8 @@ public class Producto {
     Float precio;
     Alergeno[] alergenos;
     String prepara_idperfil;
-    byte[] imagen_carta;
-    byte[] imagen_ampliada;
+    String id_departamento;
+    byte[] foto_producto;
 
     public Producto() {
     }
@@ -22,7 +22,8 @@ public class Producto {
         this.descripcion = descripcion;
     }
 
-    public Producto(String id, String nombre, String descripcion, Boolean activo, Float precio, Alergeno[] alergenos, String prepara_idperfil, byte[] imagen_carta, byte[] imagen_ampliada) {
+
+    public Producto(String id, String nombre, String descripcion, Boolean activo, Float precio, Alergeno[] alergenos, String prepara_idperfil, String id_departamento, byte[] foto_producto) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -30,8 +31,8 @@ public class Producto {
         this.precio = precio;
         this.alergenos = alergenos;
         this.prepara_idperfil = prepara_idperfil;
-        this.imagen_carta = imagen_carta;
-        this.imagen_ampliada = imagen_ampliada;
+        this.id_departamento = id_departamento;
+        this.foto_producto = foto_producto;
     }
 
     public String getId() {
@@ -90,32 +91,19 @@ public class Producto {
         this.prepara_idperfil = prepara_idperfil;
     }
 
-    public byte[] getImagen_carta() {
-        return imagen_carta;
+    public String getId_departamento() {
+        return id_departamento;
     }
 
-    public void setImagen_carta(byte[] imagen_carta) {
-        this.imagen_carta = imagen_carta;
+    public void setId_departamento(String id_departamento) {
+        this.id_departamento = id_departamento;
     }
 
-    public byte[] getImagen_ampliada() {
-        return imagen_ampliada;
+    public byte[] getFoto_producto() {
+        return foto_producto;
     }
 
-    public void setImagen_ampliada(byte[] imagen_ampliada) {
-        this.imagen_ampliada = imagen_ampliada;
-    }
-
-    @Override
-    public String toString() {
-        return "Producto{" +
-                "id='" + id + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", activo=" + activo +
-                ", precio=" + precio +
-                ", alergenos=" + Arrays.toString(alergenos) +
-                ", prepara_idperfil='" + prepara_idperfil + '\'' +
-                '}';
+    public void setFoto_producto(byte[] foto_producto) {
+        this.foto_producto = foto_producto;
     }
 }
