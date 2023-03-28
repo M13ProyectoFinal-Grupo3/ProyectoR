@@ -1,6 +1,8 @@
 package com.example.pojos;
 
-public class Seccion {
+import java.io.Serializable;
+
+public class Departamento implements Serializable {
     String Id;
     String nombre;
     Producto[] productos;

@@ -8,11 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.pojos.User;
-import com.example.cruds.FirebaseCrud;
 import com.example.proyector.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FormUser extends AppCompatActivity {
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    static String coleccion = "users";
     User x;
 
     EditText vNomuser;
@@ -28,14 +29,12 @@ public class FormUser extends AppCompatActivity {
         vEmail = (EditText) findViewById(R.id.emailuser);
         vPassword = (EditText) findViewById(R.id.logpassword);
 
-        FirebaseCrud db = new FirebaseCrud();
-
         Button btn_save = (Button) findViewById(R.id.btnSave);
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 User u = new User(vNomuser.getText().toString(),vEmail.getText().toString(),1, vPassword.getText().toString());
-                db.write("users",u);
+                db.collection(coleccion).document().set(u);
                 finish();
             }
         });

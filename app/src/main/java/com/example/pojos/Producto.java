@@ -1,8 +1,9 @@
 package com.example.pojos;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Producto {
+public class Producto implements Serializable {
     String id;
     String nombre;
     String descripcion;

@@ -1,9 +1,11 @@
 package com.example.pojos;
 
-public class Carta {
+import java.io.Serializable;
+
+public class Carta implements Serializable {
     String id;
     String nombre;
-    Seccion seccion;
+    Departamento departamento;
     byte[] imagen;
 
 }

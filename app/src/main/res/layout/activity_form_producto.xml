@@ -121,10 +121,10 @@
 
                 <ImageButton
                     android:id="@+id/btn_pAlergenos"
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/lapiz35" />
+                    app:srcCompat="@drawable/lupa50" />
             </LinearLayout>
 
             <LinearLayout

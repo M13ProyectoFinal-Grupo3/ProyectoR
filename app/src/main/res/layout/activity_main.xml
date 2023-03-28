@@ -49,5 +49,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:srcCompat="@tools:sample/avatars" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

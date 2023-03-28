@@ -14,8 +14,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.Lists.ListAlergenos;
 import com.example.pojos.Alergeno;
 import com.example.proyector.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class FormProducto extends AppCompatActivity {
 
@@ -48,11 +50,12 @@ public class FormProducto extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             // Recibe objeto
-                            Intent data =  result.getData();
-                            Bundle bundle = data.getExtras();
-                            Alergeno a = (Alergeno) bundle.get("alergeno");
-                            TextView txAler = (TextView) findViewById(R.id.tx_pDescAlergenos);
-                            txAler.setText(a.getNombre());
+                            Intent intent =  result.getData();
+                            if(intent.getExtras() != null) {
+                                Alergeno a = (Alergeno) intent.getExtras().get("alergeno");
+                                TextView txAler = (TextView) findViewById(R.id.tx_pDescAlergenos);
+                                txAler.setText(a.getNombre());
+                            }
                         }else{
                             //No recibe información.
 
@@ -63,7 +66,7 @@ public class FormProducto extends AppCompatActivity {
         btnAlergenos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FormProducto.this, FormAlergenos.class);
+                Intent intent = new Intent(FormProducto.this, ListAlergenos.class);
                 startActivityAlergeno.launch(intent);
             }
         });

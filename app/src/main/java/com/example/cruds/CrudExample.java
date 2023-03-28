@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.pojos.Alergeno;
-import com.example.pojos.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.annotations.Nullable;
@@ -19,18 +18,18 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
-public class CrudAlergenos {
-    FirebaseFirestore db;
-    DocumentSnapshot doc;
+public class CrudExample {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     static String coleccion = "alergenos";
+    DocumentSnapshot doc;
+    ArrayList<Alergeno> result = new ArrayList<>();
 
-    public CrudAlergenos(){
-        db = FirebaseFirestore.getInstance();
+
+    public CrudExample(){
+
     }
 
     public void write(Alergeno a){
@@ -85,21 +84,19 @@ public class CrudAlergenos {
         }
 
     public ArrayList<Alergeno> list(){
-        ArrayList<Alergeno> result = new ArrayList<>();
-        CollectionReference myRef = db.collection(coleccion);
-        
-        ListenerRegistration listener = db.collection("alergenos")
-                .addSnapshotListener(new EventListener<QuerySnapshot>(){
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e){
-                        if(e != null){
-                            return;
-                        }
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots){
-                            result.add(document.toObject(Alergeno.class));
-                        }
+        db.collection(coleccion).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Log.d("Complete","ok");
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        result.add(document.toObject(Alergeno.class));
                     }
-                });
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
 
         return result;
     }

@@ -1,13 +1,10 @@
 package com.example.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,16 +12,11 @@ import android.widget.TextView;
 import com.example.pojos.Producto;
 import com.example.proyector.R;
 
-import java.sql.Array;
 import java.util.ArrayList;
 
 public class AdapterProducto extends ArrayAdapter<Producto> {
-    //ArrayList<Bitmap> list_fotos = new ArrayList<>();
-    // El constructor solo recibe dos parámentro, pero le pasa al padre/madre 3
-    // El layout que se le pasa es el 0 debido a que se le pasa uno propio más abajo al realizar el inflate
     public AdapterProducto(Context context, ArrayList<Producto> productos) {
         super(context,0,productos);
-        //cropFrutas();
     }
 
     private static class ViewHolder {
@@ -51,7 +43,7 @@ public class AdapterProducto extends ArrayAdapter<Producto> {
         // Creamos las variables que apuntan a los TextView definidos en el layout "item_frutas.xml"
         //ImageView xImg = (ImageView) convertView.findViewById(R.id.img_fruta);
         TextView xNombre = (TextView) convertView.findViewById(R.id.txNombre);
-        TextView xDescrip = (TextView) convertView.findViewById(R.id.txDescrip);
+        TextView xDescrip = (TextView) convertView.findViewById(R.id.txANombre);
         // Informamos los valores de los TextView
         //xImg.setImageBitmap(producto.getImagen_carta());
         xNombre.setText(producto.getNombre());
