@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 public class Producto implements Serializable {
-    String id;
     String nombre;
     String descripcion;
     Boolean activo;
@@ -17,15 +16,15 @@ public class Producto implements Serializable {
     public Producto() {
     }
 
-    public Producto(String id, String nombre, String descripcion) {
-        this.id = id;
+    public Producto(Boolean activo, String nombre, String descripcion, Float precio) {
+        this.activo = activo;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.precio = precio;
     }
 
 
-    public Producto(String id, String nombre, String descripcion, Boolean activo, Float precio, Alergeno[] alergenos, String prepara_idperfil, String id_departamento, byte[] foto_producto) {
-        this.id = id;
+    public Producto( String nombre, String descripcion, Boolean activo, Float precio, Alergeno[] alergenos, String prepara_idperfil, String id_departamento, byte[] foto_producto) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.activo = activo;
@@ -34,14 +33,6 @@ public class Producto implements Serializable {
         this.prepara_idperfil = prepara_idperfil;
         this.id_departamento = id_departamento;
         this.foto_producto = foto_producto;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getNombre() {

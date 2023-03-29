@@ -20,10 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.bundle.BundleSerializer;
 
 public class FormAlergenos extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -40,7 +37,7 @@ public class FormAlergenos extends AppCompatActivity {
         Button btnGuardqar = (Button) findViewById(R.id.btn_aGuardar);
         Button btnBorrar = (Button) findViewById(R.id.btn_aBorrar);
 
-        EditText enombre = (EditText) findViewById(R.id.et_aNombre);
+        EditText enombre = (EditText) findViewById(R.id.et_pNombre);
 
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
@@ -52,7 +49,7 @@ public class FormAlergenos extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.et_aNombre);
+                EditText xNombre = (EditText) findViewById(R.id.et_pNombre);
                 a_nuevo = new Alergeno(xNombre.getText().toString());
                 // Actualizar Alergeno o añadir nuevo
                 if(a_anterior!=null) {
