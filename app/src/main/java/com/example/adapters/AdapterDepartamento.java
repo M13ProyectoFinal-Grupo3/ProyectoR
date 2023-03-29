@@ -7,15 +7,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.pojos.Alergeno;
 import com.example.pojos.Departamento;
-import com.example.pojos.Producto;
 import com.example.proyector.R;
 
 import java.util.ArrayList;
 
-public class AdapterProducto extends ArrayAdapter<Producto> {
-    public AdapterProducto(Context context, ArrayList<Producto> productos) {
-        super( context,0,productos);
+public class AdapterDepartamento extends ArrayAdapter<Departamento> {
+    public AdapterDepartamento(Context context, ArrayList<Departamento> departamentos) {
+        super( context,0,departamentos);
     }
 
     private static class ViewHolder {
@@ -23,12 +23,12 @@ public class AdapterProducto extends ArrayAdapter<Producto> {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Producto p = getItem(position);
+        Departamento d = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_alergeno, parent, false);
         }
         TextView xNombre = (TextView) convertView.findViewById(R.id.txANombre);
-        xNombre.setText(p.getNombre());
+        xNombre.setText(d.getNombre());
 
         return convertView;
     }

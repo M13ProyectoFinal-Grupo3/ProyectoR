@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.example.adapters.AdapterProducto;
+import com.example.adapters.AdapterCartaProducto;
 import com.example.pojos.Producto;
 import com.example.proyector.R;
 
@@ -36,7 +36,7 @@ public class ListCarta extends AppCompatActivity {
         arrProducto.add(new Producto("6","Tarta de manzana","Hojaldre, crema catalana, manzana"));
 
         // Definimos el adaptador propio. En este caso no posee layout.
-        AdapterProducto adapter_prod = new AdapterProducto(this, arrProducto);
+        AdapterCartaProducto adapter_prod = new AdapterCartaProducto(this, arrProducto);
         // Attach the adapter to a ListView
         ListView viewProd = (ListView) findViewById(R.id.list_Product);
         viewProd.setAdapter(adapter_prod);

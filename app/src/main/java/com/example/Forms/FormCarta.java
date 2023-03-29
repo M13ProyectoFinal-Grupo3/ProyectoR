@@ -17,7 +17,7 @@ public class FormCarta extends AppCompatActivity {
         setContentView(R.layout.activity_form_carta);
 
         Button btnNuevoDep = (Button) findViewById(R.id.btn_cNuevoDep);
-        Button btnGuardar = (Button) findViewById(R.id.btn_aGuardar);
+        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
 
         btnNuevoDep.setOnClickListener(new View.OnClickListener() {
             @Override

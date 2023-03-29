@@ -15,26 +15,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.Forms.FormAlergenos;
 import com.example.adapters.AdapterAlergeno;
-import com.example.adapters.AdapterProducto;
 import com.example.pojos.Alergeno;
-import com.example.proyector.MainActivity;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ListAlergenos extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();

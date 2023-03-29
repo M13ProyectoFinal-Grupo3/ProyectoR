@@ -44,14 +44,14 @@ public class FormProducto extends AppCompatActivity {
         setContentView(R.layout.activity_form_producto);
 
         Button btnBorrar = (Button) findViewById(R.id.btn_aBorrar);
-        Button btnGuardar = (Button) findViewById(R.id.btn_aGuardar);
+        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.et_pNombre);
+                EditText xNombre = (EditText) findViewById(R.id.et_dNombre);
                 EditText xDescrip = (EditText) findViewById(R.id.et_pDescripcion);
                 EditText xPrecio = (EditText) findViewById(R.id.et_pPrecio);
 
