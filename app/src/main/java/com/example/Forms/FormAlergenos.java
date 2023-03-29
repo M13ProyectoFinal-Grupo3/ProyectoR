@@ -54,7 +54,6 @@ public class FormAlergenos extends AppCompatActivity {
                 // recupera la información introducida por el usuario
                 EditText xNombre = (EditText) findViewById(R.id.et_aNombre);
                 a_nuevo = new Alergeno(xNombre.getText().toString());
-                Log.d("alergeno ->",a_nuevo.getNombre());
                 // Actualizar Alergeno o añadir nuevo
                 if(a_anterior!=null) {
                     // Actualizar
@@ -66,10 +65,18 @@ public class FormAlergenos extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     if(task.getResult().getDocuments().size()>0) {
                                         DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                        myRef.document( d.getId()).update("nombre",a_nuevo.getNombre());
-                                        Intent resultIntent = new Intent();
-                                        resultIntent.putExtra("alergeno", a_nuevo);
-                                        setResult(FormAlergenos.RESULT_OK, resultIntent);
+                                        myRef.document( d.getId()).update("nombre",a_nuevo.getNombre()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(FormAlergenos.this, "El Alergeno se modificó correctamente", Toast.LENGTH_SHORT).show();
+                                                Intent resultIntent = new Intent();
+                                                resultIntent.putExtra("update", a_nuevo);
+                                                Log.d("return update","ok");
+                                                setResult(RESULT_OK, resultIntent);
+                                                finish();
+                                            }
+                                        });
+
                                     } else {
                                         Log.d(TAG,"Documento Alergeno no econtrado para su modificación");
                                     }
@@ -78,24 +85,54 @@ public class FormAlergenos extends AppCompatActivity {
                                 }
                             }
                         });
-                    Toast.makeText(FormAlergenos.this, "El Alergeno se modificó correctamente", Toast.LENGTH_SHORT).show();
+
                 } else {
                     // Nuevo Alergeno
-                    db.collection(coleccion).document().set(a_nuevo);
-                    Toast.makeText(FormAlergenos.this, "El Alergeno se añadio correctamente", Toast.LENGTH_SHORT).show();
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("alergeno", a_nuevo);
-                    setResult(FormAlergenos.RESULT_OK, resultIntent);
+                    db.collection(coleccion).document().set(a_nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("new", a_nuevo);
+                            setResult(RESULT_OK, resultIntent);
+                            Toast.makeText(FormAlergenos.this, "El Alergeno se añadio correctamente", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
                 }
 
-                finish();
+
             }
         });
 
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                myRef.whereEqualTo("nombre",a_anterior.getNombre())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if(task.getResult().getDocuments().size()>0) {
+                                        DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
+                                        myRef.document( d.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(FormAlergenos.this, "El Alergeno ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
+                                                Intent resultIntent = new Intent();
+                                                resultIntent.putExtra("delete", a_anterior);
+                                                setResult(RESULT_OK, resultIntent);
+                                                finish();
+                                            }
+                                        });
+                                    } else {
+                                        Log.d(TAG,"Documento Alergeno no econtrado para su modificación");
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
             }
         });
 

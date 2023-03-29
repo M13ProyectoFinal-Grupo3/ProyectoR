@@ -43,6 +43,7 @@ public class ListAlergenos extends AppCompatActivity {
     ListView listview1;
     ArrayList<Alergeno> lista = new ArrayList<>();
     AdapterAlergeno adapter;
+    Integer pos=0;
 
     ActivityResultLauncher<Intent> activityForm;
 
@@ -52,9 +53,41 @@ public class ListAlergenos extends AppCompatActivity {
         setContentView(R.layout.activity_list_alergenos);
 
         listview1 = (ListView) findViewById(R.id.list_alergenos);
+        adapter = new AdapterAlergeno(ListAlergenos.this,lista);
+        listview1.setAdapter(adapter);
+        listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.putExtra("alergeno",lista.get(position));
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            }
+        });
+        listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                pos=position;
+                Intent intent = new Intent(ListAlergenos.this, FormAlergenos.class);
+                intent.putExtra("alergeno",lista.get(position));
+                activityForm.launch(intent);
+                return false;
+            }
+        });
 
-        Log.d("return","list1");
-        listarAlergenos();
+        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        lista.add(document.toObject(Alergeno.class));
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
 
         activityForm= registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -63,9 +96,23 @@ public class ListAlergenos extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent intent = result.getData();
-                            Alergeno a_dev = (Alergeno) intent.getSerializableExtra("alergeno");
-                            lista.add(a_dev);
-                            adapter.notifyDataSetChanged();
+                            if(intent.getSerializableExtra("update")!=null){
+                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("update");
+                                Log.d("update",pos+" "+a_dev.getNombre());
+                                lista.set(pos,a_dev);
+                                adapter.notifyDataSetChanged();
+                            } else if(intent.getSerializableExtra("new")!=null){
+                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("new");
+                                Log.d("new",pos+" "+a_dev.getNombre());
+                                lista.add(a_dev);
+                                adapter.notifyDataSetChanged();
+                            } else if(intent.getSerializableExtra("delete")!=null){
+                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("delete");
+                                Log.d("delete",pos+" "+a_dev.getNombre());
+                                lista.remove(pos);
+                                adapter.notifyDataSetChanged();
+                            }
+
                         }
                     }
                 });
@@ -80,45 +127,7 @@ public class ListAlergenos extends AppCompatActivity {
             }
         });
 
-
     }
 
-    private void listarAlergenos(){
-        lista = new ArrayList<>();
-
-       myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-           @Override
-           public void onComplete(@NonNull Task<QuerySnapshot> task) {
-               if (task.isSuccessful()) {
-                   for (QueryDocumentSnapshot document : task.getResult()) {
-                       lista.add(document.toObject(Alergeno.class));
-                       adapter = new AdapterAlergeno(ListAlergenos.this,lista);
-                       listview1.setAdapter(adapter);
-                       listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                           @Override
-                           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                               Intent intent = new Intent();
-                               intent.putExtra("alergeno",lista.get(position));
-                               setResult(Activity.RESULT_OK, intent);
-                               finish();
-                           }
-                       });
-                       listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                           @Override
-                           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                               Intent intent = new Intent(ListAlergenos.this, FormAlergenos.class);
-                               intent.putExtra("alergeno",lista.get(position));
-                               activityForm.launch(intent);
-                               return false;
-                           }
-                       });
-                   }
-               } else {
-                   Log.d(TAG, "Error getting documents: ", task.getException());
-               }
-           }
-       });
-
-    }
 
 }
