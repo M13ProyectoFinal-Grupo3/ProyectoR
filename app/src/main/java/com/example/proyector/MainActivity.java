@@ -13,10 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.Forms.FormCarta;
-import com.example.Forms.FormRestaurante;
 import com.example.Forms.FormUser;
 import com.example.Lists.ListCarta;
-import com.example.Lists.ListRestaurante;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -45,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnLeerQR = (Button) findViewById(R.id.btnLeerQR);
         Button btnGenQR = (Button) findViewById(R.id.btnGenQR);
         Button btnCarta = (Button) findViewById(R.id.btnCarta);
-        Button btnRestaurante = (Button) findViewById(R.id.btnRestaurante);
         imageView= (ImageView) findViewById(R.id.imageQR);
 
         btnForm.setOnClickListener(new View.OnClickListener() {
@@ -82,14 +79,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FormCarta.class);
-                startActivity(intent);
-            }
-        });
-
-        btnRestaurante.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListRestaurante.class);
                 startActivity(intent);
             }
         });
