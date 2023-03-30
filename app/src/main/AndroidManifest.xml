@@ -16,6 +16,48 @@
         android:theme="@style/Theme.ProyectoR"
         tools:targetApi="31" >
         <activity
+            android:name="com.example.Lists.ListAlergenos"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Forms.FormCarta"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Forms.FormDepartamento"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Forms.FormAlergenos"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Forms.FormProducto"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Lists.ListCarta"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".CapActivity"
             android:exported="false" >
             <meta-data
@@ -23,7 +65,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".FormUser"
+            android:name="com.example.Forms.FormUser"
             android:exported="false"
             android:parentActivityName=".MainActivity" >
             <meta-data
