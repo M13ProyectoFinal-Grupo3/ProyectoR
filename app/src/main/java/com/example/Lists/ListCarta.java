@@ -27,14 +27,14 @@ public class ListCarta extends AppCompatActivity {
         ArrayList<Producto> arrProducto = new ArrayList<Producto>();
         Context c = this.getApplicationContext();
 
-        arrProducto.add(new Producto("0","Bravas","Patatas, salsa brava"));
+        /*arrProducto.add(new Producto("0","Bravas","Patatas, salsa brava"));
         arrProducto.add(new Producto("1","Ensaladilla rusa", "Zanahoria, patatas, guisantes, mayonesa"));
         arrProducto.add(new Producto("2","Sandwich mixto", "Pan, jamon york, queso"));
         arrProducto.add(new Producto("3","Tortilla de patatas", "Huevos, patatas"));
         arrProducto.add(new Producto("4","Ensalada cesar","Lechuga, queso, picatostes, salsa cesar"));
         arrProducto.add(new Producto("5","Tiramisú","Mascarpone, café, bizcocho, cacao en polvo"));
         arrProducto.add(new Producto("6","Tarta de manzana","Hojaldre, crema catalana, manzana"));
-
+*/
         // Definimos el adaptador propio. En este caso no posee layout.
         AdapterCartaProducto adapter_prod = new AdapterCartaProducto(this, arrProducto);
         // Attach the adapter to a ListView
