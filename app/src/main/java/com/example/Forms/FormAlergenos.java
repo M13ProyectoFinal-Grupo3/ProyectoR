@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.Lists.ListAlergenos;
 import com.example.pojos.Alergeno;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -119,7 +120,8 @@ public class FormAlergenos extends AppCompatActivity {
                                                 Intent resultIntent = new Intent();
                                                 resultIntent.putExtra("delete", a_anterior);
                                                 setResult(RESULT_OK, resultIntent);
-                                                finish();
+                                                Intent intent = new Intent(FormAlergenos.this, ListAlergenos.class);
+                                                startActivity(intent);
                                             }
                                         });
                                     } else {

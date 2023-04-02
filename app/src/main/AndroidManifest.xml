@@ -23,6 +23,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name="com.example.Lists.ListRestaurante"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name="com.example.Forms.FormCarta"
             android:exported="false" >
             <meta-data
@@ -38,6 +45,13 @@
         </activity>
         <activity
             android:name="com.example.Forms.FormAlergenos"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Forms.FormRestaurante"
             android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
