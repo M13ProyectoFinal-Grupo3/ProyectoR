@@ -1,9 +1,6 @@
 package com.example.proyector;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -11,19 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.Forms.FormCarta;
 import com.example.Forms.FormUser;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.example.Lists.ListCarta;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -33,7 +24,9 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 //Comentario de prueba
 //Comentario de prueba2
@@ -58,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnAccess = (Button) findViewById(R.id.btnAcceso);
         Button btnLeerQR = (Button) findViewById(R.id.btnLeerQR);
         Button btnGenQR = (Button) findViewById(R.id.btnGenQR);
+        Button btnCarta = (Button) findViewById(R.id.btnCarta);
         imageView= (ImageView) findViewById(R.id.imageQR);
 
         myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -109,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Carta
         btnCarta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return bmp;
     }
+
 }
 /*
 // Create a new user with a first and last name

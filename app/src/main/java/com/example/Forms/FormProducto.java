@@ -185,7 +185,8 @@ public class FormProducto extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FormProducto.this, ListAlergenos.class);
-                startActivityAlergeno.launch(intent);
+                //startActivityAlergeno.launch(intent);
+                startActivity(intent);
             }
         });
     }
