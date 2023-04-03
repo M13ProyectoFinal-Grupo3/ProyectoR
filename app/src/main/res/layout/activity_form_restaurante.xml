@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.Forms.FormRestaurante">
+
+    <TextView
+        android:id="@+id/tx_fichaRestaurante"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Ficha de restaurante"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tx_fichaRestaurante">
+
+        <TextView
+            android:id="@+id/tx_cNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre" />
+
+        <EditText
+            android:id="@+id/et_dNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce el nombre"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/tx_cRazonSocial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Razón Social" />
+
+        <EditText
+            android:id="@+id/et_dRazonSocial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce la razón social" />
+
+        <TextView
+            android:id="@+id/tx_cNif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NIF" />
+
+        <EditText
+            android:id="@+id/et_dNif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce el NIF" />
+
+        <TextView
+            android:id="@+id/tx_cProvincia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Provincia" />
+
+        <EditText
+            android:id="@+id/et_dProvincia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce la provincia" />
+
+        <TextView
+            android:id="@+id/tx_cCiudad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ciudad" />
+
+        <EditText
+            android:id="@+id/et_dCiudad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce la ciudad" />
+
+        <TextView
+            android:id="@+id/tx_cCP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Código Postal" />
+
+        <EditText
+            android:id="@+id/et_dCP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce el código postal" />
+
+        <TextView
+            android:id="@+id/tx_cTelefono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teléfono" />
+
+        <EditText
+            android:id="@+id/et_dTelefono"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Introduce el número de teléfono" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/btn_aBorrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="BORRAR" />
+
+            <Button
+                android:id="@+id/btn_dGuardar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#00FF00"
+                android:text="GUARDAR" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
