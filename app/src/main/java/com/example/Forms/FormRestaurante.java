@@ -29,7 +29,7 @@ public class FormRestaurante extends AppCompatActivity {
     static String coleccion = "restaurante";
     Restaurante a_anterior = null;
     Restaurante a_nuevo = null;
-    Boolean btnBorrarHabilitado;
+    Boolean btnBorrarHabilitado=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

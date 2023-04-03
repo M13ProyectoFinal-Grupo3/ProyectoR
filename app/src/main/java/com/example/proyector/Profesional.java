@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.Forms.FormCarta;
+import com.example.Forms.FormRestaurante;
 import com.example.Forms.FormUser;
 import com.example.pojos.User;
 import com.google.zxing.BarcodeFormat;
@@ -40,6 +41,7 @@ public class Profesional extends Fragment {
         Button btnForm = (Button) view.findViewById(R.id.btnNuevaCuenta);
         Button btnGenQR = (Button) view.findViewById(R.id.btnGenQR);
         Button btnCarta = (Button) view.findViewById(R.id.btnCarta);
+        Button btnRest = (Button) view.findViewById(R.id.btnRestaurante);
         ImageView imageView1= (ImageView) view.findViewById(R.id.imageQR);
 
         btnForm.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +52,13 @@ public class Profesional extends Fragment {
             }
         });
 
+        btnRest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FormRestaurante.class);
+                startActivity(intent);
+            }
+        });
 
         btnGenQR.setOnClickListener(new View.OnClickListener() {
             @Override
