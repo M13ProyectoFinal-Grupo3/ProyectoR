@@ -1,8 +1,5 @@
 package com.example.Forms;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -38,7 +35,6 @@ public class FormCarta extends AppCompatActivity {
         setContentView(R.layout.activity_form_carta);
 
         Button btnNuevoDep = (Button) findViewById(R.id.btn_cNuevoDep);
-        //Button btnGuardar = (Button) findViewById(R.id.btn_aGuardar);
         Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
 
         listview1 = (ListView) findViewById(R.id.lista_cDeps);
@@ -64,7 +60,6 @@ public class FormCarta extends AppCompatActivity {
             }
         });
 
-        // guardar carta
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

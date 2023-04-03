@@ -28,6 +28,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnAccess = (Button) findViewById(R.id.btnAcceso);
         Button btnLeerQR = (Button) findViewById(R.id.btnLeerQR);
         Button btnGenQR = (Button) findViewById(R.id.btnGenQR);
-        Button btnCarta = (Button) findViewById(R.id.btnCarta);
         imageView= (ImageView) findViewById(R.id.imageQR);
 
         myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return bmp;
     }
-
 }
 /*
 // Create a new user with a first and last name
