@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.Lists.ListAlergenos;
 import com.example.pojos.Alergeno;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,9 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class FormAlergenos extends AppCompatActivity {
-    FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef = db.collection("alergenos");
     static String coleccion = "alergenos";
+    FirebaseFirestore db= FirebaseFirestore.getInstance();
+    CollectionReference myRef = db.collection(coleccion);
+
     Alergeno a_anterior = null;
     Alergeno a_nuevo = null;
 

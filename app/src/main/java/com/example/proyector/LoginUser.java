@@ -40,7 +40,7 @@ public class LoginUser extends AppCompatActivity {
 
         u = new User();
 
-        Button btn_save = (Button) findViewById(R.id.btnSave);
+        Button btn_save = (Button) findViewById(R.id.btnAcceder);
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

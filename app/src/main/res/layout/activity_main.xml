@@ -14,52 +14,37 @@
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
 
-        <Button
-            android:id="@+id/btnNuevaCuenta"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nueva cuenta" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="10">
 
-        <Button
-            android:id="@+id/btnAcceso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ACCEDER" />
+            <Button
+                android:id="@+id/btnLeerQR"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="LEER QR" />
 
-        <Button
-            android:id="@+id/btnLeerQR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="LEER QR" />
+            <Button
+                android:id="@+id/btnAcceso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="ACCEDER" />
 
-        <Button
-            android:id="@+id/btnGenQR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="GENERAR QR" />
-
-        <Button
-            android:id="@+id/btnCarta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="CARTA" />
-
-        <Button
-            android:id="@+id/btnRestaurante"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RESTAURANTES" />
-
-        <ImageView
-            android:id="@+id/imageQR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/avatars" />
+        </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/frameLayout1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
         </FrameLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

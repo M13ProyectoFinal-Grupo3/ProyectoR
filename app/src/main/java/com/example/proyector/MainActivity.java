@@ -1,10 +1,12 @@
 package com.example.proyector;
 
-import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,150 +16,70 @@ import android.widget.ImageView;
 
 import com.example.Forms.FormCarta;
 import com.example.Forms.FormUser;
-import com.example.Lists.ListCarta;
+import com.example.pojos.User;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 //Comentario de prueba
 //Comentario de prueba2
 public class MainActivity extends AppCompatActivity {
-    FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef = db.collection("restaurante");
-
+    FragmentManager fm = getSupportFragmentManager();
     String RestId=null;
 
-    ActivityResultLauncher<Intent> activityForm;
     ImageView imageView;
 
-    ArrayList<Restaurante> lista = new ArrayList<>();
-    Boolean it = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnForm = (Button) findViewById(R.id.btnNuevaCuenta);
+
         Button btnAccess = (Button) findViewById(R.id.btnAcceso);
         Button btnLeerQR = (Button) findViewById(R.id.btnLeerQR);
-        Button btnGenQR = (Button) findViewById(R.id.btnGenQR);
-        Button btnCarta = (Button) findViewById(R.id.btnCarta);
-        imageView= (ImageView) findViewById(R.id.imageQR);
 
-        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        fm.setFragmentResultListener("request", MainActivity.this, new FragmentResultListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        lista.add(document.toObject(Restaurante.class));
-                    }
-                    //crea un nuevo restaurante
-                    if(lista.size()==0){
-                        Restaurante r = new Restaurante("Restaurante piloto");
-
-                    }
-                    it= true;
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                User u = result.getSerializable("user",User.class);
+                if(u!=null){
+                    //cargar fragment menu profesional
                 }
             }
         });
 
-        btnForm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FormUser.class);
-                startActivity(intent);
-            }
-        });
+        loadFragment(new AccesoQR());
 
         btnAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginUser.class);
-                startActivity(intent);
+                loadFragment(new Profesional());
             }
         });
 
         btnLeerQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                escanear();
-            }
-        });
-
-        btnGenQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageView.setImageBitmap(generateQRCodeImage("12324567890"));
-            }
-        });
-
-        btnCarta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (it) {
-                    Intent intent = new Intent(MainActivity.this, FormCarta.class);
-                    startActivity(intent);
-                }
+                loadFragment(new AccesoQR());
             }
         });
 
     }
 
-    // escanear qr
-    public void escanear(){
-        ScanOptions options = new ScanOptions();
-        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-        options.setPrompt("ESCANEAR QR");
-        options.setCameraId(0);
-        options.setOrientationLocked(false);
-        options.setBeepEnabled(true);
-        options.setCaptureActivity(CapActivity.class);
-        options.setBarcodeImageEnabled(false);
-        barcodeLauncher.launch(options);
 
+    private void loadFragment(Fragment fragment) {
+    // create a FragmentTransaction to begin the transaction and replace the Fragment
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+    // replace the FrameLayout with new Fragment
+        fragmentTransaction.replace(R.id.frameLayout1, fragment);
+        fragmentTransaction.commit(); // save the changes
     }
-
-    // contrato leer qr
-    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),result->{
-        if (result.getContents() != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Result");
-            builder.setMessage(result.getContents());
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            }).show();
-        }});
-
-    // genera codigo QR
-    private Bitmap generateQRCodeImage(String text) {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        Bitmap bmp = null;
-        try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,500,500);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            bmp = barcodeEncoder.createBitmap(bitMatrix);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-        return bmp;
-    }
-
 }
+
+
 /*
 // Create a new user with a first and last name
 
