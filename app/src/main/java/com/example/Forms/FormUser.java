@@ -29,7 +29,7 @@ public class FormUser extends AppCompatActivity {
         vEmail = (EditText) findViewById(R.id.emailuser);
         vPassword = (EditText) findViewById(R.id.logpassword);
 
-        Button btn_save = (Button) findViewById(R.id.btnSave);
+        Button btn_save = (Button) findViewById(R.id.btnAcceder);
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

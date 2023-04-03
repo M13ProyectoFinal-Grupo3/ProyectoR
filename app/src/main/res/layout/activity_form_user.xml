@@ -102,7 +102,7 @@
                     android:text="BORRAR" />
 
                 <Button
-                    android:id="@+id/btnSave"
+                    android:id="@+id/btnAcceder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"

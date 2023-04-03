@@ -24,9 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class FormAlergenos extends AppCompatActivity {
-    FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef = db.collection("alergenos");
     static String coleccion = "alergenos";
+    FirebaseFirestore db= FirebaseFirestore.getInstance();
+    CollectionReference myRef = db.collection(coleccion);
+
     Alergeno a_anterior = null;
     Alergeno a_nuevo = null;
 

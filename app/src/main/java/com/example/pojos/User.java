@@ -1,6 +1,8 @@
 package com.example.pojos;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     public String nomuser;
     public String email;
     public Integer tipouser;
