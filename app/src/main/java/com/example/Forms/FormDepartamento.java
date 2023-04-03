@@ -20,10 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.Lists.ListAlergenos;
-import com.example.adapters.AdapterAlergeno;
 import com.example.adapters.AdapterProducto;
-import com.example.pojos.Alergeno;
 import com.example.pojos.Departamento;
 import com.example.pojos.Producto;
 import com.example.proyector.R;
@@ -41,9 +38,10 @@ public class FormDepartamento extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
     CollectionReference myRef = db.collection("departamentos");
     static String coleccion = "departamentos";
-    Departamento d_anterior = null;
-    Departamento d_nuevo = null;
-
+    Departamento anterior = null;
+    Departamento nuevo = null;
+    EditText xNombre;
+    
     ListView listview1;
     AdapterProducto adapter;
     ArrayList<Producto> lista = new ArrayList<>();
@@ -56,10 +54,26 @@ public class FormDepartamento extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_departamento);
 
+        xNombre = (EditText) findViewById(R.id.t_cNombre);
+        
+        Button btnNuevoProd = (Button) findViewById(R.id.btn_dNuevoProd);
+        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
+        Button btnBorrar= (Button) findViewById(R.id.btn_dBorrar);
+
         listview1 = (ListView) findViewById(R.id.list_prods);
         adapter = new AdapterProducto( FormDepartamento.this,lista);
         listview1.setAdapter(adapter);
 
+        // recupera Departamento a editar
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null) {
+            anterior = (Departamento) getIntent().getExtras().get("departamento");
+            xNombre.setText(anterior.getNombre());
+            //xAls =new ArrayList<String>(Arrays.asList()); ;
+        }
+
+
+        // editar Producto al pulsar prolongadamente sobre alguno de la lista
         listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -70,25 +84,8 @@ public class FormDepartamento extends AppCompatActivity {
                 return false;
             }
         });
-
-        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        lista.add(document.toObject(Producto.class));
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
-
-        Button btnNuevoProd = (Button) findViewById(R.id.btn_dNuevoProd);
-        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
-        Button btnBorrar= (Button) findViewById(R.id.btn_dBorrar);
-
+        
+        // nuevo producto
         btnNuevoProd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,10 +94,11 @@ public class FormDepartamento extends AppCompatActivity {
             }
         });
 
+        // borrar Departamento
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRef.whereEqualTo("nombre",d_anterior.getNombre())
+                myRef.whereEqualTo("nombre",anterior.getNombre())
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -113,7 +111,7 @@ public class FormDepartamento extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 Toast.makeText(FormDepartamento.this, "El Departamento ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
                                                 Intent resultIntent = new Intent();
-                                                resultIntent.putExtra("delete", d_anterior);
+                                                resultIntent.putExtra("delete", anterior);
                                                 setResult(RESULT_OK, resultIntent);
                                                 finish();
                                             }
@@ -128,18 +126,20 @@ public class FormDepartamento extends AppCompatActivity {
                         });
             }
         });
+        
+        // Guardar departamento
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.et_dNombre);
+                EditText xNombre = (EditText) findViewById(R.id.t_cNombre);
 
-                d_nuevo = new Departamento(xNombre.getText().toString(),lista.toArray(new Producto[lista.size()]));
+                nuevo = new Departamento(xNombre.getText().toString(),lista.toArray(new Producto[lista.size()]));
                 // Actualizar Alergeno o añadir nuevo
-                if(d_anterior!=null) {
+                if(anterior!=null) {
                     // Actualizar
-                    myRef.whereEqualTo("nombre",d_anterior.getNombre())
+                    myRef.whereEqualTo("nombre",anterior.getNombre())
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -147,12 +147,12 @@ public class FormDepartamento extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         if(task.getResult().getDocuments().size()>0) {
                                             DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                            myRef.document( d.getId()).update("nombre",d_nuevo.getNombre(), "productos", d_nuevo.getProductos()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            myRef.document( d.getId()).update("nombre",nuevo.getNombre(), "productos", nuevo.getProductos()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     Toast.makeText(FormDepartamento.this, "El Departamento se modificó correctamente", Toast.LENGTH_SHORT).show();
                                                     Intent resultIntent = new Intent();
-                                                    resultIntent.putExtra("update", d_nuevo);
+                                                    resultIntent.putExtra("update", nuevo);
                                                     setResult(RESULT_OK, resultIntent);
                                                     finish();
                                                 }
@@ -169,11 +169,11 @@ public class FormDepartamento extends AppCompatActivity {
 
                 } else {
                     // Nuevo Departamento
-                    db.collection(coleccion).document().set(d_nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    db.collection(coleccion).document().set(nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Intent resultIntent = new Intent();
-                            resultIntent.putExtra("new", d_nuevo);
+                            resultIntent.putExtra("new", nuevo);
                             setResult(RESULT_OK, resultIntent);
                             Toast.makeText(FormDepartamento.this, "El Departamento se añadio correctamente", Toast.LENGTH_SHORT).show();
                             finish();
@@ -182,9 +182,9 @@ public class FormDepartamento extends AppCompatActivity {
                 }
             }
         });
-
-
-
+        
+        // llamada a Productos
+        
         activityForm= registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -209,5 +209,21 @@ public class FormDepartamento extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    
+    private void verProductos(){
+        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        lista.add(document.toObject(Producto.class));
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });     
     }
 }
