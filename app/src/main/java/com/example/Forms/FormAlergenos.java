@@ -121,8 +121,7 @@ public class FormAlergenos extends AppCompatActivity {
                                                 Intent resultIntent = new Intent();
                                                 resultIntent.putExtra("delete", a_anterior);
                                                 setResult(RESULT_OK, resultIntent);
-                                                Intent intent = new Intent(FormAlergenos.this, ListAlergenos.class);
-                                                startActivity(intent);
+                                                finish();
                                             }
                                         });
                                     } else {

@@ -39,6 +39,7 @@ public class ListAlergenos extends AppCompatActivity {
     ArrayList<Alergeno> lista = new ArrayList<>();
     AdapterAlergeno adapter;
     Integer pos=0;
+    Alergeno edit_item;
 
     ActivityResultLauncher<Intent> activityForm;
 
@@ -63,6 +64,7 @@ public class ListAlergenos extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 pos=position;
+                edit_item = lista.get(position);
                 Intent intent = new Intent(ListAlergenos.this, FormAlergenos.class);
                 intent.putExtra("alergeno",lista.get(position));
                 activityForm.launch(intent);
@@ -104,7 +106,13 @@ public class ListAlergenos extends AppCompatActivity {
                             } else if(intent.getSerializableExtra("delete")!=null){
                                 Alergeno a_dev = (Alergeno) intent.getSerializableExtra("delete");
                                 Log.d("delete",pos+" "+a_dev.getNombre());
-                                lista.remove(pos);
+                                for(int i=0;i<lista.size();i++){
+                                    Log.d("lista ",""+i+" -> "+lista.get(i).getNombre());
+                                }
+                                lista.remove(edit_item);
+                                for(int i=0;i<lista.size();i++){
+                                    Log.d("lista ",""+i+" -> "+lista.get(i).getNombre());
+                                }
                                 adapter.notifyDataSetChanged();
                             }
 
