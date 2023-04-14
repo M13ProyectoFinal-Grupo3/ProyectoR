@@ -7,17 +7,6 @@
     tools:context="com.example.Forms.FormCarta">
 
 
-    <TextView
-        android:id="@+id/tx_fichacarta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:text="Carta del restaurante"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -25,73 +14,35 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tx_fichacarta">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/tx_cNombre"
+            android:id="@+id/tx1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre" />
+            android:text="Carta del restaurante"
+            android:textSize="20dp" />
 
-        <EditText
-            android:id="@+id/t_cNombre"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tx_departamento"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="AAA"
-            android:inputType="textPersonName" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="right"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tx_cListaDeps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:text="Departamentos" />
-
-            <Button
-                android:id="@+id/btn_cNuevoDep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="NUEVO" />
-
-
-
-        </LinearLayout>
+            android:text="Nombre del restaurante"
+            android:textSize="28dp" />
 
         <ListView
-            android:id="@+id/lista_cDeps"
+            android:id="@+id/lista_prods"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/t_cNombre" />
+            android:layout_marginTop="10dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btn_nuevoprod"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="right"
-            android:orientation="horizontal">
-
-
-            <Button
-                android:id="@+id/btn_dGuardar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#00FF00"
-                android:text="GUARDAR" />
-
-        </LinearLayout>
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="10dp"
+            android:text="NUEVO DEPARTAMENTO" />
 
     </LinearLayout>
 

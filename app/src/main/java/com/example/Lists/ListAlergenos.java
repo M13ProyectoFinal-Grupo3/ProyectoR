@@ -93,18 +93,18 @@ public class ListAlergenos extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent intent = result.getData();
-                            if(intent.getSerializableExtra("update")!=null){
-                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("update");
+                            if(intent.getSerializableExtra("update",Alergeno.class)!=null){
+                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("update",Alergeno.class);
                                 Log.d("update",pos+" "+a_dev.getNombre());
                                 lista.set(pos,a_dev);
                                 adapter.notifyDataSetChanged();
-                            } else if(intent.getSerializableExtra("new")!=null){
-                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("new");
+                            } else if(intent.getSerializableExtra("new",Alergeno.class)!=null){
+                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("new",Alergeno.class);
                                 Log.d("new",pos+" "+a_dev.getNombre());
                                 lista.add(a_dev);
                                 adapter.notifyDataSetChanged();
-                            } else if(intent.getSerializableExtra("delete")!=null){
-                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("delete");
+                            } else if(intent.getSerializableExtra("delete",Alergeno.class)!=null){
+                                Alergeno a_dev = (Alergeno) intent.getSerializableExtra("delete",Alergeno.class);
                                 Log.d("delete",pos+" "+a_dev.getNombre());
                                 lista.remove(edit_item);
                                 adapter.notifyDataSetChanged();

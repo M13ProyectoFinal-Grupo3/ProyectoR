@@ -1,7 +1,8 @@
 package com.example.pojos;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
-import java.util.Arrays;
 
 public class Producto implements Serializable {
     String nombre;
@@ -11,10 +12,8 @@ public class Producto implements Serializable {
     Alergeno[] alergenos;
     String prepara_idperfil;
     String id_departamento;
-    byte[] foto_producto;
 
-    public Producto() {
-    }
+    public Producto() {}
 
     public Producto(Boolean activo, String nombre, String descripcion, Float precio) {
         this.activo = activo;
@@ -24,7 +23,7 @@ public class Producto implements Serializable {
     }
 
 
-    public Producto( String nombre, String descripcion, Boolean activo, Float precio, Alergeno[] alergenos, String prepara_idperfil, String id_departamento, byte[] foto_producto) {
+    public Producto( String nombre, String descripcion, Boolean activo, Float precio, Alergeno[] alergenos, String prepara_idperfil, String id_departamento) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.activo = activo;
@@ -32,7 +31,6 @@ public class Producto implements Serializable {
         this.alergenos = alergenos;
         this.prepara_idperfil = prepara_idperfil;
         this.id_departamento = id_departamento;
-        this.foto_producto = foto_producto;
     }
 
     public String getNombre() {
@@ -89,13 +87,5 @@ public class Producto implements Serializable {
 
     public void setId_departamento(String id_departamento) {
         this.id_departamento = id_departamento;
-    }
-
-    public byte[] getFoto_producto() {
-        return foto_producto;
-    }
-
-    public void setFoto_producto(byte[] foto_producto) {
-        this.foto_producto = foto_producto;
     }
 }
