@@ -1,7 +1,5 @@
 package com.example.Forms;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,13 +16,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.adapters.AdapterCarta;
-import com.example.pojos.Carta;
+import com.example.adapters.AdapterDepartamento;
+import com.example.pojos.Departamento;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -33,12 +32,12 @@ import java.util.ArrayList;
 
 public class FormCarta extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef =  db.collection("carta").document("Carta").collection("departamentos");
+    CollectionReference myRef =  db.collection("Carta").document("carta").collection("Departamentos");
 
     ListView listview1;
-    AdapterCarta adapter;
-    ArrayList<Carta> lista = new ArrayList<>();
-    Carta carta;
+    AdapterDepartamento adapter;
+    ArrayList<Departamento> lista = new ArrayList<>();
+    Departamento departamento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class FormCarta extends AppCompatActivity {
         Button btnNuevoDep = (Button) findViewById(R.id.btn_nuevoprod);
 
         listview1 = (ListView) findViewById(R.id.lista_prods);
-        adapter = new AdapterCarta(FormCarta.this,lista);
+        adapter = new AdapterDepartamento(FormCarta.this,lista);
         listview1.setAdapter(adapter);
 
 
@@ -59,7 +58,8 @@ public class FormCarta extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(DocumentSnapshot document:task.getResult()){
-                        lista.add(document.toObject(Carta.class));
+                        Departamento d = document.toObject(Departamento.class);
+                        lista.add(d);
                     }
                     adapter.notifyDataSetChanged();
                 } else {
@@ -90,49 +90,23 @@ public class FormCarta extends AppCompatActivity {
                 final EditText input = new EditText(FormCarta.this);
 
                 input.setInputType(InputType.TYPE_CLASS_TEXT );
-                String anterior = lista.get(position).getDepartamento();
-                input.setText(anterior);
+                input.setText(lista.get(position).getnombre());
                 builder.setView(input);
 
                 builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        carta = new Carta(input.getText().toString());
+                        Departamento d = new Departamento(lista.get(position).getId(),input.getText().toString());
+                        myRef.document(d.getId()).update("nombre", d.getnombre()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(FormCarta.this, "El Departamento se modificó correctamente", Toast.LENGTH_SHORT).show();
+                                lista.set(position, d);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }});
 
-                        //comprueba que el departamento no haya sido creado anteriormente
-                        myRef.whereNotEqualTo("departamento",carta.getDepartamento())
-                                        .get()
-                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                myRef.whereEqualTo("departamento", anterior)
-                                                        .get()
-                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    if (task.getResult().getDocuments().size() > 0) {
-                                                                        DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size() - 1);
-                                                                        myRef.document(d.getId()).update("departamento", carta.getDepartamento()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                            @Override
-                                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                                Toast.makeText(FormCarta.this, "El Departamento se modificó correctamente", Toast.LENGTH_SHORT).show();
-                                                                                lista.set(position, carta);
-                                                                                adapter.notifyDataSetChanged();
-                                                                            }
-                                                                        });
-
-                                                                    } else {
-                                                                        Log.d(TAG, "Documento Departamento no econtrado para su modificación");
-                                                                    }
-                                                                }
-                                                            }
-                                                        });
-                                            }
-                                        });
-
-                    }
-                });
 
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
@@ -144,27 +118,15 @@ public class FormCarta extends AppCompatActivity {
                 builder.setNeutralButton("Eliminar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Carta anterior = lista.get(position);
-                        myRef.whereEqualTo("departamento",lista.get(position).getDepartamento())
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if(task.isSuccessful()) {
-                                            DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                            myRef.document(d.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Toast.makeText(FormCarta.this,"El departamento se eliminó correctament",Toast.LENGTH_LONG).show();
-                                                    lista.remove(anterior);
-                                                    adapter.notifyDataSetChanged();
-                                                }
-                                            });
-                                        } else {
-                                            Log.d(TAG, "Documento no ha podido ser eiliminado");
-                                        }
-                                    }
-                                });
+                        Departamento d = lista.get(position);
+                        myRef.document(d.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(FormCarta.this, "El departamento se eliminó correctament", Toast.LENGTH_LONG).show();
+                                lista.remove(d);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
                     }
                 });
 
@@ -190,20 +152,22 @@ public class FormCarta extends AppCompatActivity {
                 builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        carta = new Carta(input.getText().toString());
+                        Departamento d = new Departamento(input.getText().toString());
 
-                        myRef.whereNotEqualTo("departamento",carta.getDepartamento())
+                        myRef.whereNotEqualTo("departamento",d.getnombre())
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        myRef.document().set(carta).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                lista.add(carta);
-                                                adapter.notifyDataSetChanged();
-                                            }
-                                        });
+                                        myRef.add(d).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        d.setId(task.getResult().getId());
+                                                        myRef.document(d.getId()).update("id",d.getId());
+                                                        lista.add(d);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
                                     }});
                         }
                     });

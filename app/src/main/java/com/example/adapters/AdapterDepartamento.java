@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.pojos.Carta;
+import com.example.pojos.Departamento;
 import com.example.proyector.R;
 
 import java.util.ArrayList;
 
-public class AdapterCarta extends ArrayAdapter<Carta> {
-    public AdapterCarta(Context context, ArrayList<Carta> carta) {
+public class AdapterDepartamento extends ArrayAdapter<Departamento> {
+    public AdapterDepartamento(Context context, ArrayList<Departamento> carta) {
         super( context,0,carta);
     }
 
@@ -22,12 +22,12 @@ public class AdapterCarta extends ArrayAdapter<Carta> {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Carta c = getItem(position);
+        Departamento c = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_alergeno, parent, false);
         }
         TextView xNombre = (TextView) convertView.findViewById(R.id.txANombre);
-        xNombre.setText(c.getDepartamento());
+        xNombre.setText(c.getnombre());
 
         return convertView;
     }

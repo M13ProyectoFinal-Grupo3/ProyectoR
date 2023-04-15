@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.Lists.ListAlergenos;
@@ -42,8 +43,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -51,14 +54,15 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class FormProducto extends AppCompatActivity implements ImgInterface {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
     CollectionReference myRef;
-    Producto anterior = null;
-    Producto nuevo = null;
+    Producto producto = null;
     EditText xNombre;
     EditText xDescrip ;
     EditText xPrecio;
@@ -74,7 +78,13 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
-        
+
+        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
+        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_pFoto);
+        ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
+        TextView txDepartamento = (TextView) findViewById(R.id.tx_nomDepto);
+
         xNombre = (EditText) findViewById(R.id.t_pNombre);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
@@ -82,10 +92,24 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
         xImagen =(ImageView) findViewById(R.id.imagen1);
         lista_algs =new ArrayList<>();
 
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
-        Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
-        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_pFoto);
-        ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
+        // recupera Producto a editar
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null) {
+            if(intent.getExtras().containsKey("departamento")){
+                txDepartamento.setText("Departamento: "+getIntent().getExtras().getString("departamento"));
+            }
+            if(intent.getExtras().containsKey("ref")){
+                myRef = db.collection(getIntent().getExtras().getString("ref"));
+                Log.d("myRef",myRef.getPath());
+            } else { finish();}
+            if(intent.getExtras().containsKey("producto")) {
+                producto = getIntent().getExtras().getSerializable("producto", Producto.class);
+                Log.d("producto",""+producto.toString());
+                xNombre.setText(producto.getNombre());
+                xDescrip.setText(producto.getDescripcion());
+                xPrecio.setText(producto.getPrecio().toString());
+            }
+        } else { finish();}
 
         // fragment elegir imagen
         fm.setFragmentResultListener("request", this, new FragmentResultListener() {
@@ -98,25 +122,23 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
             }
         });
 
-        // recupera Producto a editar
-        Intent intent = getIntent();
-        if(intent.getExtras()!=null) {
-            if(intent.getExtras().containsKey("ref")){
-                myRef = db.collection(getIntent().getExtras().getString("ref"));
-                Log.d("myRef",myRef.getPath());
-            }
-            if(intent.getExtras().containsKey("producto")) {
-                anterior = getIntent().getExtras().getSerializable("producto", Producto.class);
-                xNombre.setText(anterior.getNombre());
-                xDescrip.setText(anterior.getDescripcion());
-                xPrecio.setText(anterior.getPrecio().toString());
-            }
-        }
-
-        //verAlergenos
+        //mostrar Alergenos
 
         adapter = new AdapterAlergeno(FormProducto.this,lista_algs);
         xListAlgs.setAdapter(adapter);
+
+        myRef.document(producto.getId()).collection("Alergenos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot doc: task.getResult()){
+                        lista_algs.add(doc.toObject(Alergeno.class));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
         //borrar alérgeno
         xListAlgs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -152,66 +174,52 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
                 EditText xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
                 EditText xPrecio = (EditText) findViewById(R.id.t_pPrecio);
 
-                nuevo = new Producto(true, xNombre.getText().toString(),xDescrip.getText().toString(),Float.parseFloat( xPrecio.getText().toString()));
-                guardarImagen();
+                Producto p = new Producto(true, xNombre.getText().toString(), xDescrip.getText().toString(), Float.parseFloat(xPrecio.getText().toString()));
+                p.setId(producto.getId());
+                guardarImagen(p);
                 // Update
-                if(anterior!=null) {
+                if (producto != null) {
                     // Actualizar
-                    Log.d("save myRef",myRef.getPath());
-                    myRef.whereNotEqualTo("nombre", nuevo.getNombre())
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    myRef.whereEqualTo("nombre",anterior.getNombre())
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        if(task.getResult().getDocuments().size()>0) {
-                                                            DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                                            HashMap<String,Object> data = new HashMap<String,Object>(){};
-                                                            data.put("nombre",nuevo.getNombre());
-                                                            data.put("activo", nuevo.getActivo());
-                                                            data.put("descripcion",nuevo.getDescripcion());
-                                                            data.put("precio",nuevo.getPrecio());
-                                                            data.put("id_departamento",anterior.getPrepara_idperfil());
-                                                            data.put("id_prepara",anterior.getPrepara_idperfil());
-                                                            myRef.document( d.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
-                                                                    Intent resultIntent = new Intent();
-                                                                    resultIntent.putExtra("update", nuevo);
-                                                                    setResult(RESULT_OK, resultIntent);
-                                                                    finish();
-                                                                }
-                                                            });
+                    Log.d("save myRef", myRef.getPath());
 
-                                                        } else {
-                                                            Log.d(TAG,"Documento Producto no econtrado para su modificación");
-                                                        }
-                                                    } else {
-                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                                    }
-                                                }
-                                            });
-                                }
-                            });
+                    HashMap<String, Object> data = new HashMap<String, Object>() {
+                    };
+                    data.put("nombre",p.getNombre());
+                    data.put("activo", p.getActivo());
+                    data.put("descripcion", p.getDescripcion());
+                    data.put("precio", p.getPrecio());
+                    data.put("id_departamento", producto.getPrepara_idperfil());
+                    data.put("id_prepara", producto.getPrepara_idperfil());
+                    myRef.document(producto.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            guardarAlergenos(p);
+
+                            Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("update", p);
+                            setResult(RESULT_OK, resultIntent);
+                            finish();
+                        }
+                    });
 
                 } else {
                     // Nuevo Producto
-                    myRef.whereNotEqualTo("nombre", nuevo.getNombre())
+                    myRef.whereNotEqualTo("nombre",p.getNombre())
                             .get()
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
                                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    myRef.document().set(nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    myRef.add(p).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            p.setId(task.getResult().getId());
+                                            myRef.document(p.getId()).update("id",p.getId());
+
+                                            guardarAlergenos(p);
+
                                             Intent resultIntent = new Intent();
-                                            resultIntent.putExtra("new", nuevo);
+                                            resultIntent.putExtra("new",p);
                                             setResult(RESULT_OK, resultIntent);
                                             Toast.makeText(FormProducto.this, "El Producto se añadio correctamente", Toast.LENGTH_SHORT).show();
                                             finish();
@@ -220,8 +228,6 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
                                 }
                             });
                 }
-
-
             }
         });
 
@@ -229,32 +235,16 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRef.whereEqualTo("nombre",anterior.getNombre())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    if(task.getResult().getDocuments().size()>0) {
-                                        DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                        myRef.document( d.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Toast.makeText(FormProducto.this, "El Producto ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
-                                                Intent resultIntent = new Intent();
-                                                resultIntent.putExtra("delete", anterior);
-                                                setResult(RESULT_OK, resultIntent);
-                                                finish();
-                                            }
-                                        });
-                                    } else {
-                                        Log.d(TAG,"Documento Alergeno no econtrado para su modificación");
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });
+                myRef.document( producto.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(FormProducto.this, "El Producto ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("delete", producto);
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
+                    }
+                });
             }
         });
 
@@ -268,8 +258,8 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
                             // Recibe objeto alergeno
                             Intent intent =  result.getData();
                             if(intent.getExtras() != null) {
-                                Alergeno alerg = (Alergeno) intent.getSerializableExtra("alergeno");
-                                lista_algs.add(alerg);
+                                Alergeno a= intent.getSerializableExtra("alergeno", Alergeno.class);
+                                lista_algs.add(a);
                                 adapter.notifyDataSetChanged();
                             }
                         }else{
@@ -313,10 +303,10 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
         }
     }
 
-    private void guardarImagen(){
+    private void guardarImagen(Producto p){
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference imgRef = storage.getReference().child("productos");
-        String name = nuevo.getNombre().replace(" ","")+".jpg";
+        String name = p.getNombre().replace(" ","")+".jpg";
 
         // comprobar si existe imagen asociada al producto y eliminarla antes de subir la nueva
         imgRef.listAll().addOnCompleteListener(new OnCompleteListener<ListResult>() {
@@ -374,6 +364,27 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
         return bitmap;
+    }
+
+    private void guardarAlergenos(Producto p){
+        CollectionReference alRef = myRef.document(producto.getId()).collection("Alergenos");
+        alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot doc: task.getResult()){
+                        alRef.document(doc.getId()).delete();
+                    }
+                }
+            }
+        }).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for(Alergeno a: lista_algs){
+                    alRef.add(a);
+                }
+            }
+        });
     }
 
 }

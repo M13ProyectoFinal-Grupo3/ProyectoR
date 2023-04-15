@@ -10,29 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.Lists.ListAlergenos;
-import com.example.adapters.AdapterCarta;
 import com.example.adapters.AdapterProducto;
-import com.example.pojos.Alergeno;
-import com.example.pojos.Carta;
+import com.example.pojos.Departamento;
 import com.example.pojos.Producto;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -40,19 +31,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class FormDepartamento extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef =  db.collection("carta").document("Carta").collection("departamentos");
+    CollectionReference myRef;
 
     ListView listview1;
     AdapterProducto adapter;
     ArrayList<Producto> lista = new ArrayList<>();
-    Carta carta;
-    int position=-1;
+    Departamento departamento;
+    int pos=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,39 +54,32 @@ public class FormDepartamento extends AppCompatActivity {
         adapter = new AdapterProducto(FormDepartamento.this,lista);
         listview1.setAdapter(adapter);
 
-        // recupera Departamento a editar
+        // recupera Departamento y muestra sus productos
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
-            carta = getIntent().getExtras().getSerializable("departamento", Carta.class);
+
+            departamento = getIntent().getExtras().getSerializable("departamento", Departamento.class);
+            myRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
+
             TextView tx1 = findViewById(R.id.tx_departamento);
-            tx1.setText(carta.getDepartamento());
-            myRef.whereEqualTo("departamento", carta.getDepartamento())
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                myRef = db.collection("carta").document("Carta").collection("departamentos").document(d.getId()).collection("productos");
-                                // mostrar productos
-                                myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if(task.isSuccessful()){
-                                            for(QueryDocumentSnapshot d: task.getResult()){
-                                                lista.add(d.toObject(Producto.class));
-                                            }
-                                            adapter.notifyDataSetChanged();
-                                        } else {
-                                            Log.d(TAG,"No hay productos en este departamento");
-                                        }
-                                    }
-                                });
-                            } else {
-                                Log.d(TAG,"No se ha encontrado el departamento");
-                            }
+            tx1.setText(departamento.getnombre());
+
+            // mostrar productos
+            myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot d: task.getResult()){
+                            Producto p = d.toObject(Producto.class);
+                            lista.add(d.toObject(Producto.class));
+                            Log.d("lista prod",p.toString());
                         }
-                    });
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Log.d(TAG,"No hay productos en este departamento");
+                    }
+                }
+            });
 
         } else { finish();}
 
@@ -117,10 +99,11 @@ public class FormDepartamento extends AppCompatActivity {
                                     adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("update")){
                                     Producto p = intent.getSerializableExtra("update", Producto.class);
-                                    lista.set(position,p);
+                                    Log.d("dev prod",p.toString());
+                                    lista.set(pos,p);
                                     adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("delete")){
-                                    lista.remove(lista.get(position));
+                                    lista.remove(lista.get(pos));
                                     adapter.notifyDataSetChanged();
                                 }
                             }
@@ -138,9 +121,12 @@ public class FormDepartamento extends AppCompatActivity {
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                pos = position;
                 Intent intent = new Intent(FormDepartamento.this, FormProducto.class);
+                intent.putExtra("departamento", departamento.getnombre());
                 intent.putExtra("ref", myRef.getPath());
                 intent.putExtra("producto", lista.get(position));
+                Log.d("position prod",position+" "+lista.get(position).getNombre());
                 startActivityProductos.launch(intent);
             }
         });
@@ -151,12 +137,11 @@ public class FormDepartamento extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FormDepartamento.this, FormProducto.class);
+                intent.putExtra("departamento", departamento.getnombre());
                 intent.putExtra("ref", myRef.getPath());
                 startActivityProductos.launch(intent);
             }
         });
-
-
 
     }
 
