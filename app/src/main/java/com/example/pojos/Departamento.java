@@ -3,30 +3,34 @@ package com.example.pojos;
 import java.io.Serializable;
 
 public class Departamento implements Serializable {
+    String id;
     String nombre;
-    Producto[] productos;
 
     public Departamento() {
     }
 
-    public Departamento(String nombre, Producto[] productos) {
+    public Departamento(String nombre) {
         this.nombre = nombre;
-        this.productos = productos;
     }
 
-    public String getNombre() {
+    public Departamento(String id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getnombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    public void setnombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public Producto[] getProductos() {
-        return productos;
-    }
-
-    public void setProductos(Producto[] productos) {
-        this.productos = productos;
     }
 }
