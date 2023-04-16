@@ -3,17 +3,22 @@ package com.example.Forms;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.drm.DrmStore;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -30,8 +35,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.Lists.ListAlergenos;
 import com.example.adapters.AdapterAlergeno;
+import com.example.adapters.ImageAdapter;
 import com.example.pojos.Alergeno;
 import com.example.pojos.Producto;
 import com.example.proyector.R;
@@ -50,6 +58,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -63,12 +73,10 @@ public class FormProducto extends AppCompatActivity {
     EditText xDescrip ;
     EditText xPrecio;
     ListView xListAlgs;
-    ImageView xImagen;
+    ImageView imageview1;
 
     ArrayList<Alergeno> lista_algs;
     AdapterAlergeno adapter;
-
-    FragmentManager fm = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +93,7 @@ public class FormProducto extends AppCompatActivity {
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
         xListAlgs = (ListView) findViewById(R.id.list_pAls);
-        xImagen =(ImageView) findViewById(R.id.imagen1);
+        imageview1 =(ImageView) findViewById(R.id.imagen1);
         lista_algs =new ArrayList<>();
 
         // recupera Producto a editar
@@ -104,6 +112,7 @@ public class FormProducto extends AppCompatActivity {
                 xNombre.setText(producto.getNombre());
                 xDescrip.setText(producto.getDescripcion());
                 xPrecio.setText(producto.getPrecio().toString());
+                cargarImagen(producto);
             }
         } else { finish();}
 
@@ -263,52 +272,49 @@ public class FormProducto extends AppCompatActivity {
             }
         });
 
-        ActivityResultLauncher<Intent> startActivityGaleria= registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>(){
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            final Uri imageUri = result.getData().getData();
-                            try {
-                                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                                xImagen.setImageBitmap(selectedImage);
-                            } catch (IOException ex){
-                                Toast.makeText(FormProducto.this, "Archivo de imagen no encontrando",Toast.LENGTH_LONG).show();
+        ActivityResultLauncher<Intent> startActivityGaleria  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+                        if (data != null){
+                            Uri selectedImageUri = data.getData();
+                            if (selectedImageUri != null){
+                                try {
+                                    InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                    imageview1.setImageBitmap(bitmap);
+                                }catch (Exception e){
+                                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }else{
-                            Toast.makeText(FormProducto.this, "No ha seleccionado ninguna imagen",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
 
-        btnFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityGaleria.launch(intent);
-            }
-        });
+                btnFoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityGaleria.launch(intent);
+                    }
+                });
 
     }
 
-    private void loadFragment(Fragment fragment) {
-        // create a FragmentTransaction to begin the transaction and replace the Fragment
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        // replace the FrameLayout with new Fragment
-        fragmentTransaction.replace(R.id.framelayout_p1, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit(); // save the changes
-    }
-
-    // imagen que devuelve fragment seleccionar imagen
-    public void devData(Object data){
-        if(data!=null) {
-            Bitmap b = (Bitmap) data;
-            xImagen.setImageBitmap(b);
-        }
+    private void cargarImagen(Producto p){
+        final long MAX_IMAGESIZE = 1024 * 1024;
+        String name = p.getNombre().replace(" ","")+".jpg";
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference imgRef = storage.getReference();
+        imgRef.child("productos").child(name).getBytes(MAX_IMAGESIZE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        imageview1.setImageBitmap(bitmap);
+                    }
+                });
     }
 
     private void guardarImagen(Producto p){
@@ -345,7 +351,7 @@ public class FormProducto extends AppCompatActivity {
         // subir la nueva imagen
         imgRef = storage.getReference().child("productos/"+name);
 
-        Bitmap bitmap = getBitmapFromView(xImagen);
+        Bitmap bitmap = getBitmapFromView(imageview1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
