@@ -1,56 +1,138 @@
 package com.example.Forms;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.example.adapters.AdapterProducto;
-import com.example.pojos.Producto;
+import com.example.adapters.AdapterDepartamento;
+import com.example.pojos.Departamento;
 import com.example.proyector.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class FormCarta extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef = db.collection("carta");
-
-    ActivityResultLauncher<Intent> activityForm;
+    CollectionReference myRef =  db.collection("Carta").document("carta").collection("Departamentos");
 
     ListView listview1;
-    AdapterProducto adapter;
-    ArrayList<Producto> lista = new ArrayList<>();
-    Integer pos=0;
+    AdapterDepartamento adapter;
+    ArrayList<Departamento> lista = new ArrayList<>();
+    Departamento departamento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_carta);
 
-        Button btnNuevoDep = (Button) findViewById(R.id.btn_cNuevoDep);
-        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
+        Button btnNuevoDep = (Button) findViewById(R.id.btn_nuevoprod);
 
-        listview1 = (ListView) findViewById(R.id.lista_cDeps);
+        listview1 = (ListView) findViewById(R.id.lista_prods);
+        adapter = new AdapterDepartamento(FormCarta.this,lista);
+        listview1.setAdapter(adapter);
+
+
+        // Mostrar departamentos
+
+        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot document:task.getResult()){
+                        Departamento d = document.toObject(Departamento.class);
+                        lista.add(d);
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d("ERROR","No se pudo obtener la lista de departamentos");
+                }
+            }
+        });
+
+
+        // editar productos departamento
+
+        listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FormCarta.this, FormDepartamento.class);
+                intent.putExtra("departamento", lista.get(position));
+                startActivity(intent);
+            }
+        });
 
         // editar departamento
         listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                pos=position;
-                Intent intent = new Intent(FormCarta.this   , FormDepartamento.class);
-                intent.putExtra("departamento",lista.get(position));
-                activityForm.launch(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(FormCarta.this);
+                builder.setTitle("Editar departamento");
+
+                final EditText input = new EditText(FormCarta.this);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT );
+                input.setText(lista.get(position).getnombre());
+                builder.setView(input);
+
+                builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Departamento d = new Departamento(lista.get(position).getId(),input.getText().toString());
+                        myRef.document(d.getId()).update("nombre", d.getnombre()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(FormCarta.this, "El Departamento se modificó correctamente", Toast.LENGTH_SHORT).show();
+                                lista.set(position, d);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }});
+
+
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.setNeutralButton("Eliminar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Departamento d = lista.get(position);
+                        myRef.document(d.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(FormCarta.this, "El departamento se eliminó correctament", Toast.LENGTH_LONG).show();
+                                lista.remove(d);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
+
+                builder.show();
+
+
                 return false;
             }
         });
@@ -59,47 +141,48 @@ public class FormCarta extends AppCompatActivity {
         btnNuevoDep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FormCarta.this   , FormDepartamento.class);
-                startActivity(intent);
-            }
-        });
+                AlertDialog.Builder builder = new AlertDialog.Builder(FormCarta.this);
+                builder.setTitle("Nuevo departamento");
 
-        btnGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+                final EditText input = new EditText(FormCarta.this);
 
-        activityForm= registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
+                input.setInputType(InputType.TYPE_CLASS_TEXT );
+                builder.setView(input);
+
+                builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent intent = result.getData();
-                            if(intent.getSerializableExtra("update")!=null){
-                                Producto p_dev = (Producto) intent.getSerializableExtra("update");
-                                lista.set(pos,p_dev);
-                                adapter.notifyDataSetChanged();
-                            } else if(intent.getSerializableExtra("new")!=null){
-                                Producto p_dev = (Producto) intent.getSerializableExtra("new");
-                                lista.add(p_dev);
-                                adapter.notifyDataSetChanged();
-                            } else if(intent.getSerializableExtra("delete")!=null){
-                                Producto p_dev = (Producto) intent.getSerializableExtra("delete");
-                                lista.remove(pos);
-                                adapter.notifyDataSetChanged();
-                            }
+                    public void onClick(DialogInterface dialog, int which) {
+                        Departamento d = new Departamento(input.getText().toString());
 
+                        myRef.whereNotEqualTo("departamento",d.getnombre())
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        myRef.add(d).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        d.setId(task.getResult().getId());
+                                                        myRef.document(d.getId()).update("id",d.getId());
+                                                        lista.add(d);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                    }});
                         }
+                    });
+
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
                 });
+
+                builder.show();
+            }
+        });
+
     }
-
-    private void verDeps(){
-
-    }
-
 
 }

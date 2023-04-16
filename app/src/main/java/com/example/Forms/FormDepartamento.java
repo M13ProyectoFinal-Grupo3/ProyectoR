@@ -16,9 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.adapters.AdapterProducto;
 import com.example.pojos.Departamento;
@@ -36,194 +35,114 @@ import java.util.ArrayList;
 
 public class FormDepartamento extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef = db.collection("departamentos");
-    static String coleccion = "departamentos";
-    Departamento anterior = null;
-    Departamento nuevo = null;
-    EditText xNombre;
-    
+    CollectionReference myRef;
+
     ListView listview1;
     AdapterProducto adapter;
     ArrayList<Producto> lista = new ArrayList<>();
-    Integer pos=0;
-
-    ActivityResultLauncher<Intent> activityForm;
+    Departamento departamento;
+    int pos=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_departamento);
 
-        xNombre = (EditText) findViewById(R.id.t_cNombre);
-        
-        Button btnNuevoProd = (Button) findViewById(R.id.btn_dNuevoProd);
-        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
-        Button btnBorrar= (Button) findViewById(R.id.btn_dBorrar);
+        Button btnNuevo= (Button) findViewById(R.id.btn_nuevoprod);
 
-        listview1 = (ListView) findViewById(R.id.list_prods);
-        adapter = new AdapterProducto( FormDepartamento.this,lista);
+        listview1 = (ListView) findViewById(R.id.lista_prods);
+        adapter = new AdapterProducto(FormDepartamento.this,lista);
         listview1.setAdapter(adapter);
 
-        // recupera Departamento a editar
+        // recupera Departamento y muestra sus productos
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
-            anterior = (Departamento) getIntent().getExtras().get("departamento");
-            xNombre.setText(anterior.getNombre());
-            //xAls =new ArrayList<String>(Arrays.asList()); ;
-        }
 
+            departamento = getIntent().getExtras().getSerializable("departamento", Departamento.class);
+            myRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
 
-        // editar Producto al pulsar prolongadamente sobre alguno de la lista
-        listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                pos=position;
-                Intent intent = new Intent(FormDepartamento.this, FormProducto.class);
-                intent.putExtra("producto",lista.get(position));
-                activityForm.launch(intent);
-                return false;
-            }
-        });
-        
-        // nuevo producto
-        btnNuevoProd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FormDepartamento.this, FormProducto.class);
-                startActivity(intent);
-            }
-        });
+            TextView tx1 = findViewById(R.id.tx_departamento);
+            tx1.setText(departamento.getnombre());
 
-        // borrar Departamento
-        btnBorrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myRef.whereEqualTo("nombre",anterior.getNombre())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    if(task.getResult().getDocuments().size()>0) {
-                                        DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                        myRef.document( d.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Toast.makeText(FormDepartamento.this, "El Departamento ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
-                                                Intent resultIntent = new Intent();
-                                                resultIntent.putExtra("delete", anterior);
-                                                setResult(RESULT_OK, resultIntent);
-                                                finish();
-                                            }
-                                        });
-                                    } else {
-                                        Log.d(TAG,"Documento Departamento no econtrado para su modificación");
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });
-            }
-        });
-        
-        // Guardar departamento
-
-        btnGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.t_cNombre);
-
-                nuevo = new Departamento(xNombre.getText().toString(),lista.toArray(new Producto[lista.size()]));
-                // Actualizar Alergeno o añadir nuevo
-                if(anterior!=null) {
-                    // Actualizar
-                    myRef.whereEqualTo("nombre",anterior.getNombre())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if(task.getResult().getDocuments().size()>0) {
-                                            DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                            myRef.document( d.getId()).update("nombre",nuevo.getNombre(), "productos", nuevo.getProductos()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    Toast.makeText(FormDepartamento.this, "El Departamento se modificó correctamente", Toast.LENGTH_SHORT).show();
-                                                    Intent resultIntent = new Intent();
-                                                    resultIntent.putExtra("update", nuevo);
-                                                    setResult(RESULT_OK, resultIntent);
-                                                    finish();
-                                                }
-                                            });
-
-                                        } else {
-                                            Log.d(TAG,"Documento Departamento no econtrado para su modificación");
-                                        }
-                                    } else {
-                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                    }
-                                }
-                            });
-
-                } else {
-                    // Nuevo Departamento
-                    db.collection(coleccion).document().set(nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("new", nuevo);
-                            setResult(RESULT_OK, resultIntent);
-                            Toast.makeText(FormDepartamento.this, "El Departamento se añadio correctamente", Toast.LENGTH_SHORT).show();
-                            finish();
+            // mostrar productos
+            myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot d: task.getResult()){
+                            Producto p = d.toObject(Producto.class);
+                            lista.add(d.toObject(Producto.class));
+                            Log.d("lista prod",p.toString());
                         }
-                    });
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Log.d(TAG,"No hay productos en este departamento");
+                    }
                 }
-            }
-        });
-        
-        // llamada a Productos
-        
-        activityForm= registerForActivityResult(
+            });
+
+        } else { finish();}
+
+        // activity alergeno
+        ActivityResultLauncher<Intent> startActivityProductos= registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent intent = result.getData();
-                            if(intent.getSerializableExtra("update")!=null){
-                                Producto p_dev = (Producto) intent.getSerializableExtra("update");
-                                lista.set(pos,p_dev);
-                                adapter.notifyDataSetChanged();
-                            } else if(intent.getSerializableExtra("new")!=null){
-                                Producto p_dev = (Producto) intent.getSerializableExtra("new");
-                                lista.add(p_dev);
-                                adapter.notifyDataSetChanged();
-                            } else if(intent.getSerializableExtra("delete")!=null){
-                                Producto p_dev = (Producto) intent.getSerializableExtra("delete");
-                                lista.remove(pos);
-                                adapter.notifyDataSetChanged();
+                            // Recibe objeto producto
+                            Intent intent =  result.getData();
+                            if(intent.getExtras() != null) {
+                                if(intent.getExtras().containsKey("new")) {
+                                    Producto p = intent.getSerializableExtra("new", Producto.class);
+                                    lista.add(p);
+                                    adapter.notifyDataSetChanged();
+                                } else if(intent.getExtras().containsKey("update")){
+                                    Producto p = intent.getSerializableExtra("update", Producto.class);
+                                    Log.d("dev prod",p.toString());
+                                    lista.set(pos,p);
+                                    adapter.notifyDataSetChanged();
+                                } else if(intent.getExtras().containsKey("delete")){
+                                    lista.remove(lista.get(pos));
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
+                        }else{
+                            //No recibe información.
 
                         }
                     }
                 });
-    }
-    
-    private void verProductos(){
-        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+
+
+        // editar producto
+
+        listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        lista.add(document.toObject(Producto.class));
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                pos = position;
+                Intent intent = new Intent(FormDepartamento.this, FormProducto.class);
+                intent.putExtra("departamento", departamento.getnombre());
+                intent.putExtra("ref", myRef.getPath());
+                intent.putExtra("producto", lista.get(position));
+                Log.d("position prod",position+" "+lista.get(position).getNombre());
+                startActivityProductos.launch(intent);
             }
-        });     
+        });
+
+
+        // nuevo producto
+        btnNuevo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FormDepartamento.this, FormProducto.class);
+                intent.putExtra("departamento", departamento.getnombre());
+                intent.putExtra("ref", myRef.getPath());
+                startActivityProductos.launch(intent);
+            }
+        });
+
     }
+
 }

@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.Lists.ListAlergenos;
 import com.example.pojos.Alergeno;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,10 +35,10 @@ public class FormAlergenos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_alergenos);
 
-        Button btnGuardqar = (Button) findViewById(R.id.btn_dGuardar);
-        Button btnBorrar = (Button) findViewById(R.id.btn_aBorrar);
+        Button btnGuardqar = (Button) findViewById(R.id.btnGuardarCarta);
+        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
 
-        EditText enombre = (EditText) findViewById(R.id.t_cNombre);
+        EditText enombre = (EditText) findViewById(R.id.t_pNombre);
 
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
@@ -51,7 +50,7 @@ public class FormAlergenos extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.t_cNombre);
+                EditText xNombre = (EditText) findViewById(R.id.t_pNombre);
                 a_nuevo = new Alergeno(xNombre.getText().toString());
                 // Actualizar Alergeno o añadir nuevo
                 if(a_anterior!=null) {
