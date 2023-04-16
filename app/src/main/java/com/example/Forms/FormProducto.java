@@ -1,7 +1,5 @@
 package com.example.Forms;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -10,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
@@ -18,7 +15,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,16 +34,13 @@ import com.example.Lists.ListAlergenos;
 import com.example.adapters.AdapterAlergeno;
 import com.example.pojos.Alergeno;
 import com.example.pojos.Producto;
-import com.example.proyector.ImgInterface;
 import com.example.proyector.R;
-import com.example.proyector.SelectImage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -54,12 +50,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Field;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
-public class FormProducto extends AppCompatActivity implements ImgInterface {
+public class FormProducto extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
     CollectionReference myRef;
     Producto producto = null;
@@ -111,16 +107,6 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
             }
         } else { finish();}
 
-        // fragment elegir imagen
-        fm.setFragmentResultListener("request", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                //User u = result.getSerializable("user",User.class);
-                /*if(u!=null){
-                    //cargar fragment
-                }*/
-            }
-        });
 
         //mostrar Alergenos
 
@@ -277,10 +263,32 @@ public class FormProducto extends AppCompatActivity implements ImgInterface {
             }
         });
 
+        ActivityResultLauncher<Intent> startActivityGaleria= registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>(){
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            final Uri imageUri = result.getData().getData();
+                            try {
+                                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                                xImagen.setImageBitmap(selectedImage);
+                            } catch (IOException ex){
+                                Toast.makeText(FormProducto.this, "Archivo de imagen no encontrando",Toast.LENGTH_LONG).show();
+                            }
+                        }else{
+                            Toast.makeText(FormProducto.this, "No ha seleccionado ninguna imagen",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new SelectImage());
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityGaleria.launch(intent);
             }
         });
 
