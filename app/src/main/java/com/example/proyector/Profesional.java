@@ -25,11 +25,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Profesional#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Profesional extends Fragment {
 
 

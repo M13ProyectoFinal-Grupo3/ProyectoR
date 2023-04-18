@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.pojos.Departamento;
 import com.example.pojos.Producto;
 import com.example.proyector.R;
 
