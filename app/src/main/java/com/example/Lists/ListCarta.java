@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.example.adapters.AdapterCartaProducto;
-import com.example.pojos.Producto;
+import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
 
 import java.util.ArrayList;

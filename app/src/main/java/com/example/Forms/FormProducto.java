@@ -29,8 +29,8 @@ import android.widget.Toast;
 
 import com.example.Lists.ListAlergenos;
 import com.example.adapters.AdapterAlergeno;
-import com.example.pojos.Alergeno;
-import com.example.pojos.Producto;
+import com.example.Lists.pojos.Alergeno;
+import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;

@@ -7,11 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.pojos.Alergeno;
-import com.example.pojos.Producto;
+import com.example.Lists.pojos.Alergeno;
 import com.example.proyector.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 

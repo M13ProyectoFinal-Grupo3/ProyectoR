@@ -7,21 +7,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.Forms.FormCarta;
-import com.example.Forms.FormUser;
-import com.example.pojos.User;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.example.Lists.pojos.User;
 
 //Comentario de prueba
 //Comentario de prueba2

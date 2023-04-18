@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Forms.FormMesa;
 import com.example.adapters.AdapterMesa;
-import com.example.pojos.Mesa;
+import com.example.Lists.pojos.Mesa;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

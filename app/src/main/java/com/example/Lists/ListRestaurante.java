@@ -20,13 +20,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Forms.FormRestaurante;
 import com.example.adapters.AdapterRestaurante;
-import com.example.pojos.Restaurante;
+import com.example.Lists.pojos.Restaurante;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;

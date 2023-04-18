@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.Forms.FormCarta;
-import com.example.Forms.FormRestaurante;
 import com.example.Forms.FormUser;
 import com.example.Lists.ListRestaurante;
-import com.example.pojos.User;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
