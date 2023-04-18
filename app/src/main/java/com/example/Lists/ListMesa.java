@@ -18,28 +18,30 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.Forms.FormRestaurante;
-import com.example.adapters.AdapterRestaurante;
-import com.example.pojos.Restaurante;
+import com.example.Forms.FormMesa;
+import com.example.adapters.AdapterMesa;
+import com.example.pojos.Mesa;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class ListRestaurante extends AppCompatActivity {
+public class ListMesa extends AppCompatActivity {
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference myRef = db.collection("restaurante");
 
+    String nombreRestaurante;
+    String idDocumentoRestaurante;
+    CollectionReference idColec;
     ListView listview1;
-    ArrayList<Restaurante> lista = new ArrayList<>();
-    AdapterRestaurante adapter;
+    ArrayList<Mesa> lista = new ArrayList<>();
+    AdapterMesa adapter;
     Integer pos = 0;
 
     ActivityResultLauncher<Intent> activityForm;
@@ -47,38 +49,46 @@ public class ListRestaurante extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_restaurante);
+        setContentView(R.layout.activity_list_mesa);
 
-        listview1 = (ListView) findViewById(R.id.list_restaurantes);
-        adapter = new AdapterRestaurante(ListRestaurante.this, lista);
+        listview1 = (ListView) findViewById(R.id.list_mesas);
+        adapter = new AdapterMesa(ListMesa.this, lista);
         listview1.setAdapter(adapter);
+
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null) {
+            nombreRestaurante = (String) getIntent().getExtras().get("nombreRestaurante");
+            idDocumentoRestaurante = "ID" + nombreRestaurante;
+            idColec = db.collection("restaurante/" + idDocumentoRestaurante + "/mesa");
+        }
 
         listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 pos = position;
-                Intent intent = new Intent(ListRestaurante.this, FormRestaurante.class); //cambiar a listrestaurante
-                intent.putExtra("restaurante", lista.get(position));
+                Intent intent = new Intent(ListMesa.this, FormMesa.class);
+                intent.putExtra("mesa", lista.get(position));
                 intent.putExtra("btnBorrarHabilitado", true);
-                intent.putExtra("btnAgregarMesaHabilitado", true);
+                intent.putExtra("idDocumentoRestaurante", idDocumentoRestaurante);
                 activityForm.launch(intent);
                 return false;
             }
         });
 
-        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        lista.add(document.toObject(Restaurante.class));
+        idColec.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                lista.add(document.toObject(Mesa.class));
+                            }
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
                     }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
+                });
+
 
         activityForm = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -88,19 +98,23 @@ public class ListRestaurante extends AppCompatActivity {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent.getSerializableExtra("update") != null) {
-                                Restaurante a_dev = (Restaurante) intent.getSerializableExtra("update");
-                                Log.d("update", pos + " " + a_dev.getNombre());
+                                Mesa a_dev = (Mesa) intent.getSerializableExtra("update");
                                 lista.set(pos, a_dev);
                                 adapter.notifyDataSetChanged();
                             } else if (intent.getSerializableExtra("new") != null) {
-                                Restaurante a_dev = (Restaurante) intent.getSerializableExtra("new");
-                                Log.d("new", pos + " " + a_dev.getNombre());
+                                Mesa a_dev = (Mesa) intent.getSerializableExtra("new");
                                 lista.add(a_dev);
                                 adapter.notifyDataSetChanged();
                             } else if (intent.getSerializableExtra("delete") != null) {
-                                Restaurante a_dev = (Restaurante) intent.getSerializableExtra("delete");
-                                Log.d("delete", pos + " " + a_dev.getNombre());
-                                lista.remove(pos);
+                                ArrayList<Mesa> mesas = new ArrayList<>();
+                                for (Mesa mesa : lista) {
+                                    int posicion = lista.indexOf(mesa);
+                                    if(posicion != pos) {
+                                        mesas.add(mesa);
+                                    }
+                                }
+                                lista.clear();
+                                lista.addAll(mesas);
                                 adapter.notifyDataSetChanged();
                             }
 
@@ -112,9 +126,9 @@ public class ListRestaurante extends AppCompatActivity {
         btnNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ListRestaurante.this, FormRestaurante.class);
-                intent.putExtra("btnBorrarHabilitado", false);
-                intent.putExtra("btnAgregarMesaHabilitado", false);
+                finish();
+                Intent intent = new Intent(ListMesa.this, FormMesa.class);
+                intent.putExtra("idDocumentoRestaurante", idDocumentoRestaurante);
                 startActivity(intent);
             }
         });

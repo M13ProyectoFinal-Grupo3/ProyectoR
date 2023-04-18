@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.example.Forms.FormCarta;
 import com.example.Forms.FormRestaurante;
 import com.example.Forms.FormUser;
+import com.example.Lists.ListRestaurante;
 import com.example.pojos.User;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -55,7 +56,7 @@ public class Profesional extends Fragment {
         btnRest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), FormRestaurante.class);
+                Intent intent = new Intent(getContext(), ListRestaurante.class);
                 startActivity(intent);
             }
         });
