@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Lists.ListMesa;
-import com.example.pojos.Mesa;
+import com.example.Lists.pojos.Mesa;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

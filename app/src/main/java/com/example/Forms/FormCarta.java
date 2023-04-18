@@ -17,7 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.adapters.AdapterDepartamento;
-import com.example.pojos.Departamento;
+import com.example.Lists.pojos.Departamento;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;

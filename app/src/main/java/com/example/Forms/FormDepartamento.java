@@ -20,13 +20,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.adapters.AdapterProducto;
-import com.example.pojos.Departamento;
-import com.example.pojos.Producto;
+import com.example.Lists.pojos.Departamento;
+import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;

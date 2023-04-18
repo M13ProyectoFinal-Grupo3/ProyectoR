@@ -1,19 +1,19 @@
-package com.example.pojos;
+package com.example.Lists.pojos;
 
 import java.io.Serializable;
 
-public class Departamento implements Serializable {
+public class Alergeno implements Serializable {
     String id;
     String nombre;
 
-    public Departamento() {
+    public Alergeno() {
     }
 
-    public Departamento(String nombre) {
+    public Alergeno(String nombre) {
         this.nombre = nombre;
     }
 
-    public Departamento(String id, String nombre) {
+    public Alergeno(String id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }
@@ -26,11 +26,12 @@ public class Departamento implements Serializable {
         this.id = id;
     }
 
-    public String getnombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setnombre(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
 }

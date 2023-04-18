@@ -1,4 +1,4 @@
-package com.example.pojos;
+package com.example.Lists.pojos;
 
 import java.io.Serializable;
 import java.util.Date;

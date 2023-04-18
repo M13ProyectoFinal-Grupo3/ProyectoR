@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Lists.ListMesa;
 import com.example.Lists.ListRestaurante;
-import com.example.pojos.Mesa;
-import com.example.pojos.Restaurante;
+import com.example.Lists.pojos.Mesa;
+import com.example.Lists.pojos.Restaurante;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,8 +42,8 @@ public class FormRestaurante extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_restaurante);
 
-        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
-        Button btnBorrar = (Button) findViewById(R.id.btn_aBorrar);
+        Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
+        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
         Button btnMesa = (Button) findViewById(R.id.btn_aMesa);
 
         EditText enombre = (EditText) findViewById(R.id.et_dNombre);

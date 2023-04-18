@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.pojos.User;
+import com.example.Lists.pojos.User;
 import com.example.proyector.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 

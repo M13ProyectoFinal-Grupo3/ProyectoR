@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.pojos.Producto;
+import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
 
 import java.util.ArrayList;
