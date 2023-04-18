@@ -13,12 +13,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.Lists.ListMesa;
 import com.example.Lists.ListRestaurante;
+import com.example.pojos.Mesa;
 import com.example.pojos.Restaurante;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,17 +30,21 @@ public class FormRestaurante extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference myRef = db.collection("restaurante");
     static String coleccion = "restaurante";
+    static String documento = "mesa";
     Restaurante a_anterior = null;
     Restaurante a_nuevo = null;
+    Mesa a_nuevo2 = null;
     Boolean btnBorrarHabilitado=true;
+    Boolean btnAgregarMesaHabilitado=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_restaurante);
 
-        Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
+        Button btnBorrar = (Button) findViewById(R.id.btn_aBorrar);
+        Button btnMesa = (Button) findViewById(R.id.btn_aMesa);
 
         EditText enombre = (EditText) findViewById(R.id.et_dNombre);
         EditText eRazonSocial = (EditText) findViewById(R.id.et_dRazonSocial);
@@ -48,7 +55,7 @@ public class FormRestaurante extends AppCompatActivity {
         EditText eTelefono = (EditText) findViewById(R.id.et_dTelefono);
 
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().size() == 2) {
+        if (intent.getExtras() != null && intent.getExtras().size() > 2) {
             a_anterior = (Restaurante) getIntent().getExtras().get("restaurante");
             enombre.setText(a_anterior.getNombre());
             eRazonSocial.setText(a_anterior.getRazonSocial());
@@ -58,12 +65,17 @@ public class FormRestaurante extends AppCompatActivity {
             eCP.setText(a_anterior.getCodPostal());
             eTelefono.setText(a_anterior.getTelefono());
             btnBorrarHabilitado = (Boolean) getIntent().getExtras().get("btnBorrarHabilitado");
-        } else if (intent.getExtras() != null && intent.getExtras().size() == 1) {
+            btnAgregarMesaHabilitado = (Boolean) getIntent().getExtras().get("btnAgregarMesaHabilitado");
+        } else if (intent.getExtras() != null && intent.getExtras().size() < 3) {
             btnBorrarHabilitado = (Boolean) getIntent().getExtras().get("btnBorrarHabilitado");
+            btnAgregarMesaHabilitado = (Boolean) getIntent().getExtras().get("btnAgregarMesaHabilitado");
         }
 
         if (btnBorrarHabilitado == false) {
             btnBorrar.setVisibility(View.INVISIBLE);
+        }
+        if (btnAgregarMesaHabilitado == false) {
+            btnMesa.setVisibility(View.INVISIBLE);
         }
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +129,8 @@ public class FormRestaurante extends AppCompatActivity {
 
                 } else {
                     // Nuevo Restaurante
-                    db.collection(coleccion).document().set(a_nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    DocumentReference idDocumento = db.collection(coleccion).document("ID"+a_nuevo.getNombre());
+                    idDocumento.set(a_nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Intent resultIntent = new Intent();
@@ -166,5 +179,13 @@ public class FormRestaurante extends AppCompatActivity {
             }
         });
 
+        btnMesa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FormRestaurante.this, ListMesa.class);
+                intent.putExtra("nombreRestaurante", a_anterior.getNombre());
+                startActivity(intent);
+            }
+        });
     }
 }
