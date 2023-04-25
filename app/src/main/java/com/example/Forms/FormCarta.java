@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -44,7 +45,8 @@ public class FormCarta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_carta);
 
-        Button btnNuevoDep = (Button) findViewById(R.id.btn_nuevoprod);
+        Button btnNuevoDep = (Button) findViewById(R.id.btn_nuevoDep);
+        ImageButton btnBack = (ImageButton) findViewById(R.id.btn_backCarta);
 
         listview1 = (ListView) findViewById(R.id.lista_prods);
         adapter = new AdapterDepartamento(FormCarta.this,lista);
@@ -134,6 +136,14 @@ public class FormCarta extends AppCompatActivity {
 
 
                 return false;
+            }
+        });
+
+        // volver a activity anterior
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

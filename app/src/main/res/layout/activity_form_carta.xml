@@ -34,10 +34,22 @@
             android:id="@+id/lista_prods"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
 
         <Button
-            android:id="@+id/btn_nuevoprod"
+            android:id="@+id/btn_nuevoDep"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"

@@ -48,19 +48,26 @@
             android:orientation="horizontal">
 
 
-            <Button
-                android:id="@+id/btn_selecImg"
+            <ImageButton
+                android:id="@+id/btn_backAls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="BORRAR" />
+                android:layout_gravity="left"
+                app:srcCompat="?attr/homeAsUpIndicator" />
+
+            <ImageButton
+                android:id="@+id/btn_borrarDep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FF0000"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
 
             <Button
                 android:id="@+id/btnGuardarCarta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:backgroundTint="#00FF00"
+                android:backgroundTint="#2196F3"
                 android:text="GUARDAR" />
 
         </LinearLayout>

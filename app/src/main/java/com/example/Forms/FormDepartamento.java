@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -47,7 +48,8 @@ public class FormDepartamento extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_departamento);
 
-        Button btnNuevo= (Button) findViewById(R.id.btn_nuevoprod);
+        Button btnNuevo= (Button) findViewById(R.id.btn_nuevoDep);
+        ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarDep);
 
         listview1 = (ListView) findViewById(R.id.lista_prods);
         adapter = new AdapterProducto(FormDepartamento.this,lista);

@@ -10,8 +10,8 @@
         android:id="@+id/tx1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:text="Ficha de producto"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,156 +21,153 @@
         android:id="@+id/tx_nomDepto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="Departamento"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="Producto"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tx1" />
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
-        app:layout_constraintTop_toBottomOf="@+id/tx_nomDepto">
+    <ImageButton
+        android:id="@+id/btn_borrarProd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:backgroundTint="#A1A1A1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tx1"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
-        <LinearLayout
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="90dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imagen1"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/platocomida" />
+
+            <ImageButton
+                android:id="@+id/btn_pFoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom|right"
+                app:srcCompat="@drawable/lupa50" />
+
+        </FrameLayout>
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Visible" />
+
+        <TextView
+            android:id="@+id/tx_cNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre" />
+
+        <EditText
+            android:id="@+id/t_pNombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:ems="10"
+            android:hint="AAA"
+            android:inputType="textPersonName" />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tx_pDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción" />
 
-                <ImageView
-                    android:id="@+id/imagen1"
-                    android:layout_width="match_parent"
-                    android:layout_height="160dp"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/platocomida" />
+        <EditText
+            android:id="@+id/t_pDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="AAA"
+            android:inputType="textPersonName" />
 
-                <ImageButton
-                    android:id="@+id/btn_pFoto"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="bottom|right"
-                    app:srcCompat="@drawable/lupa50" />
+        <TextView
+            android:id="@+id/tx_pPrecio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Precio" />
 
-            </FrameLayout>
+        <EditText
+            android:id="@+id/t_pPrecio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="0"
+            android:inputType="numberDecimal" />
 
-            <Switch
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Visible" />
+        <TextView
+            android:id="@+id/tx_pAlergenos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alérgenos e intolerancias" />
 
-            <TextView
-                android:id="@+id/tx_cNombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nombre" />
+        <FrameLayout
+            android:id="@+id/framelayout_p1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/t_pNombre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="AAA"
-                android:inputType="textPersonName" />
+        </FrameLayout>
 
-            <TextView
-                android:id="@+id/tx_pDescripcion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Descripción" />
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#FBCBCB"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/t_pDescripcion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="AAA"
-                android:inputType="textPersonName" />
-
-            <TextView
-                android:id="@+id/tx_pPrecio"
+            <ListView
+                android:id="@+id/list_pAls"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Precio" />
+                android:layout_weight="14" />
 
-            <EditText
-                android:id="@+id/t_pPrecio"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/btn_pAlergenos"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="0"
-                android:inputType="numberDecimal" />
-
-            <TextView
-                android:id="@+id/tx_pAlergenos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Alérgenos e intolerancias" />
-
-            <FrameLayout
-                android:id="@+id/framelayout_p1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </FrameLayout>
-
-            <LinearLayout
-                android:id="@+id/linear1"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:color/holo_orange_light"
-                android:orientation="horizontal">
-
-                <ListView
-                    android:id="@+id/list_pAls"
-                    android:layout_width="match_parent"
-                    android:layout_height="75dp"
-                    android:layout_weight="14" />
-
-                <ImageButton
-                    android:id="@+id/btn_pAlergenos"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/lupa50" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-
-                <Button
-                    android:id="@+id/btn_selecImg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="BORRAR" />
-
-                <Button
-                    android:id="@+id/btnGuardarCarta"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:backgroundTint="#00FF00"
-                    android:text="GUARDAR" />
-
-            </LinearLayout>
-
+                android:layout_weight="1"
+                app:srcCompat="@drawable/lupa50" />
         </LinearLayout>
-    </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+
+        <Button
+            android:id="@+id/btnGuardarCarta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#2196F3"
+            android:text="GUARDAR" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

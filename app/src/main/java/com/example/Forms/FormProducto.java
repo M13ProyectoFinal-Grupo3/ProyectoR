@@ -69,7 +69,7 @@ public class FormProducto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
 
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarProd);
         Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
         ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_pFoto);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
