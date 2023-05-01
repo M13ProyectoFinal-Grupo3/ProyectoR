@@ -24,6 +24,14 @@ public class Restaurante implements Serializable {
         this.telefono = telefono;
     }
 
+    //constructor provisional para el ticket
+    public Restaurante(String nombre, String razonSocial, String nif, String telefono) {
+        this.nombre = nombre;
+        this.razonSocial = razonSocial;
+        this.nif = nif;
+        this.telefono = telefono;
+    }
+
     public String getNombre() {
         return nombre;
     }
