@@ -24,7 +24,7 @@
             android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/tx_departamento"
+            android:id="@+id/tx_nombrerest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre del restaurante"

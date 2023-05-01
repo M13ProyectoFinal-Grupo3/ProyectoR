@@ -40,19 +40,7 @@ public class AdapterCartaProducto extends ArrayAdapter<Producto> {
         //xImg.setImageBitmap(producto.getImagen_carta());
         xNombre.setText(producto.getNombre());
         xDescrip.setText(producto.getDescripcion());
-        ImageButton btnPedir= (ImageButton)  convertView.findViewById(R.id.btnPedir);
 
-        // Defino una varieble para poder saber el contexto
-        //View finalConvertView_jmh = convertView;
-        btnPedir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**
-                int cantidad = Integer.valueOf(xDescrip.getText().toString());
-                cantidad++;
-                xDescrip.setText(Integer.toString(cantidad));*/
-            }
-        });
 
         return convertView;
     }

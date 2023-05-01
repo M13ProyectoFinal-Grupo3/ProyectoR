@@ -8,11 +8,25 @@
     tools:context=".CartaCliente">
 
 
+    <TextView
+        android:id="@+id/tx_nombrerest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="Nombre del restaurante"
+        android:textSize="28dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tx_nombrerest2">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontalRv"
@@ -26,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.2" />
 
     <ListView
         android:id="@+id/listviewCarta"

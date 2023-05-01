@@ -5,14 +5,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Producto;
+import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Ticket;
 import com.example.adapters.AdapterCartaDep;
 import com.example.adapters.AdapterCartaProducto;
@@ -23,6 +34,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -41,14 +54,24 @@ public class CartaCliente extends AppCompatActivity {
     ListView listView1;
 
     Ticket ticket1;
+    Restaurante restaurante1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carta_cliente);
 
+        TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
+        TextView txNumMesa = (TextView) findViewById(R.id.tx_numesa);
+
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
             ticket1 = intent.getExtras().getSerializable("ticket", Ticket.class);
+            if(ticket1 != null){
+                //restaurante1 = ticket1.getRestaurante();
+                //txNombreRest = restaurante1.getNombre();
+                txNumMesa.setText("Mesa: "+ticket1.getNum_mesa());
+            }
         } else {
             //Error ticket sin identificar
         }
@@ -63,7 +86,6 @@ public class CartaCliente extends AppCompatActivity {
                         Departamento d = document.toObject(Departamento.class);
                         departamentos.add(d);
                     }
-                    Log.d("Read Departamentos",""+departamentos.size());
                 }
             }
         }).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -99,7 +121,61 @@ public class CartaCliente extends AppCompatActivity {
                 }
                 adapterPro = new AdapterCartaProducto(CartaCliente.this, productos);
                 listView1.setAdapter(adapterPro);
+
+                listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        Producto p = productos.get(position);
+
+                        Log.d("onItemClick",p.getNombre());
+
+                        // generar Dialog
+                        AlertDialog.Builder imageDialog = new AlertDialog.Builder(CartaCliente.this );
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+                        View layout = inflater.inflate(R.layout.dialog_carta, (ViewGroup) findViewById(R.id.layout_root));
+                        ImageView image = (ImageView) layout.findViewById(R.id.imgDialogProd);
+                        TextView txNomProducto = (TextView) layout.findViewById(R.id.txDialogProduto);
+                        txNomProducto.setText(p.getNombre());
+
+                        // cargar imagen
+
+                        final long MAX_IMAGESIZE = 1024 * 1024;
+                        String name = p.getNombre().replace(" ","")+".jpg";
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference imgRef = storage.getReference();
+                        imgRef.child("productos").child(name).getBytes(MAX_IMAGESIZE)
+                                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<byte[]> task) {
+                                        if( task.isSuccessful() ) {
+                                            byte[] bytes = task.getResult();
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                            image.setImageBitmap(bitmap);
+                                        }
+                                    }
+                                })
+                                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<byte[]> task) {
+                                        imageDialog.setView(layout);
+                                        imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener(){
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                EditText cantidad = (EditText) layout.findViewById(R.id.etCantidad);
+                                                dialog.dismiss();
+                                                // añadir cantidad y producto a ticket
+                                            }
+
+                                        });
+                                        imageDialog.create();
+                                        imageDialog.show();
+                                    }
+                                });
+                    }
+                });
             }
         });
     }
+
 }
