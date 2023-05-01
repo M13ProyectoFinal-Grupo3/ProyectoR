@@ -16,11 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Producto;
 import com.example.Lists.pojos.Restaurante;
@@ -46,6 +49,7 @@ public class CartaCliente extends AppCompatActivity {
 
     ArrayList<Departamento> departamentos = new ArrayList<>();
     ArrayList<Producto> productos = new ArrayList<>();
+    ArrayList<Alergeno> alergenos = new ArrayList<>();
 
     AdapterCartaProducto adapterPro;
     AdapterCartaDep adapterDep;
@@ -63,6 +67,8 @@ public class CartaCliente extends AppCompatActivity {
 
         TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
         TextView txNumMesa = (TextView) findViewById(R.id.tx_numesa);
+
+        ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
 
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
@@ -107,6 +113,17 @@ public class CartaCliente extends AppCompatActivity {
                 });
             }
         });
+
+
+        // botón filtrar
+
+        btnFiltrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // añadir filtros alergenos.add();
+            }
+        });
+
     }
 
     private void mostrarProductos(Departamento departamento){
@@ -117,6 +134,7 @@ public class CartaCliente extends AppCompatActivity {
                 productos.removeAll(productos);
                 for(DocumentSnapshot document:task.getResult()){
                     Producto p = document.toObject(Producto.class);
+                    // filtrar alergenos 
                     productos.add(p);
                 }
                 adapterPro = new AdapterCartaProducto(CartaCliente.this, productos);
