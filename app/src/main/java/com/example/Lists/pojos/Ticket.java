@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Ticket implements Serializable {
+    int id;
     int id_restaurante;
     Date fecha;
     int num_mesa;
@@ -14,6 +15,10 @@ public class Ticket implements Serializable {
     public Ticket() {
     }
 
+    public Ticket(int id) {
+        this.id = id;
+    }
+
     public Ticket(int id_restaurante, Date fecha, int num_mesa, int id_camarero, int comensales, Lineas_Ticket linea_ticket) {
         this.id_restaurante = id_restaurante;
         this.fecha = fecha;
@@ -21,6 +26,14 @@ public class Ticket implements Serializable {
         this.id_camarero = id_camarero;
         this.comensales = comensales;
         this.linea_ticket = linea_ticket;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId_restaurante() {

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,14 +20,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.adapters.AdapterProducto;
 import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -84,7 +88,7 @@ public class FormDepartamento extends AppCompatActivity {
 
         } else { finish();}
 
-        // activity alergeno
+        // Result activity productos
         ActivityResultLauncher<Intent> startActivityProductos= registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -141,6 +145,39 @@ public class FormDepartamento extends AppCompatActivity {
                 intent.putExtra("departamento", departamento.getnombre());
                 intent.putExtra("ref", myRef.getPath());
                 startActivityProductos.launch(intent);
+            }
+        });
+
+        // borrar departamento
+        btnBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CollectionReference delRef =  myRef.document(departamento.getId()).collection("productos");
+                delRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot d: task.getResult()){
+                                delRef.document(d.getId()).delete();
+                            }
+                        }
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        myRef.document(departamento.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(FormDepartamento.this, "El Departamento ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
+                                Intent resultIntent = new Intent();
+                                resultIntent.putExtra("delete", departamento);
+                                setResult(RESULT_OK, resultIntent);
+                                finish();
+                            }
+                        });
+
+                    }
+                });
             }
         });
 

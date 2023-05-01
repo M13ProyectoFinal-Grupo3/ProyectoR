@@ -1,0 +1,105 @@
+package com.example.proyector;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
+
+import com.example.Lists.pojos.Departamento;
+import com.example.Lists.pojos.Producto;
+import com.example.Lists.pojos.Ticket;
+import com.example.adapters.AdapterCartaDep;
+import com.example.adapters.AdapterCartaProducto;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+
+public class CartaCliente extends AppCompatActivity {
+    FirebaseFirestore db= FirebaseFirestore.getInstance();
+    CollectionReference myRef =  db.collection("Carta").document("carta").collection("Departamentos");
+    CollectionReference pRef;
+
+    ArrayList<Departamento> departamentos = new ArrayList<>();
+    ArrayList<Producto> productos = new ArrayList<>();
+
+    AdapterCartaProducto adapterPro;
+    AdapterCartaDep adapterDep;
+
+    RecyclerView viewDep;
+    ListView listView1;
+
+    Ticket ticket1;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_carta_cliente);
+
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null) {
+            ticket1 = intent.getExtras().getSerializable("ticket", Ticket.class);
+        } else {
+            //Error ticket sin identificar
+        }
+
+        listView1 = (ListView) findViewById(R.id.listviewCarta);
+
+        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot document:task.getResult()){
+                        Departamento d = document.toObject(Departamento.class);
+                        departamentos.add(d);
+                    }
+                    Log.d("Read Departamentos",""+departamentos.size());
+                }
+            }
+        }).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                LinearLayoutManager linlayout= new LinearLayoutManager(CartaCliente.this, LinearLayoutManager.HORIZONTAL, false);
+                adapterDep = new AdapterCartaDep(departamentos);
+                viewDep = findViewById(R.id.horizontalRv);
+                viewDep.setLayoutManager(linlayout);
+                viewDep.setAdapter(adapterDep);
+
+                if(departamentos.size()>0) mostrarProductos(departamentos.get(0));
+
+                adapterDep.setOnClickListener(new AdapterCartaDep.OnClickListener() {
+                    @Override
+                    public void onClick(int position, Departamento departamento) {
+                        mostrarProductos(departamento);
+                    }
+                });
+            }
+        });
+    }
+
+    private void mostrarProductos(Departamento departamento){
+        pRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
+        pRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                productos.removeAll(productos);
+                for(DocumentSnapshot document:task.getResult()){
+                    Producto p = document.toObject(Producto.class);
+                    productos.add(p);
+                }
+                adapterPro = new AdapterCartaProducto(CartaCliente.this, productos);
+                listView1.setAdapter(adapterPro);
+            }
+        });
+    }
+}

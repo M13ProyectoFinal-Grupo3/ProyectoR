@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -18,6 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProyectoR"
         tools:targetApi="31">
+        <activity
+            android:name=".CartaCliente"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name="com.example.Lists.ListAlergenos"
             android:exported="false">
@@ -34,7 +41,7 @@
         </activity>
         <activity
             android:name="com.example.Lists.ListMesa"
-            android:exported="false" >
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -69,20 +76,13 @@
         </activity>
         <activity
             android:name="com.example.Forms.FormMesa"
-            android:exported="false" >
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name="com.example.Forms.FormProducto"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name="com.example.Lists.ListCarta"
+            android:name="com.example.Forms.FormProducto"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
