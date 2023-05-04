@@ -51,6 +51,7 @@ public class CartaCliente extends AppCompatActivity {
     ArrayList<Departamento> departamentos = new ArrayList<>();
     ArrayList<Producto> productos = new ArrayList<>();
     ArrayList<Alergeno> alergenos = new ArrayList<>();
+    ArrayList<cAlergeno> cAlergenos = new ArrayList<>();
 
     AdapterCartaProducto adapterPro;
     AdapterCartaDep adapterDep;
@@ -60,6 +61,10 @@ public class CartaCliente extends AppCompatActivity {
     ListView listView1;
 
     Ticket ticket1;
+    TextView tNomRest;
+    TextView tNumMesa;
+    TextView tAlergs;
+
     Restaurante restaurante1;
 
     @Override
@@ -68,7 +73,7 @@ public class CartaCliente extends AppCompatActivity {
         setContentView(R.layout.activity_carta_cliente);
 
         TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
-        TextView txNumMesa = (TextView) findViewById(R.id.tx_numesa);
+        tNumMesa = (TextView) findViewById(R.id.tx_numesa);
 
         ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
 
@@ -78,7 +83,7 @@ public class CartaCliente extends AppCompatActivity {
             if (ticket1 != null) {
                 //restaurante1 = ticket1.getRestaurante();
                 //txNombreRest = restaurante1.getNombre();
-                txNumMesa.setText("Mesa: " + ticket1.getNum_mesa());
+                tNumMesa.setText("Mesa: " + ticket1.getNum_mesa());
             }
         } else {
             //Error ticket sin identificar
@@ -123,7 +128,9 @@ public class CartaCliente extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                alergenos.add(document.toObject(Alergeno.class));
+                                Alergeno a = document.toObject(Alergeno.class);
+                                alergenos.add(a);
+                                cAlergenos.add(new cAlergeno(a,false));
                             }
                        }
                     }
@@ -149,10 +156,22 @@ public class CartaCliente extends AppCompatActivity {
                 adaptercheck = new AdapterCheckAls(getApplicationContext(), alergenos);
                 listview2.setAdapter(adaptercheck);
 
+                listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        cAlergenos.get(position).setChecked(!cAlergenos.get(position).getChecked());
+                    }
+                });
+
                 dialog1.setView(layout);
                 dialog1.setPositiveButton("APLICAR", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // añadir filtros alergenos.add();
+                        for (cAlergeno c: cAlergenos) {
+                            /*
+                            if(c.getChecked()){
+                                tAlergs.setText(tAlergs.getText()+c.getAlergeno().getNombre());
+                            }*/
+                        }
                         dialog.dismiss();
                     }
 
@@ -232,6 +251,32 @@ public class CartaCliente extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    class cAlergeno {
+        Alergeno alergeno;
+        Boolean checked;
+
+        public cAlergeno(Alergeno alergeno, Boolean checked) {
+            this.alergeno = alergeno;
+            this.checked = checked;
+        }
+
+        public Alergeno getAlergeno() {
+            return alergeno;
+        }
+
+        public void setAlergeno(Alergeno alergeno) {
+            this.alergeno = alergeno;
+        }
+
+        public Boolean getChecked() {
+            return checked;
+        }
+
+        public void setChecked(Boolean checked) {
+            this.checked = checked;
+        }
     }
 
 }
