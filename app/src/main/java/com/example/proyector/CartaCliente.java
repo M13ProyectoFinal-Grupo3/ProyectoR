@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,12 +29,14 @@ import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Ticket;
 import com.example.adapters.AdapterCartaDep;
 import com.example.adapters.AdapterCartaProducto;
+import com.example.adapters.AdapterCheckAls;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -53,6 +54,7 @@ public class CartaCliente extends AppCompatActivity {
 
     AdapterCartaProducto adapterPro;
     AdapterCartaDep adapterDep;
+    AdapterCheckAls adaptercheck;
 
     RecyclerView viewDep;
     ListView listView1;
@@ -71,12 +73,12 @@ public class CartaCliente extends AppCompatActivity {
         ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
 
         Intent intent = getIntent();
-        if(intent.getExtras()!=null) {
+        if (intent.getExtras() != null) {
             ticket1 = intent.getExtras().getSerializable("ticket", Ticket.class);
-            if(ticket1 != null){
+            if (ticket1 != null) {
                 //restaurante1 = ticket1.getRestaurante();
                 //txNombreRest = restaurante1.getNombre();
-                txNumMesa.setText("Mesa: "+ticket1.getNum_mesa());
+                txNumMesa.setText("Mesa: " + ticket1.getNum_mesa());
             }
         } else {
             //Error ticket sin identificar
@@ -87,8 +89,8 @@ public class CartaCliente extends AppCompatActivity {
         myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(DocumentSnapshot document:task.getResult()){
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
                         Departamento d = document.toObject(Departamento.class);
                         departamentos.add(d);
                     }
@@ -97,18 +99,33 @@ public class CartaCliente extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                LinearLayoutManager linlayout= new LinearLayoutManager(CartaCliente.this, LinearLayoutManager.HORIZONTAL, false);
+                LinearLayoutManager linlayout = new LinearLayoutManager(CartaCliente.this, LinearLayoutManager.HORIZONTAL, false);
                 adapterDep = new AdapterCartaDep(departamentos);
                 viewDep = findViewById(R.id.horizontalRv);
                 viewDep.setLayoutManager(linlayout);
                 viewDep.setAdapter(adapterDep);
 
-                if(departamentos.size()>0) mostrarProductos(departamentos.get(0));
+                if (departamentos.size() > 0) mostrarProductos(departamentos.get(0));
 
                 adapterDep.setOnClickListener(new AdapterCartaDep.OnClickListener() {
                     @Override
                     public void onClick(int position, Departamento departamento) {
                         mostrarProductos(departamento);
+                    }
+                });
+            }
+        }).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                CollectionReference alRef = db.collection("alergenos");
+                alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                alergenos.add(document.toObject(Alergeno.class));
+                            }
+                       }
                     }
                 });
             }
@@ -120,11 +137,32 @@ public class CartaCliente extends AppCompatActivity {
         btnFiltrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // añadir filtros alergenos.add();
+                // generar Dialog
+                AlertDialog.Builder dialog1 = new AlertDialog.Builder(CartaCliente.this);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+                View layout = inflater.inflate(R.layout.dialog_list, (ViewGroup) findViewById(R.id.layout_root));
+                TextView text1 = (TextView) layout.findViewById(R.id.texthead1);
+                ListView listview2 = (ListView) layout.findViewById(R.id.listviewCheck);
+                text1.setText("Filtrar alérgenos e intolerancias");
+
+                adaptercheck = new AdapterCheckAls(getApplicationContext(), alergenos);
+                listview2.setAdapter(adaptercheck);
+
+                dialog1.setView(layout);
+                dialog1.setPositiveButton("APLICAR", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // añadir filtros alergenos.add();
+                        dialog.dismiss();
+                    }
+
+                });
+                dialog1.create();
+                dialog1.show();
             }
         });
-
     }
+
 
     private void mostrarProductos(Departamento departamento){
         pRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
@@ -154,7 +192,7 @@ public class CartaCliente extends AppCompatActivity {
 
                         View layout = inflater.inflate(R.layout.dialog_carta, (ViewGroup) findViewById(R.id.layout_root));
                         ImageView image = (ImageView) layout.findViewById(R.id.imgDialogProd);
-                        TextView txNomProducto = (TextView) layout.findViewById(R.id.txDialogProduto);
+                        TextView txNomProducto = (TextView) layout.findViewById(R.id.txDialog1);
                         txNomProducto.setText(p.getNombre());
 
                         // cargar imagen
