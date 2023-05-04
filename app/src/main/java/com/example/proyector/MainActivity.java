@@ -7,20 +7,24 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.Forms.FormCarta;
 import com.example.Lists.pojos.User;
+import com.example.Lists.pojos.Ticket;
 
-//Comentario de prueba
-//Comentario de prueba2
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AccesoQR.ifAccesoQR {
     FragmentManager fm = getSupportFragmentManager();
     String RestId=null;
 
     ImageView imageView;
+
+    Ticket ticket1;
+    User user1;
 
 
     @Override
@@ -35,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
         fm.setFragmentResultListener("request", MainActivity.this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                User u = result.getSerializable("user",User.class);
-                if(u!=null){
+                user1 = result.getSerializable("user", User.class);
+                ticket1 = result.getSerializable("ticket", Ticket.class);
+                if (user1 != null) {
                     //cargar fragment menu profesional
                 }
             }
@@ -63,10 +68,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadFragment(Fragment fragment) {
     // create a FragmentTransaction to begin the transaction and replace the Fragment
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-    // replace the FrameLayout with new Fragment
-        fragmentTransaction.replace(R.id.frameLayout1, fragment);
-        fragmentTransaction.commit(); // save the changes
+        fm.beginTransaction()
+            .replace(R.id.frameLayout1, fragment)
+            .commit(); // save the changes
+    }
+
+    @Override
+    public void if_btnCarta() {
+        ticket1 = new Ticket(1);
+        Intent intent = new Intent(this, CartaCliente.class);
+        intent.putExtra("ticket",ticket1);
+        startActivity(intent);
     }
 }
 

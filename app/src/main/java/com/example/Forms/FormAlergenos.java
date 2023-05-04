@@ -36,7 +36,7 @@ public class FormAlergenos extends AppCompatActivity {
         setContentView(R.layout.activity_form_alergenos);
 
         Button btnGuardqar = (Button) findViewById(R.id.btnGuardarCarta);
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        Button btnBorrar = (Button) findViewById(R.id.btn_borrarDep);
 
         EditText enombre = (EditText) findViewById(R.id.t_pNombre);
 

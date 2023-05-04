@@ -43,7 +43,7 @@ public class FormRestaurante extends AppCompatActivity {
         setContentView(R.layout.activity_form_restaurante);
 
         Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        Button btnBorrar = (Button) findViewById(R.id.btn_borrarDep);
         Button btnMesa = (Button) findViewById(R.id.btn_aMesa);
 
         EditText enombre = (EditText) findViewById(R.id.et_dNombre);

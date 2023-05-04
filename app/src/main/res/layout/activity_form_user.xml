@@ -95,7 +95,7 @@
                     android:text="ATRÁS" />
 
                 <Button
-                    android:id="@+id/btn_selecImg"
+                    android:id="@+id/btn_borrarDep"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"

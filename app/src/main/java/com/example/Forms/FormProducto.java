@@ -50,6 +50,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import kotlin.jvm.internal.CallableReference;
 
 public class FormProducto extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -69,7 +72,7 @@ public class FormProducto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
 
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarProd);
         Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
         ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_pFoto);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
@@ -81,6 +84,9 @@ public class FormProducto extends AppCompatActivity {
         xListAlgs = (ListView) findViewById(R.id.list_pAls);
         imageview1 =(ImageView) findViewById(R.id.imagen1);
         lista_algs =new ArrayList<>();
+
+        adapter = new AdapterAlergeno(FormProducto.this,lista_algs);
+        xListAlgs.setAdapter(adapter);
 
         // recupera Producto a editar
         Intent intent = getIntent();
@@ -99,26 +105,21 @@ public class FormProducto extends AppCompatActivity {
                 xDescrip.setText(producto.getDescripcion());
                 xPrecio.setText(producto.getPrecio().toString());
                 cargarImagen(producto);
+
+                // cargar alergenos
+                myRef.document(producto.getId()).collection("Alergenos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot doc: task.getResult()){
+                                lista_algs.add(doc.toObject(Alergeno.class));
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
             }
         } else { finish();}
-
-
-        //mostrar Alergenos
-
-        adapter = new AdapterAlergeno(FormProducto.this,lista_algs);
-        xListAlgs.setAdapter(adapter);
-
-        myRef.document(producto.getId()).collection("Alergenos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot doc: task.getResult()){
-                        lista_algs.add(doc.toObject(Alergeno.class));
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
 
         //borrar alérgeno
         xListAlgs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -156,10 +157,10 @@ public class FormProducto extends AppCompatActivity {
                 EditText xPrecio = (EditText) findViewById(R.id.t_pPrecio);
 
                 Producto p = new Producto(true, xNombre.getText().toString(), xDescrip.getText().toString(), Float.parseFloat(xPrecio.getText().toString()));
-                p.setId(producto.getId());
                 guardarImagen(p);
                 // Update
                 if (producto != null) {
+                    p.setId(producto.getId());
                     // Actualizar
                     Log.d("save myRef", myRef.getPath());
 
@@ -174,7 +175,7 @@ public class FormProducto extends AppCompatActivity {
                     myRef.document(producto.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            guardarAlergenos(p);
+                            guardarAlergenos(false,p);
 
                             Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
                             Intent resultIntent = new Intent();
@@ -197,7 +198,7 @@ public class FormProducto extends AppCompatActivity {
                                             p.setId(task.getResult().getId());
                                             myRef.document(p.getId()).update("id",p.getId());
 
-                                            guardarAlergenos(p);
+                                            guardarAlergenos(true,p);
 
                                             Intent resultIntent = new Intent();
                                             resultIntent.putExtra("new",p);
@@ -366,8 +367,18 @@ public class FormProducto extends AppCompatActivity {
         return bitmap;
     }
 
-    private void guardarAlergenos(Producto p){
-        CollectionReference alRef = myRef.document(producto.getId()).collection("Alergenos");
+    private void guardarAlergenos(Boolean nuevo, Producto p){
+        // si el registro es nuevo crea la colección vacía de alérgenos
+        if(nuevo){
+            Log.d("producto col alergenos", p.toString());
+            DocumentReference docRef = myRef.document(producto.getId());
+            Map<String, Object> data = new HashMap<>();
+            data.put("Alergenos", new ArrayList<>());
+            docRef.set(data);
+        }
+
+        CollectionReference alRef =  myRef.document(producto.getId()).collection("Alergenos");
+
         alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
