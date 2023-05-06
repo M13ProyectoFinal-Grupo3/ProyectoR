@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.example.Forms.FormCarta;
 import com.example.Forms.FormUser;
+import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListRestaurante;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -35,6 +36,7 @@ public class Profesional extends Fragment {
         Button btnGenQR = (Button) view.findViewById(R.id.btnGenQR);
         Button btnCarta = (Button) view.findViewById(R.id.btnCarta);
         Button btnRest = (Button) view.findViewById(R.id.btnRestaurante);
+        Button btnGestionComandas = (Button) view.findViewById(R.id.btnGestionComandas);
         ImageView imageView1= (ImageView) view.findViewById(R.id.imageQR);
 
         btnForm.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +66,14 @@ public class Profesional extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), FormCarta.class);
+                startActivity(intent);
+            }
+        });
+
+        btnGestionComandas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CardViewGestionComandas.class);
                 startActivity(intent);
             }
         });

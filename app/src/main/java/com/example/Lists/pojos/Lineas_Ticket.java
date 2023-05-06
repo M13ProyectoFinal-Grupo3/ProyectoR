@@ -3,6 +3,7 @@ package com.example.Lists.pojos;
 import java.io.Serializable;
 
 public class Lineas_Ticket implements Serializable {
+    String idLineaTicket;
     int id_producto;
     int cantidad;
     String observaciones;
@@ -22,6 +23,14 @@ public class Lineas_Ticket implements Serializable {
         this.precioTotal = precioUnitario * cantidad;
         this.prepara_idperfil = prepara_idperfil;
         this.sirve_idperfil = sirve_idperfil;
+    }
+
+    public void setIdLineaTicket(String idLineaTicket) {
+        this.idLineaTicket = idLineaTicket;
+    }
+
+    public String getIdLineaTicket() {
+        return idLineaTicket;
     }
 
     public int getId_producto() {
