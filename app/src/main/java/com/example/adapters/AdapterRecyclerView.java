@@ -74,7 +74,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.nombre.setText("NOMBRE: " + (String.valueOf(lineasTicketLista.get(position).getId_producto())));
+        //holder.nombre.setText("NOMBRE: " + (String.valueOf(lineasTicketLista.get(position).getId_producto())));
         holder.cantidad.setText("Cantidad: " + (String.valueOf(lineasTicketLista.get(position).getCantidad())));
         holder.observaciones.setText("Observaciones: " + lineasTicketLista.get(position).getObservaciones());
     }
