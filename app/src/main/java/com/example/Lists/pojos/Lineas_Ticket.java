@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Lineas_Ticket implements Serializable {
     String idLineaTicket;
-    int id_producto;
+    Producto producto;
     int cantidad;
     String observaciones;
     Float precioUnitario;
@@ -15,8 +15,8 @@ public class Lineas_Ticket implements Serializable {
     public Lineas_Ticket() {
     }
 
-    public Lineas_Ticket(int id_producto, int cantidad, String observaciones, Float precioUnitario, int prepara_idperfil, int sirve_idperfil) {
-        this.id_producto = id_producto;
+    public Lineas_Ticket(Producto producto, int cantidad, String observaciones, Float precioUnitario, int prepara_idperfil, int sirve_idperfil) {
+        this.producto = producto;
         this.cantidad = cantidad;
         this.observaciones = observaciones;
         this.precioUnitario = precioUnitario;
@@ -32,13 +32,13 @@ public class Lineas_Ticket implements Serializable {
     public String getIdLineaTicket() {
         return idLineaTicket;
     }
-
-    public int getId_producto() {
-        return id_producto;
+    ;
+    public Producto getProducto() {
+        return producto;
     }
 
-    public void setId_producto(int id_producto) {
-        this.id_producto = id_producto;
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public int getCantidad() {

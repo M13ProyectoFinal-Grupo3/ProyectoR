@@ -1,11 +1,12 @@
 package com.example.Lists.pojos;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.util.Date;
 
 public class Ticket implements Serializable {
     int id;
-    int id_restaurante;
+    Restaurante restaurante;
     Date fecha;
     int num_mesa;
     int id_camarero;
@@ -19,8 +20,8 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public Ticket(int id_restaurante, Date fecha, int num_mesa, int id_camarero, int comensales, Lineas_Ticket linea_ticket) {
-        this.id_restaurante = id_restaurante;
+    public Ticket(Restaurante restaurante, Date fecha, int num_mesa, int id_camarero, int comensales, Lineas_Ticket linea_ticket) {
+        this.restaurante = restaurante;
         this.fecha = fecha;
         this.num_mesa = num_mesa;
         this.id_camarero = id_camarero;
@@ -36,12 +37,12 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public int getId_restaurante() {
-        return id_restaurante;
+    public Restaurante getRestaurante() {
+        return restaurante;
     }
 
-    public void setId_restaurante(int id_restaurante) {
-        this.id_restaurante = id_restaurante;
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
     }
 
     public Date getFecha() {
