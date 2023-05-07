@@ -142,7 +142,7 @@
                 android:text="BORRAR" />
 
             <Button
-                android:id="@+id/btnGuardarCarta"
+                android:id="@+id/btnGuardarAl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
