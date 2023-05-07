@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.util.Date;
 
 public class Ticket implements Serializable {
-    int id;
+    String id;
     Restaurante restaurante;
     Date fecha;
     int num_mesa;
@@ -16,7 +16,7 @@ public class Ticket implements Serializable {
     public Ticket() {
     }
 
-    public Ticket(int id) {
+    public Ticket(String id) {
         this.id = id;
     }
 
@@ -29,11 +29,11 @@ public class Ticket implements Serializable {
         this.linea_ticket = linea_ticket;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
