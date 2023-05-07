@@ -36,6 +36,12 @@
             android:layout_height="wrap_content"
             android:text="RESTAURANTES" />
 
+        <Button
+            android:id="@+id/btnAlergenos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ALERGENOS" />
+
         <ImageView
             android:id="@+id/imageQR"
             android:layout_width="match_parent"
