@@ -22,9 +22,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Departamento;
+import com.example.Lists.pojos.Lineas_Ticket;
 import com.example.Lists.pojos.Producto;
 import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Ticket;
@@ -36,6 +38,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -221,6 +224,7 @@ public class CartaCliente extends AppCompatActivity {
                         View layout = inflater.inflate(R.layout.dialog_carta, (ViewGroup) findViewById(R.id.layout_root));
                         ImageView image = (ImageView) layout.findViewById(R.id.imgDialogProd);
                         TextView txNomProducto = (TextView) layout.findViewById(R.id.txDialog1);
+                        EditText eCantidad = (EditText) layout.findViewById(R.id.etCantidad);
                         txNomProducto.setText(p.getNombre());
 
                         // cargar imagen
@@ -246,9 +250,22 @@ public class CartaCliente extends AppCompatActivity {
                                         imageDialog.setView(layout);
                                         imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener(){
                                             public void onClick(DialogInterface dialog, int which) {
-                                                EditText cantidad = (EditText) layout.findViewById(R.id.etCantidad);
+
+                                                CollectionReference tRef = db.collection("Ticket").document(ticket1.getId()).collection("lineaTicket");
+
+                                                Integer cantidad = 1;
+                                                if(eCantidad.getText().length()>0) cantidad = Integer.parseInt(eCantidad.getText().toString());
+                                                Lineas_Ticket nLinea = new Lineas_Ticket(p, cantidad);
+
+                                                tRef.add(nLinea).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+
                                                 dialog.dismiss();
-                                                // añadir cantidad y producto a ticket
+
                                             }
 
                                         });
