@@ -76,6 +76,10 @@ public class Profesional extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ListAlergenos.class);
+                startActivity(intent);
+            }
+        });
+
                 
         btnGestionComandas.setOnClickListener(new View.OnClickListener() {
             @Override

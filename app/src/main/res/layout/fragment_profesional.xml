@@ -41,6 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ALERGENOS" />
+
+        <Button
             android:id="@+id/btnGestionComandas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
