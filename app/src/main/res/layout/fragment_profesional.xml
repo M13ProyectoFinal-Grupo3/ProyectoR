@@ -41,6 +41,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ALERGENOS" />
+            android:id="@+id/btnGestionComandas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GESTIÓN DE COMANDAS" />
 
         <ImageView
             android:id="@+id/imageQR"
