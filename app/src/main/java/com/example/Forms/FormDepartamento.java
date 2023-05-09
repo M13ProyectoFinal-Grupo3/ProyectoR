@@ -135,7 +135,6 @@ public class FormDepartamento extends AppCompatActivity {
                 intent.putExtra("departamento", departamento.getnombre());
                 intent.putExtra("ref", myRef.getPath());
                 intent.putExtra("producto", lista.get(position));
-                Log.d("position prod",position+" "+lista.get(position).getNombre());
                 startActivityProductos.launch(intent);
             }
         });

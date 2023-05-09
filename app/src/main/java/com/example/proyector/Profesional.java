@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 
 import com.example.Forms.FormCarta;
+import com.example.Forms.FormUser;
+import com.example.Lists.ListAlergenos;
 import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListRestaurante;
 import com.google.zxing.BarcodeFormat;
@@ -33,6 +35,7 @@ public class Profesional extends Fragment {
         Button btnGenQR = (Button) view.findViewById(R.id.btnGenQR);
         Button btnCarta = (Button) view.findViewById(R.id.btnCarta);
         Button btnRest = (Button) view.findViewById(R.id.btnRestaurante);
+        Button brnAlergs = (Button) view.findViewById(R.id.btnAlergenos);
         Button btnGestionComandas = (Button) view.findViewById(R.id.btnGestionComandas);
         Button btnLogin = (Button) view.findViewById(R.id.btnLogin);
         Button btnRegistro = (Button) view.findViewById(R.id.btnRegistro);
@@ -60,6 +63,15 @@ public class Profesional extends Fragment {
                 startActivity(intent);
             }
         });
+
+        brnAlergs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ListAlergenos.class);
+                startActivity(intent);
+            }
+        });
+
 
         btnGestionComandas.setOnClickListener(new View.OnClickListener() {
             @Override

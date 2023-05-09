@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements AccesoQR.ifAcceso
 
     @Override
     public void if_btnCarta() {
-        ticket1 = new Ticket(1);
+        ticket1 = new Ticket("");
         Intent intent = new Intent(this, CartaCliente.class);
         intent.putExtra("ticket",ticket1);
         startActivity(intent);

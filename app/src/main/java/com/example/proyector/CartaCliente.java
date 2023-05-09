@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Departamento;
+import com.example.Lists.pojos.Lineas_Ticket;
 import com.example.Lists.pojos.Producto;
 import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Ticket;
+import com.example.Lists.pojos.cAlergeno;
 import com.example.adapters.AdapterCartaDep;
 import com.example.adapters.AdapterCartaProducto;
 import com.example.adapters.AdapterCheckAls;
@@ -34,14 +38,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.zxing.common.StringUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class CartaCliente extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -50,7 +59,6 @@ public class CartaCliente extends AppCompatActivity {
 
     ArrayList<Departamento> departamentos = new ArrayList<>();
     ArrayList<Producto> productos = new ArrayList<>();
-    ArrayList<Alergeno> alergenos = new ArrayList<>();
     ArrayList<cAlergeno> cAlergenos = new ArrayList<>();
 
     AdapterCartaProducto adapterPro;
@@ -74,6 +82,7 @@ public class CartaCliente extends AppCompatActivity {
 
         TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
         tNumMesa = (TextView) findViewById(R.id.tx_numesa);
+        tAlergs = (TextView) findViewById(R.id.txAlergenos);
 
         ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
 
@@ -116,6 +125,7 @@ public class CartaCliente extends AppCompatActivity {
                     @Override
                     public void onClick(int position, Departamento departamento) {
                         mostrarProductos(departamento);
+                        Log.d("click","mostrarproductos");
                     }
                 });
             }
@@ -128,9 +138,8 @@ public class CartaCliente extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Alergeno a = document.toObject(Alergeno.class);
-                                alergenos.add(a);
-                                cAlergenos.add(new cAlergeno(a,false));
+                                cAlergeno a = new cAlergeno( document.toObject(Alergeno.class),false);
+                                cAlergenos.add(a);
                             }
                        }
                     }
@@ -153,25 +162,14 @@ public class CartaCliente extends AppCompatActivity {
                 ListView listview2 = (ListView) layout.findViewById(R.id.listviewCheck);
                 text1.setText("Filtrar alérgenos e intolerancias");
 
-                adaptercheck = new AdapterCheckAls(getApplicationContext(), alergenos);
+                adaptercheck = new AdapterCheckAls(getApplicationContext(), cAlergenos);
                 listview2.setAdapter(adaptercheck);
-
-                listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        cAlergenos.get(position).setChecked(!cAlergenos.get(position).getChecked());
-                    }
-                });
 
                 dialog1.setView(layout);
                 dialog1.setPositiveButton("APLICAR", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        for (cAlergeno c: cAlergenos) {
-                            /*
-                            if(c.getChecked()){
-                                tAlergs.setText(tAlergs.getText()+c.getAlergeno().getNombre());
-                            }*/
-                        }
+                        mostrarAls();
+                        mostrarProductos(departamentos.get(0));
                         dialog.dismiss();
                     }
 
@@ -191,9 +189,23 @@ public class CartaCliente extends AppCompatActivity {
                 productos.removeAll(productos);
                 for(DocumentSnapshot document:task.getResult()){
                     Producto p = document.toObject(Producto.class);
-                    // filtrar alergenos 
-                    productos.add(p);
+                    // producto activo
+                    Boolean activo = p.getActivo();
+                    // filtrar alergenos
+                    if(activo) {
+                        for (Alergeno a1 : p.getAlergenos()) {
+                            for (cAlergeno a2 : cAlergenos) {
+                                if (a1.getId().equals(a2.getAlergeno().getId()) && a2.getChecked()) {
+                                    activo = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if(activo) productos.add(p);
                 }
+
                 adapterPro = new AdapterCartaProducto(CartaCliente.this, productos);
                 listView1.setAdapter(adapterPro);
 
@@ -212,6 +224,7 @@ public class CartaCliente extends AppCompatActivity {
                         View layout = inflater.inflate(R.layout.dialog_carta, (ViewGroup) findViewById(R.id.layout_root));
                         ImageView image = (ImageView) layout.findViewById(R.id.imgDialogProd);
                         TextView txNomProducto = (TextView) layout.findViewById(R.id.txDialog1);
+                        EditText eCantidad = (EditText) layout.findViewById(R.id.etCantidad);
                         txNomProducto.setText(p.getNombre());
 
                         // cargar imagen
@@ -237,9 +250,22 @@ public class CartaCliente extends AppCompatActivity {
                                         imageDialog.setView(layout);
                                         imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener(){
                                             public void onClick(DialogInterface dialog, int which) {
-                                                EditText cantidad = (EditText) layout.findViewById(R.id.etCantidad);
+
+                                                CollectionReference tRef = db.collection("Ticket").document(ticket1.getId()).collection("lineaTicket");
+
+                                                Integer cantidad = 1;
+                                                if(eCantidad.getText().length()>0) cantidad = Integer.parseInt(eCantidad.getText().toString());
+                                                Lineas_Ticket nLinea = new Lineas_Ticket(p, cantidad);
+
+                                                tRef.add(nLinea).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+
                                                 dialog.dismiss();
-                                                // añadir cantidad y producto a ticket
+
                                             }
 
                                         });
@@ -253,30 +279,13 @@ public class CartaCliente extends AppCompatActivity {
         });
     }
 
-    class cAlergeno {
-        Alergeno alergeno;
-        Boolean checked;
+    //mostrar Alergenos
 
-        public cAlergeno(Alergeno alergeno, Boolean checked) {
-            this.alergeno = alergeno;
-            this.checked = checked;
-        }
-
-        public Alergeno getAlergeno() {
-            return alergeno;
-        }
-
-        public void setAlergeno(Alergeno alergeno) {
-            this.alergeno = alergeno;
-        }
-
-        public Boolean getChecked() {
-            return checked;
-        }
-
-        public void setChecked(Boolean checked) {
-            this.checked = checked;
-        }
+    void mostrarAls(){
+        String s = "";
+        ArrayList<String> result = adaptercheck.getCheckedS();
+        if(result.size()>0) s = TextUtils.join(",", result);
+        tAlergs.setText(s);
     }
 
 }

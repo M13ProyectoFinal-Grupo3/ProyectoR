@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.Lists.pojos.Alergeno;
@@ -18,6 +20,7 @@ import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,15 +38,19 @@ public class FormAlergenos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_alergenos);
 
-        Button btnGuardqar = (Button) findViewById(R.id.btnGuardarCarta);
-        Button btnBorrar = (Button) findViewById(R.id.btn_borrarDep);
+        Button btnGuardqar = (Button) findViewById(R.id.btnGuardarAl);
+        ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarAl);
 
         EditText enombre = (EditText) findViewById(R.id.t_pNombre);
 
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
-            a_anterior = (Alergeno) getIntent().getExtras().get("alergeno");
-            enombre.setText(a_anterior.getNombre());
+            if (intent.getExtras().containsKey("alergeno")) {
+                a_anterior = getIntent().getExtras().getSerializable("alergeno", Alergeno.class);
+                enombre.setText(a_anterior.getNombre());
+            }
+        } else {
+            a_anterior = null;
         }
 
         btnGuardqar.setOnClickListener(new View.OnClickListener() {
@@ -86,15 +93,17 @@ public class FormAlergenos extends AppCompatActivity {
 
                 } else {
                     // Nuevo Alergeno
-                    db.collection(coleccion).document().set(a_nuevo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("new", a_nuevo);
-                            setResult(RESULT_OK, resultIntent);
-                            Toast.makeText(FormAlergenos.this, "El Alergeno se añadio correctamente", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
+                   myRef.add(a_nuevo).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                       @Override
+                       public void onComplete(@NonNull Task<DocumentReference> task) {
+                           a_nuevo.setId(task.getResult().getId());
+                           myRef.document(a_nuevo.getId()).update("id",a_nuevo.getId());
+                           Intent resultIntent = new Intent();
+                           resultIntent.putExtra("new", a_nuevo);
+                           setResult(RESULT_OK, resultIntent);
+                           Toast.makeText(FormAlergenos.this, "El Alergeno se añadio correctamente", Toast.LENGTH_SHORT).show();
+                           finish();
+                       }
                     });
                 }
 

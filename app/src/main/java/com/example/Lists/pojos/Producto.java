@@ -3,6 +3,7 @@ package com.example.Lists.pojos;
 import android.graphics.Bitmap;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Producto implements Serializable {
     String id;
@@ -11,22 +12,36 @@ public class Producto implements Serializable {
     Boolean activo;
     Float precio;
     String prepara_idperfil;
+    ArrayList<Alergeno> alergenos;
 
-    public Producto() {}
+    public Producto() {
+        setAlergenos(new ArrayList<>());
+    }
 
-    public Producto( Boolean activo, String nombre, String descripcion, Float precio) {
+    public Producto( Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
         this.activo = activo;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
+        this.alergenos = alergenos;
     }
 
-    public Producto(String id, String nombre, String descripcion, Boolean activo, Float precio) {
+    public Producto(String id, String nombre, String descripcion, Boolean activo, Float precio, ArrayList<Alergeno> alergenos) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.activo = activo;
         this.precio = precio;
+        this.alergenos = alergenos;
+    }
+
+    public ArrayList<Alergeno> getAlergenos() {
+        if(alergenos==null) alergenos = new ArrayList<>();
+        return alergenos;
+    }
+
+    public void setAlergenos(ArrayList<Alergeno> alergenos) {
+        this.alergenos = alergenos;
     }
 
     public String getId() {
