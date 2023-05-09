@@ -199,7 +199,7 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGuardarCarta"
+                android:id="@+id/btnGuardarAl"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"

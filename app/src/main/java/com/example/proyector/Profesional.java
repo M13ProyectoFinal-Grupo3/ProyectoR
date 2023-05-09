@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 
 import com.example.Forms.FormCarta;
-import com.example.Forms.FormUser;
 import com.example.Lists.ListAlergenos;
 import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListRestaurante;
