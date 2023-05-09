@@ -6,16 +6,31 @@
     android:layout_height="match_parent"
     tools:context="com.example.Forms.FormRestaurante">
 
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
+
     <TextView
-        android:id="@+id/tx_fichaRestaurante"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/open_sans_bold"
         android:text="Ficha de restaurante"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/backBtn"
+        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintTop_toTopOf="@+id/backBtn" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,132 +39,211 @@
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tx_fichaRestaurante">
+        app:layout_constraintTop_toBottomOf="@+id/backBtn">
 
-        <TextView
-            android:id="@+id/tx_cNombre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre" />
-
-        <EditText
-            android:id="@+id/et_dNombre"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce el nombre"
-            android:inputType="textPersonName" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Nombre"
+            app:endIconMode="clear_text">
 
-        <TextView
-            android:id="@+id/tx_cRazonSocial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Razón Social" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_dRazonSocial"
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce la razón social" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Razón social"
+            app:endIconMode="clear_text">
 
-        <TextView
-            android:id="@+id/tx_cNif"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="NIF" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dRazonSocial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_dNif"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce el NIF" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="NIF"
+            app:endIconMode="clear_text">
 
-        <TextView
-            android:id="@+id/tx_cProvincia"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Provincia" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dNif"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_dProvincia"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce la provincia" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Provincia"
+            app:endIconMode="clear_text">
 
-        <TextView
-            android:id="@+id/tx_cCiudad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ciudad" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dProvincia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_dCiudad"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce la ciudad" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Ciudad"
+            app:endIconMode="clear_text">
 
-        <TextView
-            android:id="@+id/tx_cCP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Código Postal" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dCiudad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_dCP"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce el código postal" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Código Postal"
+            app:endIconMode="clear_text">
 
-        <TextView
-            android:id="@+id/tx_cTelefono"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Teléfono" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dCP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/et_dTelefono"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Introduce el número de teléfono" />
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="12dp"
+            android:hint="Teléfono"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_dTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="0dp"
             android:gravity="right"
             android:orientation="horizontal">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_aMesa"
-                android:layout_width="wrap_content"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#FFAB33"
-                android:text="Añadir mesa" />
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/sign_up_ripple"
+                android:fontFamily="@font/open_sans_semibold"
+                android:text="Añadir mesa"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.3" />
 
-
-            <Button
-                android:id="@+id/btn_borrarDep"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_crearCuentaAdmin"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="BORRAR" />
-
-            <Button
-                android:id="@+id/btnGuardarCarta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#00FF00"
-                android:text="GUARDAR" />
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/sign_up_ripple"
+                android:fontFamily="@font/open_sans_semibold"
+                android:text="Registrar ADMIN"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.3" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnGuardarCarta"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/delete_ripple"
+                android:backgroundTint="@color/green"
+                android:fontFamily="@font/open_sans_semibold"
+                android:text="GUARDAR"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.3" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_borrarDep"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/delete_ripple"
+                android:backgroundTint="@color/red"
+                android:fontFamily="@font/open_sans_semibold"
+                android:text="BORRAR"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.3" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

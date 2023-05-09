@@ -13,10 +13,16 @@
         tools:layout_editor_absoluteY="1dp">
 
         <Button
-            android:id="@+id/btnNuevaCuenta"
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nueva cuenta" />
+            android:text="LOGIN" />
+
+        <Button
+            android:id="@+id/btnRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NUEVA CUENTA" />
 
         <Button
             android:id="@+id/btnGenQR"
