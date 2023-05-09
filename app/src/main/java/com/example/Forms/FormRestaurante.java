@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.example.Lists.ListRestaurante;
 import com.example.Lists.pojos.Mesa;
 import com.example.Lists.pojos.Restaurante;
 import com.example.proyector.R;
+import com.example.proyector.RegistroActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -34,17 +36,20 @@ public class FormRestaurante extends AppCompatActivity {
     Restaurante a_anterior = null;
     Restaurante a_nuevo = null;
     Mesa a_nuevo2 = null;
-    Boolean btnBorrarHabilitado=true;
-    Boolean btnAgregarMesaHabilitado=true;
+    Boolean btnBorrarHabilitado = true;
+    Boolean btnAgregarMesaHabilitado = true;
+    Boolean btnRegistrarHabilitado = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_restaurante);
+        getSupportActionBar().hide();
 
-        Button btnGuardar = (Button) findViewById(R.id.btnGuardarCarta);
-        Button btnBorrar = (Button) findViewById(R.id.btn_selecImg);
+        Button btnGuardar = (Button) findViewById(R.id.btnGuardarAl);
+        Button btnBorrar = (Button) findViewById(R.id.btn_borrarDep);
         Button btnMesa = (Button) findViewById(R.id.btn_aMesa);
+        Button btnRegistar = (Button) findViewById(R.id.btn_crearCuentaAdmin);
 
         EditText enombre = (EditText) findViewById(R.id.et_dNombre);
         EditText eRazonSocial = (EditText) findViewById(R.id.et_dRazonSocial);
@@ -54,8 +59,10 @@ public class FormRestaurante extends AppCompatActivity {
         EditText eCP = (EditText) findViewById(R.id.et_dCP);
         EditText eTelefono = (EditText) findViewById(R.id.et_dTelefono);
 
+        ImageButton backButton = findViewById(R.id.backBtn);
+
         Intent intent = getIntent();
-        if (intent.getExtras() != null && intent.getExtras().size() > 2) {
+        if (intent.getExtras() != null && intent.getExtras().size() > 3) {
             a_anterior = (Restaurante) getIntent().getExtras().get("restaurante");
             enombre.setText(a_anterior.getNombre());
             eRazonSocial.setText(a_anterior.getRazonSocial());
@@ -66,9 +73,11 @@ public class FormRestaurante extends AppCompatActivity {
             eTelefono.setText(a_anterior.getTelefono());
             btnBorrarHabilitado = (Boolean) getIntent().getExtras().get("btnBorrarHabilitado");
             btnAgregarMesaHabilitado = (Boolean) getIntent().getExtras().get("btnAgregarMesaHabilitado");
-        } else if (intent.getExtras() != null && intent.getExtras().size() < 3) {
+            btnRegistrarHabilitado = (Boolean) getIntent().getExtras().get("btnRegistrarHabilitado");
+        } else if (intent.getExtras() != null && intent.getExtras().size() < 4) {
             btnBorrarHabilitado = (Boolean) getIntent().getExtras().get("btnBorrarHabilitado");
             btnAgregarMesaHabilitado = (Boolean) getIntent().getExtras().get("btnAgregarMesaHabilitado");
+            btnRegistrarHabilitado = (Boolean) getIntent().getExtras().get("btnRegistrarHabilitado");
         }
 
         if (btnBorrarHabilitado == false) {
@@ -76,6 +85,9 @@ public class FormRestaurante extends AppCompatActivity {
         }
         if (btnAgregarMesaHabilitado == false) {
             btnMesa.setVisibility(View.INVISIBLE);
+        }
+        if (btnRegistrarHabilitado == false) {
+            btnRegistar.setVisibility(View.INVISIBLE);
         }
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -187,5 +199,23 @@ public class FormRestaurante extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnRegistar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FormRestaurante.this, RegistroActivity.class);
+                intent.putExtra("perfilUsuario", "administrador");
+                intent.putExtra("nombreRestaurante", a_anterior.getNombre());
+                startActivity(intent);
+            }
+        });
+
     }
 }

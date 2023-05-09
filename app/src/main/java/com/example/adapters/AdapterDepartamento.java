@@ -26,7 +26,7 @@ public class AdapterDepartamento extends ArrayAdapter<Departamento> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_alergeno, parent, false);
         }
-        TextView xNombre = (TextView) convertView.findViewById(R.id.txANombre);
+        TextView xNombre = (TextView) convertView.findViewById(R.id.txDescrip);
         xNombre.setText(c.getnombre());
 
         return convertView;

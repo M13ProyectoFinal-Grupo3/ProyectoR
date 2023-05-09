@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class Ticket implements Serializable {
     Restaurante restaurante;
+    String id;
+    Restaurante restaurante;
     Date fecha;
     int num_mesa;
     int id_camarero;
@@ -12,6 +14,10 @@ public class Ticket implements Serializable {
     Lineas_Ticket linea_ticket;
 
     public Ticket() {
+    }
+
+    public Ticket(String id) {
+        this.id = id;
     }
 
     public Ticket(Restaurante restaurante, Date fecha, int num_mesa, int id_camarero, int comensales, Lineas_Ticket linea_ticket) {
@@ -25,6 +31,14 @@ public class Ticket implements Serializable {
 
     public Restaurante getRestaurante() {
         return restaurante;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setRestaurante(Restaurante restaurante) {

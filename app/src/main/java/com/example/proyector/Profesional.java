@@ -3,17 +3,17 @@ package com.example.proyector;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.Forms.FormCarta;
-import com.example.Forms.FormUser;
+import com.example.Lists.ListAlergenos;
+import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListRestaurante;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -31,19 +31,14 @@ public class Profesional extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profesional, container, false);
 
-        Button btnForm = (Button) view.findViewById(R.id.btnNuevaCuenta);
         Button btnGenQR = (Button) view.findViewById(R.id.btnGenQR);
         Button btnCarta = (Button) view.findViewById(R.id.btnCarta);
         Button btnRest = (Button) view.findViewById(R.id.btnRestaurante);
+        Button brnAlergs = (Button) view.findViewById(R.id.btnAlergenos);
+        Button btnGestionComandas = (Button) view.findViewById(R.id.btnGestionComandas);
+        Button btnLogin = (Button) view.findViewById(R.id.btnLogin);
+        Button btnRegistro = (Button) view.findViewById(R.id.btnRegistro);
         ImageView imageView1= (ImageView) view.findViewById(R.id.imageQR);
-
-        btnForm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), FormUser.class);
-                startActivity(intent);
-            }
-        });
 
         btnRest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +63,38 @@ public class Profesional extends Fragment {
             }
         });
 
+        brnAlergs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ListAlergenos.class);
+                startActivity(intent);
+            }
+        });
+
+
+        btnGestionComandas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CardViewGestionComandas.class);
+                startActivity(intent);
+            }
+        });
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnRegistro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), RegistroActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }

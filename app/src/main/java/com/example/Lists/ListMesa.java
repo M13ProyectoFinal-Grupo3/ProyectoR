@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.activity.result.ActivityResult;
@@ -50,6 +51,8 @@ public class ListMesa extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_mesa);
+        getSupportActionBar().hide();
+        ImageButton backButton = findViewById(R.id.backBtn);
 
         listview1 = (ListView) findViewById(R.id.list_mesas);
         adapter = new AdapterMesa(ListMesa.this, lista);
@@ -130,6 +133,13 @@ public class ListMesa extends AppCompatActivity {
                 Intent intent = new Intent(ListMesa.this, FormMesa.class);
                 intent.putExtra("idDocumentoRestaurante", idDocumentoRestaurante);
                 startActivity(intent);
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
