@@ -3,21 +3,54 @@ package com.example.proyector;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
-public class Ticket extends Fragment {
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+public class TicketActivity extends Fragment {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference myRef1 = db.collection("ticket");
+
+    private Spinner lista;
+    ArrayAdapter<String> adaptador;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ticket, container, false);
+        View view = inflater.inflate(R.layout.tickets, container, false);
+
+/*  TODO - ESTO EN CASO DE QUERER CONSULTAR UNA LISTA DE TICKETS
+        // Obtener los datos de Firebase
+        myRef1.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<String> ticketList = new ArrayList<>();
+
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    String ticket = document.getString("nombreDelCampo"); // TODO Reemplazar "nombreDelCampo" con el nombre real del campo en Firebase
+                    ticketList.add(ticket);
+                }
+
+                // Rellenar el Spinner con los datos obtenidos
+                adaptador = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, ticketList);
+                lista.setAdapter(adaptador);
+            }
+        });
+
+
+        //inicializamos las variables
+        lista = view.findViewById(R.id.elegirTicket);
+ */
+
+
+        return view;
     }
 
 

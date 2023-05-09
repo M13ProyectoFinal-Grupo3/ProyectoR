@@ -6,7 +6,6 @@ import java.util.Date;
 public class Ticket implements Serializable {
     Restaurante restaurante;
     String id;
-    Restaurante restaurante;
     Date fecha;
     int num_mesa;
     int id_camarero;

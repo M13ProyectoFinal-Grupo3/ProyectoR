@@ -54,6 +54,12 @@
             android:layout_height="wrap_content"
             android:text="GESTIÓN DE COMANDAS" />
 
+        <Button
+            android:id="@+id/btnTickets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TICKETS" />
+
         <ImageView
             android:id="@+id/imageQR"
             android:layout_width="match_parent"

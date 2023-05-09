@@ -38,6 +38,7 @@ public class Profesional extends Fragment {
         Button btnGestionComandas = (Button) view.findViewById(R.id.btnGestionComandas);
         Button btnLogin = (Button) view.findViewById(R.id.btnLogin);
         Button btnRegistro = (Button) view.findViewById(R.id.btnRegistro);
+        Button btnTickets = (Button) view.findViewById(R.id.btnTickets);
         ImageView imageView1= (ImageView) view.findViewById(R.id.imageQR);
 
         btnRest.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +93,14 @@ public class Profesional extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), RegistroActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnTickets.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), TicketActivity.class);
                 startActivity(intent);
             }
         });

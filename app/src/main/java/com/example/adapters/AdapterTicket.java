@@ -8,13 +8,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.Lists.pojos.Alergeno;
+import com.example.Lists.pojos.Ticket;
 import com.example.proyector.R;
 
 import java.util.ArrayList;
 
-public class AdapterAlergeno extends ArrayAdapter<Alergeno> {
-    public AdapterAlergeno(Context context, ArrayList<Alergeno> alergenos) {
-        super( context,0,alergenos);
+public class AdapterTicket extends ArrayAdapter<Ticket> {
+    public AdapterTicket(Context context, ArrayList<Ticket> tickets) {
+        super( context,0,tickets);
     }
 
     private static class ViewHolder {
@@ -23,14 +24,13 @@ public class AdapterAlergeno extends ArrayAdapter<Alergeno> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Alergeno a = getItem(position);
+        Ticket t = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_alergeno, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_ticket, parent, false);
         }
         TextView xNombre = (TextView) convertView.findViewById(R.id.txDescrip);
-        xNombre.setText(a.getNombre());
+        xNombre.setText("Ticket mesa " + t.getNum_mesa() +  "");
 
         return convertView;
     }
 }
-
