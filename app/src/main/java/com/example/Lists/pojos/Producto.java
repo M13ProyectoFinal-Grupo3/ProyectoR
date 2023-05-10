@@ -1,7 +1,5 @@
 package com.example.Lists.pojos;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

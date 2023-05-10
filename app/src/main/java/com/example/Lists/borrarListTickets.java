@@ -1,22 +1,20 @@
 package com.example.Lists;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.ListView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Ticket;
 import com.example.adapters.AdapterAlergeno;
-import com.example.proyector.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class ListTickets extends AppCompatActivity {
+public class borrarListTickets extends AppCompatActivity {
+    //TODO CAMBIAR POR EMPTY ACTIVITY
     FirebaseFirestore db= FirebaseFirestore.getInstance();
     CollectionReference myRef = db.collection("tickets");
 

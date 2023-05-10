@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 
 import com.example.Forms.FormCarta;
+import com.example.Lists.ListTicket;
 import com.example.Lists.ListAlergenos;
 import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListRestaurante;
@@ -100,7 +101,7 @@ public class Profesional extends Fragment {
         btnTickets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), TicketActivity.class);
+                Intent intent = new Intent(getContext(), ListTicket.class);
                 startActivity(intent);
             }
         });

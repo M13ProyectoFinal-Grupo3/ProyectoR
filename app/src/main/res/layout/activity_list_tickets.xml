@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.Lists.ListAlergenos">
+    tools:context="com.example.Lists.ListTicket">
 
     <TextView
         android:id="@+id/textView2"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:text="Lista de alergenos"
+        android:text="Lista de Tickets"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,7 +21,7 @@
         android:layout_height="match_parent">
 
         <ListView
-            android:id="@+id/list_alergenos"
+            android:id="@+id/listTickets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp">
@@ -29,10 +29,10 @@
         </ListView>
 
         <Button
-            android:id="@+id/btn_listaNuevo"
+            android:id="@+id/btnNuevo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/list_alergenos"
+            android:layout_below="@+id/listTickets"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
