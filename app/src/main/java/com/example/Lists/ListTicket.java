@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.example.Forms.FormTicket;
 import com.example.Lists.pojos.Ticket;
@@ -53,6 +54,7 @@ public class ListTicket extends AppCompatActivity {
         ListView listview1;
         AdapterTicket adapter;
         ArrayList<Ticket> lista = new ArrayList<>();
+
         Ticket ticket;
 
         int pos = -1;
@@ -74,6 +76,9 @@ public class ListTicket extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 } else {
                     Log.d("ERROR", "No se pudo obtener la lista de tickets");
+                }
+                if (lista.isEmpty()){
+
                 }
             }
         });

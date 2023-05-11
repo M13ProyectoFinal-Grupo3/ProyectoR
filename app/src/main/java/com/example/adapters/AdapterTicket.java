@@ -18,9 +18,11 @@ public class AdapterTicket extends ArrayAdapter<Ticket> {
         super( context,0,tickets);
     }
 
+    /*
     private static class ViewHolder {
         TextView nombre;
     }
+    */
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
