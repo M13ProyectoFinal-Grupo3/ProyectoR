@@ -42,6 +42,9 @@ public class FormAlergenos extends AppCompatActivity {
 
         EditText enombre = (EditText) findViewById(R.id.t_pNombre);
 
+        //botón atrás
+        ImageButton backButton = findViewById(R.id.backBtn);
+
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
             if (intent.getExtras().containsKey("alergeno")) {
@@ -142,6 +145,16 @@ public class FormAlergenos extends AppCompatActivity {
             }
         });
 
+        //funcionalidad botón atrás
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
+
+
 
 }
