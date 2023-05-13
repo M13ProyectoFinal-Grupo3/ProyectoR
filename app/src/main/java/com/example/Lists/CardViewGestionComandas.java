@@ -51,6 +51,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.card_view_gestion_comandas);
+        //getSupportActionBar().hide();
 
         mAuth = FirebaseAuth.getInstance();
         userDb = FirebaseFirestore.getInstance();

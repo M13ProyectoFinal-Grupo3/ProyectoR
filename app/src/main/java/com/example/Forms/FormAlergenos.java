@@ -36,6 +36,7 @@ public class FormAlergenos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_alergenos);
+        getSupportActionBar().hide();
 
         Button btnGuardqar = (Button) findViewById(R.id.btnGuardarAl);
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarAl);

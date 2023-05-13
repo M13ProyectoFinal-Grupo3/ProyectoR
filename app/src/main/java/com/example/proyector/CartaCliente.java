@@ -75,6 +75,7 @@ public class CartaCliente extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carta_cliente);
+        getSupportActionBar().hide();
 
         TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
         tNumMesa = (TextView) findViewById(R.id.tx_numesa);

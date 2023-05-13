@@ -46,6 +46,7 @@ public class ListAlergenos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_alergenos);
+        getSupportActionBar().hide();
 
         listview1 = (ListView) findViewById(R.id.list_alergenos);
         adapter = new AdapterAlergeno(ListAlergenos.this, lista);

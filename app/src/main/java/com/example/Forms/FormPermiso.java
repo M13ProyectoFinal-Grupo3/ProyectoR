@@ -35,6 +35,7 @@ public class FormPermiso extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_permisos);
+        getSupportActionBar().hide();
 
         Button btnGuardqar = (Button) findViewById(R.id.btn_Guardar);
         Button btnBorrar = (Button) findViewById(R.id.btn_Borrar);

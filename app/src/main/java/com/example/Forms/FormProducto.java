@@ -68,6 +68,7 @@ public class FormProducto extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
+        getSupportActionBar().hide(); // esconde la barra lila donde pone ProyectoR
 
         cAlergenos = new ArrayList<>();
 
@@ -82,6 +83,9 @@ public class FormProducto extends AppCompatActivity {
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
         imageview1 =(ImageView) findViewById(R.id.imagen1);
         tAlergs = (TextView) findViewById(R.id.txFprodAls);
+
+        //botón volver atrás
+        ImageButton backButton = findViewById(R.id.backBtn);
 
         // recupera Producto a editar
         Intent intent = getIntent();
@@ -269,6 +273,14 @@ public class FormProducto extends AppCompatActivity {
                         startActivityGaleria.launch(intent);
                     }
                 });
+
+        //funcionalidad boton vovler atrás
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 

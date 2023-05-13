@@ -77,7 +77,7 @@ public class FormTicket extends AppCompatActivity {
         //adaptador = new AdapterTicket(this,android.R.layout.simple_spinner_item, mesas);
 
         Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
-        ImageButton btnBorrar = (ImageButton) findViewById(R.id.btnBorrar);
+        Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
 
         mesas.setAdapter(adaptador);
 
@@ -87,6 +87,8 @@ public class FormTicket extends AppCompatActivity {
         ImageView imageView1= (ImageView) findViewById(R.id.imageQR);
         imageView1.setImageBitmap(generateQRCodeImage("12324567890"));
 
+
+        /*
         //le indicamos lo que tiene que hacer cada vez que el spinner cambie de posición. TODO
         mesas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -110,11 +112,17 @@ public class FormTicket extends AppCompatActivity {
 
             }
 
+
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+
+         */
+
+        /*
 
         //una vez seleccionada la mesa. TODO Es necesario esto??
         Intent intent = getIntent();
@@ -125,6 +133,9 @@ public class FormTicket extends AppCompatActivity {
         } else {
             t_anterior = null;
         }
+
+         */
+
 /*
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override

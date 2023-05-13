@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -50,6 +51,7 @@ public class ListTicket extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_tickets);
+        getSupportActionBar().hide();
 
         ListView listview1;
         AdapterTicket adapter;
@@ -58,6 +60,8 @@ public class ListTicket extends AppCompatActivity {
         Ticket ticket;
 
         int pos = -1;
+
+        ImageButton backButton = findViewById(R.id.backBtn);
 
 
         listview1 = (ListView) findViewById(R.id.listTickets);
@@ -117,6 +121,14 @@ public class ListTicket extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ListTicket.this, FormTicket.class);
                 activityForm.launch(intent);
+            }
+        });
+
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
