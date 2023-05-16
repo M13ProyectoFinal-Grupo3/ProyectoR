@@ -60,6 +60,7 @@ public class ListAlergenos extends AppCompatActivity {
         adapter = new AdapterAlergeno(ListAlergenos.this, lista);
         listview1.setAdapter(adapter);
 
+
         myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

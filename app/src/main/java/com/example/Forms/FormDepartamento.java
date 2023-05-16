@@ -11,12 +11,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +30,7 @@ import com.example.adapters.AdapterProducto;
 import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
+import com.example.proyector.StoreImage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,7 +40,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class FormDepartamento extends AppCompatActivity {
@@ -47,6 +59,7 @@ public class FormDepartamento extends AppCompatActivity {
     ArrayList<Producto> lista = new ArrayList<>();
     Departamento departamento;
     int pos=-1;
+    ImageView imageview1;
 
 
     @Override
@@ -57,6 +70,8 @@ public class FormDepartamento extends AppCompatActivity {
 
         Button btnNuevo= (Button) findViewById(R.id.btn_nuevoDep);
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarDep);
+        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_dFoto);
+        imageview1 = (ImageView) findViewById(R.id.imagend1);
 
         listview1 = (ListView) findViewById(R.id.lista_prods);
         adapter = new AdapterProducto(FormDepartamento.this,lista);
@@ -104,11 +119,12 @@ public class FormDepartamento extends AppCompatActivity {
                             if(intent.getExtras() != null) {
                                 if(intent.getExtras().containsKey("new")) {
                                     Producto p = intent.getSerializableExtra("new", Producto.class);
+                                    new StoreImage(imageview1).guardarImagen(p.getNombre(),"departamentos");
                                     lista.add(p);
                                     adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("update")){
-                                    Producto p = intent.getSerializableExtra("update", Producto.class);
-                                    Log.d("dev prod",p.toString());
+                         Producto p = intent.getSerializableExtra("update", Producto.class);
+                                    new StoreImage(imageview1).guardarImagen(p.getNombre(),"departamentos");
                                     lista.set(pos,p);
                                     adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("delete")){
@@ -191,6 +207,39 @@ public class FormDepartamento extends AppCompatActivity {
                 });
             }
         });
+
+        // Galeria fotos
+
+        ActivityResultLauncher<Intent> startActivityGaleria  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+                        if (data != null){
+                            Uri selectedImageUri = data.getData();
+                            if (selectedImageUri != null){
+                                try {
+                                    InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                    bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
+                                    imageview1.setImageBitmap(bitmap);
+                                }catch (Exception e){
+                                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+                });
+
+        btnFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityGaleria.launch(intent);
+            }
+        });
+
+
 
     }
 
