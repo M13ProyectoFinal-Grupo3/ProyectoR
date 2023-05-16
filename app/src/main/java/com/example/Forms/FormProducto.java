@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,13 +27,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.Lists.pojos.cAlergeno;
-import com.example.adapters.AdapterAlergeno;
 import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Producto;
 import com.example.adapters.AdapterCheckAls;
 import com.example.proyector.R;
+import com.example.proyector.StoreImage;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -43,17 +40,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class FormProducto extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -77,14 +67,14 @@ public class FormProducto extends AppCompatActivity {
 
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarProd);
         Button btnGuardar = (Button) findViewById(R.id.btnGuardarAl);
-        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_pFoto);
+        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_dFoto);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
         TextView txDepartamento = (TextView) findViewById(R.id.tx_nomDepto);
 
         xNombre = (EditText) findViewById(R.id.t_pNombre);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
-        imageview1 =(ImageView) findViewById(R.id.imagen1);
+        imageview1 =(ImageView) findViewById(R.id.imagend1);
         tAlergs = (TextView) findViewById(R.id.txFprodAls);
 
         // recupera Producto a editar
@@ -126,7 +116,7 @@ public class FormProducto extends AppCompatActivity {
                             }
                         }
                         mostrarAls();
-                        cargarImagen(producto);
+                        new StoreImage(imageview1).cargarImagen(producto.getNombre(),"productos");
                     }
                 });
             }
@@ -144,7 +134,7 @@ public class FormProducto extends AppCompatActivity {
 
                 Producto p = new Producto(true, xNombre.getText().toString(), xDescrip.getText().toString(), Float.parseFloat(xPrecio.getText().toString()),getAlergenos(cAlergenos));
 
-                guardarImagen(p);
+                new StoreImage(imageview1).guardarImagen(p.getNombre(),"productos");
 
                 // Update
                 if (producto != null) {
@@ -256,6 +246,7 @@ public class FormProducto extends AppCompatActivity {
                                 try {
                                     InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                    //bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
                                     imageview1.setImageBitmap(bitmap);
                                 }catch (Exception e){
                                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -265,94 +256,18 @@ public class FormProducto extends AppCompatActivity {
                     }
                 });
 
-                btnFoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityGaleria.launch(intent);
-                    }
-                });
-
-    }
-
-    private void cargarImagen(Producto p){
-        final long MAX_IMAGESIZE = 1024 * 1024;
-        String name = p.getNombre().replace(" ","")+".jpg";
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference imgRef = storage.getReference();
-        imgRef.child("productos").child(name).getBytes(MAX_IMAGESIZE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        imageview1.setImageBitmap(bitmap);
-                    }
-                });
-    }
-
-    private void guardarImagen(Producto p){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference imgRef = storage.getReference().child("productos");
-        String name = p.getNombre().replace(" ","")+".jpg";
-
-        // comprobar si existe imagen asociada al producto y eliminarla antes de subir la nueva
-        imgRef.listAll().addOnCompleteListener(new OnCompleteListener<ListResult>() {
+        btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<ListResult> task) {
-                if(task.getResult().getItems().size()>0) {
-                    for(StorageReference file:task.getResult().getItems()){
-                        if(file.getName().equals(name)){
-                            StorageReference delRef = storage.getReference().child("productos/"+name);
-                            delRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // File deleted successfully
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Uh-oh, an error occurred!
-                                }
-                            });
-
-                        }
-                    }
-                }
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityGaleria.launch(intent);
             }
         });
 
-        // subir la nueva imagen
-        imgRef = storage.getReference().child("productos/"+name);
-
-        Bitmap bitmap = getBitmapFromView(imageview1);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-        UploadTask uploadTask = imgRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
     }
 
-    Bitmap getBitmapFromView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
-    }
+
 
     ArrayList<Alergeno> getAlergenos(ArrayList<cAlergeno> cAlergenos){
         ArrayList<Alergeno> result = new ArrayList<>();
