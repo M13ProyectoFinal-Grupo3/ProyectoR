@@ -11,16 +11,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.Lists.ListTicket;
 import com.example.Lists.pojos.Alergeno;
+import com.example.Lists.pojos.Departamento;
+import com.example.Lists.pojos.Lineas_Ticket;
+import com.example.Lists.pojos.Mesa;
+import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Ticket;
+import com.example.adapters.AdapterMesa;
 import com.example.adapters.AdapterTicket;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,7 +44,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class FormTicket extends AppCompatActivity {
 
@@ -51,7 +63,10 @@ public class FormTicket extends AppCompatActivity {
     Ticket t_anterior = null;
     Ticket t_nuevo = null;
 
-    AdapterTicket adaptador;
+    Restaurante restauranteFB;
+
+    //AdapterTicket adaptador; // TODO - necesario?
+    ArrayAdapter<Integer> adaptador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,89 +74,92 @@ public class FormTicket extends AppCompatActivity {
         setContentView(R.layout.activity_form_ticket);
         getSupportActionBar().hide();
 
+        /*///// TODO - cargar restaurante logeado
+        Intent intent = getIntent();
+        if (intent.getExtras() != null &&
+            (intent.getStringExtra("perfilUsuario").equals("administrador") ||
+            intent.getStringExtra("perfilUsuario").equals("camarero"))) {
+            restauranteFB = getIntent().getExtras().getSerializable("restaurante", Restaurante.class);
+            // o
+            //nombreRestaurante = intent.getStringExtra("nombreRestaurante");
+        }else{
+            //opciones = new String[]{"Camarero", "Cocinero"};
+        }
+
+        /////*/
+
         //cargar nombre restaurante logeado
         TextView restaurante = (TextView) findViewById(R.id.tvNombreRest);
-        //restaurante.setText();
+        //restaurante.setText(restauranteFB.getNombre());
 
         //cargar nif restaurante logeado TODO
         TextView nif = (TextView) findViewById(R.id.tvNifRest);
-        //nif.setText(restauranteCollection.whereEqualTo(""));
+        //nif.setText(restauranteFB.getNif());
 
         //añadir fecha automáticamente
         TextView fecha = (TextView) findViewById(R.id.tvFecha);
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        fecha.setText(currentDateTimeString);
-
-        Spinner mesas;
-        mesas = (Spinner) findViewById(R.id.spMesa);
-        //adaptador = new AdapterTicket(this,android.R.layout.simple_spinner_item, mesas);
-
-        Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
-        Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
-
-        mesas.setAdapter(adaptador);
-
-        ImageButton backButton = findViewById(R.id.backBtn);
-
-        //generacion qr. TODO falta que sea solo al seleccionar una mesa. meterlo en la funcion de debajo
-        ImageView imageView1= (ImageView) findViewById(R.id.imageQR);
-        imageView1.setImageBitmap(generateQRCodeImage("12324567890"));
+        Date fechaPrueba = new Date();
+        fecha.setText(""+fechaPrueba+"");
 
 
-        /*
-        //le indicamos lo que tiene que hacer cada vez que el spinner cambie de posición. TODO
-        mesas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Restaurante restPrueba = new Restaurante("Bar Paco", "Comedor Social SL", "123456789k", "Barcelona", "Vilanova", "08720", "+34123456789");
+        Ticket ticketPrueba = new Ticket(restPrueba, "idxffffff", fechaPrueba, 4, 4);
 
-                //TODO - hacer que los cases sean = al numero de mesas del rest. es posible?
-                switch (position) {
-                    case 0:
-                        //nada
-                        break;
-                    case 1:
-                        //generar qr con mesa 1
-                        break;
-                    case 2:
-                        //generar qr con mesa 2
-                        break;
 
-                        //....
+        ListView listviewMesas;
+        AdapterMesa adapter;
+        ArrayList<Mesa> lista = new ArrayList<>();
+
+        listviewMesas = (ListView) findViewById(R.id.listaMesas);
+        adapter = new AdapterMesa(FormTicket.this, lista);
+        listviewMesas.setAdapter(adapter);
+
+
+            //definimos el desplegable. PROVISIONAL
+            Spinner mesas;
+            List<Integer> listaMesas = new ArrayList<>();
+            //TODO - meter aquícodigo para recuperar nº de mesas. candidadMesas = lo que venga de firebase
+            int cantidadMesas = 8; // 8 solo para pruebas, será lo de firebase
+            for (int i = 1; i <= cantidadMesas; i++) {
+                listaMesas.add(i);
+            }
+            //revertimos el orden de la lista, que por defecto es de mayor a menor
+            //Collections.reverse(listaMesas);
+            adaptador = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, listaMesas);
+
+            //inicializamos las variables
+            mesas = findViewById(R.id.spMesa);
+            mesas.setAdapter(adaptador);
+
+            Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
+            Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
+
+            ImageButton backButton = findViewById(R.id.backBtn);
+
+            //le indicamos lo que tiene que hacer cada vez que el spinner cambie de posición. TODO
+            mesas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    int numeroMesa = position + 1;
+
+                    ticketPrueba.setNum_mesa(numeroMesa);
+
 
                 }
 
-            }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
+                }
+            });
 
+            btnGuardar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-         */
-
-        /*
-
-        //una vez seleccionada la mesa. TODO Es necesario esto??
-        Intent intent = getIntent();
-        if(intent.getExtras()!=null) {
-            if (intent.getExtras().containsKey("ticket")) {
-                t_anterior = getIntent().getExtras().getSerializable("ticket", Ticket.class);
-            }
-        } else {
-            t_anterior = null;
-        }
-
-         */
-
+                    //cargar mesa del spinner seleccionada por el user TODO
 /*
-        btnGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //cargar mesa del spinner seleccionada por el user TODO
-
                 // Actualizar ticket o añadir nuevo
                 if(t_anterior !=null) {
                     // Actualizar
@@ -175,63 +193,33 @@ public class FormTicket extends AppCompatActivity {
                             });
 
                 } else {
-                    // Nuevo Alergeno
-                    ticketCollection.add(t_nuevo).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    */
+                    // Nuevo Ticket
+                    ticketCollection.add(ticketPrueba).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentReference> task) {
-                            t_nuevo.setId(task.getResult().getId());
-                            ticketCollection.document(t_nuevo.getId()).update("id", t_nuevo.getId());
+                            ticketPrueba.setId(task.getResult().getId());
+                            ticketCollection.document(ticketPrueba.getId()).update("id", ticketPrueba.getId());
                             Intent resultIntent = new Intent();
-                            resultIntent.putExtra("new", t_nuevo);
+                            resultIntent.putExtra("new", ticketPrueba);
                             setResult(RESULT_OK, resultIntent);
-                            Toast.makeText(FormAlergenos.this, "El Alergeno se añadio correctamente", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FormTicket.this, "El Ticket se añadio correctamente", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     });
                 }
+            });
 
-
-            }
-        });
-*/
-
-
-
-
-/*
-        btnRegistar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FormTicket.this, RegistroActivity.class);
-                intent.putExtra("perfilUsuario", "administrador");
-                intent.putExtra("nombreRestaurante", a_anterior.getNombre());
-                startActivity(intent);
-            }
-        });
-*/
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
-
-    // genera codigo QR
-    private Bitmap generateQRCodeImage(String text) {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        Bitmap bmp = null;
-        try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,500,500);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            bmp = barcodeEncoder.createBitmap(bitMatrix);
-        } catch (WriterException e) {
-            e.printStackTrace();
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
         }
-        return bmp;
+
+
     }
-}
 
 
 

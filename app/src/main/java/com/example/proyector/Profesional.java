@@ -106,6 +106,15 @@ public class Profesional extends Fragment {
             }
         });
 
+        /* TODO -
+        if (userPerfil != null && (userPerfil.equals("Cocinero") || userPerfil.equals("Camarero"))) {
+        Intent intent = new Intent(getContext(), ListTicket.class);
+        intent.putExtra("perfil", userPerfil);
+        intent.putExtra("restaurante", userRestaurante);
+        startActivity(intent);
+        }
+         */
+
         return view;
     }
 

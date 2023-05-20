@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.Lists.pojos.Alergeno;
+import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Ticket;
 import com.example.proyector.R;
 
@@ -18,6 +19,7 @@ public class AdapterTicket extends ArrayAdapter<Ticket> {
         super( context,0,tickets);
     }
 
+    private AdapterTicket.OnClickListener onClickListener;
     /*
     private static class ViewHolder {
         TextView nombre;
@@ -34,5 +36,13 @@ public class AdapterTicket extends ArrayAdapter<Ticket> {
         xNombre.setText("Ticket mesa " + t.getNum_mesa() +  "");
 
         return convertView;
+    }
+
+    public void setOnClickListener(AdapterTicket.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
+    public interface OnClickListener {
+        void onClick(int position, Ticket ticket);
     }
 }

@@ -12,15 +12,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.Forms.FormTicket;
+import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Ticket;
+import com.example.adapters.AdapterCartaDep;
 import com.example.adapters.AdapterTicket;
 import com.example.proyector.R;
+import com.example.proyector.TicketAdmin;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -67,6 +71,21 @@ public class ListTicket extends AppCompatActivity {
         listview1 = (ListView) findViewById(R.id.listTickets);
         adapter = new AdapterTicket(ListTicket.this, lista);
         listview1.setAdapter(adapter);
+        listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+         @Override
+         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+             Log.i("HelloListView", "You clicked Item: " + id + " at position:" + position);
+             // Then you start a new Activity via Intent
+             Intent intent = new Intent();
+             intent.setClass(ListTicket.this, TicketAdmin.class);
+             intent.putExtra("position", position);
+             // Or / And
+             intent.putExtra("id", id);
+             startActivity(intent);
+         }
+     });
+
 
         // Mostrar tickets
         myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -81,11 +100,10 @@ public class ListTicket extends AppCompatActivity {
                 } else {
                     Log.d("ERROR", "No se pudo obtener la lista de tickets");
                 }
-                if (lista.isEmpty()){
 
-                }
             }
         });
+
 
 
         // form ticket
@@ -133,7 +151,6 @@ public class ListTicket extends AppCompatActivity {
         });
 
     }
-
 
     //COMPROBAR USUARIO
     @Override
