@@ -40,50 +40,36 @@ public class AdapterLineaTicket extends ArrayAdapter<Lineas_Ticket> {
 
         Button botonSumar = (Button)  convertView.findViewById(R.id.mas);
         Button botonRestar = (Button)  convertView.findViewById(R.id.menos);
+        Button botonBorrar = (Button)  convertView.findViewById(R.id.borrar);
 
 
         botonSumar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Integer.parseInt(xCantidad.getText().toString()) == 1) {
-                    botonRestar.setBackgroundResource(R.drawable.ic_menos);
-                    int cantidad = Integer.parseInt(xCantidad.getText().toString());
-                    int sum = cantidad + 1;
-                    xCantidad.setText("" + sum + "");
-                } else {
-                    int cantidad = Integer.parseInt(xCantidad.getText().toString());
-                    int sum = cantidad + 1;
-                    xCantidad.setText("" + sum + "");
-                }
+                int cantidad = Integer.parseInt(xCantidad.getText().toString());
+                int sum = cantidad + 1;
+                xCantidad.setText("" + sum + "");
             }
         });
 
         botonRestar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Integer.parseInt(xCantidad.getText().toString()) == 1){
-
+                int cantidad = Integer.parseInt(xCantidad.getText().toString());
+                int resta = cantidad - 1;
+                if (resta < 0) {
+                    xCantidad.setText("" + 0 + "");
+                }else{
+                    xCantidad.setText("" + resta + "");
                 }
-                if (Integer.parseInt(xCantidad.getText().toString()) == 2){
-                    botonRestar.setBackgroundResource(R.drawable.ic_baseline_delete);
-                    //TODO - funcion delete
-                    int cantidad = Integer.parseInt(xCantidad.getText().toString());
-                    int resta = cantidad - 1;
-                    if (resta < 0) {
-                        xCantidad.setText("" + 0 + "");
-                    }else{
-                        xCantidad.setText("" + resta + "");
-                    }
-                }else if ((Integer.parseInt(xCantidad.getText().toString()) > 2)){
-                    int cantidad = Integer.parseInt(xCantidad.getText().toString());
-                    int resta = cantidad - 1;
-                    if (resta < 0) {
-                        xCantidad.setText("" + 0 + "");
-                    }else{
-                        xCantidad.setText("" + resta + "");
-                    }
-                }
+            }
+        });
 
+        botonBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remove(t);
+                notifyDataSetChanged();
             }
         });
 

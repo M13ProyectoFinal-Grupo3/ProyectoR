@@ -71,13 +71,10 @@ public class TicketAdmin extends AppCompatActivity {
         // Attach the adapter to a ListView
         ListView lineasProductos = (ListView) findViewById(R.id.lvListaDeLineas);
         lineasProductos.setAdapter(lineasAdapter);
-        // Limpiar el adaptador
-        //adapter_jmh.clear();
 
         //TODO - getIntent
 
         Button btnGenQR = (Button) findViewById(R.id.mostrarQr);
-
 
         btnGenQR.setOnClickListener(new View.OnClickListener() {
             @Override

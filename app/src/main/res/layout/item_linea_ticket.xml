@@ -68,6 +68,14 @@
         android:layout_height="30dp"
         android:background="@drawable/ic_mas"/>
 
+        <Button
+            android:id="@+id/borrar"
+            android:layout_width="30dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_baseline_delete"/>
+
         </LinearLayout>
 
         <!-- POR SI QUEREMOS METER EL PRECIO
