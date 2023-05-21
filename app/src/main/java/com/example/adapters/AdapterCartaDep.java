@@ -1,7 +1,10 @@
 package com.example.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +13,11 @@ import android.widget.TextView;
 
 import com.example.Lists.pojos.Departamento;
 import com.example.proyector.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -28,6 +31,10 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
     public AdapterCartaDep(ArrayList<Departamento> data) {
         this.data = data;
     }
+
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference imgRef = storage.getReference();
+    ImageView imageview1;
 
     @NonNull
     @Override
@@ -49,6 +56,17 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
 
         holder.cardText.setText(data.get(holder.getAdapterPosition()).getnombre());
+        Drawable d =(Drawable) context.getDrawable(R.drawable.platocomida);
+        // cargar imagen
+        final long MAX_IMAGESIZE = 1024 * 1024;
+        imgRef.child("departamentos").child(getImgName(data.get(holder.getAdapterPosition()))).getBytes(MAX_IMAGESIZE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bmp  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        holder.cardImg.setImageBitmap(bmp);
+                    }
+                });
         holder.cardImg.setImageDrawable(context.getDrawable(R.drawable.platocomida));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +93,10 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
             cardText = itemView.findViewById(R.id.cardText);
             cardImg = itemView.findViewById(R.id.cardImg);
         }
+    }
+
+    private String getImgName(Departamento d){
+        return d.getId()+".jpg";
     }
 
 }

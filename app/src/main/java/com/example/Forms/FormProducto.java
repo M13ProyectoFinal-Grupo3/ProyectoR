@@ -31,8 +31,8 @@ import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Producto;
 import com.example.adapters.AdapterCheckAls;
 import com.example.proyector.R;
-import com.example.proyector.StoreImage;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -40,7 +40,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +61,10 @@ public class FormProducto extends AppCompatActivity {
     ArrayList<cAlergeno> cAlergenos; // lista de todos los Alergenos
     AdapterCheckAls adaptercheck;
     TextView tAlergs; // TextView donde se muestran los alergenos seleccionados
+
+    final long MAX_IMAGESIZE = 1024 * 1024;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference imgRef = storage.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +93,9 @@ public class FormProducto extends AppCompatActivity {
             }
             if(intent.getExtras().containsKey("ref")){
                 myRef = db.collection(getIntent().getExtras().getString("ref"));
-                Log.d("myRef",myRef.getPath());
             } else { finish();}
             if(intent.getExtras().containsKey("producto")) {
                 producto = getIntent().getExtras().getSerializable("producto", Producto.class);
-                Log.d("producto",""+producto.toString());
                 xNombre.setText(producto.getNombre());
                 xDescrip.setText(producto.getDescripcion());
                 xPrecio.setText(producto.getPrecio().toString());
@@ -116,7 +122,14 @@ public class FormProducto extends AppCompatActivity {
                             }
                         }
                         mostrarAls();
-                        new StoreImage(imageview1).cargarImagen(producto.getNombre(),"productos");
+                        // cargar imagen
+                        imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
+                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                    @Override
+                                    public void onSuccess(byte[] bytes) {
+                                        imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                                    }
+                                });
                     }
                 });
             }
@@ -134,7 +147,7 @@ public class FormProducto extends AppCompatActivity {
 
                 Producto p = new Producto(true, xNombre.getText().toString(), xDescrip.getText().toString(), Float.parseFloat(xPrecio.getText().toString()),getAlergenos(cAlergenos));
 
-                new StoreImage(imageview1).guardarImagen(p.getNombre(),"productos");
+                //guardar imagen
 
                 // Update
                 if (producto != null) {
@@ -288,5 +301,31 @@ public class FormProducto extends AppCompatActivity {
         }
         if(result.size()>0) s = TextUtils.join(",", result);
         tAlergs.setText(s);
+    }
+
+    public void guardarImagen(Producto p, Bitmap bmp) {
+        imgRef = storage.getReference().child("productos/"+getImgName(p));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = imgRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+    }
+
+    private String getImgName(Producto p){
+        return p.getId()+".jpg";
     }
 }

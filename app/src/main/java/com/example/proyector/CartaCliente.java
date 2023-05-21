@@ -230,10 +230,10 @@ public class CartaCliente extends AppCompatActivity {
                         // cargar imagen
 
                         final long MAX_IMAGESIZE = 1024 * 1024;
-                        String name = p.getNombre().replace(" ","")+".jpg";
+
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         StorageReference imgRef = storage.getReference();
-                        imgRef.child("productos").child(name).getBytes(MAX_IMAGESIZE)
+                        imgRef.child("productos").child(getProductoImgName(p)).getBytes(MAX_IMAGESIZE)
                                 .addOnCompleteListener(new OnCompleteListener<byte[]>() {
                                     @Override
                                     public void onComplete(@NonNull Task<byte[]> task) {
@@ -286,6 +286,10 @@ public class CartaCliente extends AppCompatActivity {
         ArrayList<String> result = adaptercheck.getCheckedS();
         if(result.size()>0) s = TextUtils.join(",", result);
         tAlergs.setText(s);
+    }
+
+    private String getProductoImgName(Producto p){
+        return p.getId()+".jpg";
     }
 
 }

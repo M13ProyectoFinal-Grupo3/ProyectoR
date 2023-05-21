@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +29,6 @@ import com.example.adapters.AdapterProducto;
 import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Producto;
 import com.example.proyector.R;
-import com.example.proyector.StoreImage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,7 +39,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -59,8 +56,12 @@ public class FormDepartamento extends AppCompatActivity {
     ArrayList<Producto> lista = new ArrayList<>();
     Departamento departamento;
     int pos=-1;
+
+    final long MAX_IMAGESIZE = 1024 * 1024;
     ImageView imageview1;
 
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference imgRef = storage.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +84,21 @@ public class FormDepartamento extends AppCompatActivity {
 
             rootRef = db.collection("Carta").document("carta").collection("Departamentos");
             departamento = getIntent().getExtras().getSerializable("departamento", Departamento.class);
-            myRef =rootRef.document(departamento.getId()).collection("productos");
+            // cargar imagen
+             imgRef.child("departamentos").child(getImgName(departamento)).getBytes(MAX_IMAGESIZE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                    }
+                });
 
+            // nombre departamento
             TextView tx1 = findViewById(R.id.tx_nombrerest);
             tx1.setText(departamento.getnombre());
 
             // mostrar productos
+            myRef =rootRef.document(departamento.getId()).collection("productos");
             myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -119,12 +129,10 @@ public class FormDepartamento extends AppCompatActivity {
                             if(intent.getExtras() != null) {
                                 if(intent.getExtras().containsKey("new")) {
                                     Producto p = intent.getSerializableExtra("new", Producto.class);
-                                    new StoreImage(imageview1).guardarImagen(p.getNombre(),"departamentos");
                                     lista.add(p);
                                     adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("update")){
                          Producto p = intent.getSerializableExtra("update", Producto.class);
-                                    new StoreImage(imageview1).guardarImagen(p.getNombre(),"departamentos");
                                     lista.set(pos,p);
                                     adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("delete")){
@@ -222,6 +230,7 @@ public class FormDepartamento extends AppCompatActivity {
                                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                                     bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
                                     imageview1.setImageBitmap(bitmap);
+                                    guardarImagen(departamento,bitmap);
                                 }catch (Exception e){
                                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
@@ -239,8 +248,32 @@ public class FormDepartamento extends AppCompatActivity {
             }
         });
 
+    }
 
+    public void guardarImagen(Departamento d, Bitmap bmp) {
+        imgRef = storage.getReference().child("departamentos/"+getImgName(d));
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = imgRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+    }
+
+    private String getImgName(Departamento d){
+        return d.getId()+".jpg";
     }
 
 }
