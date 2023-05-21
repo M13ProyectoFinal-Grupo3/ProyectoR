@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.example.Lists.pojos.Departamento;
 import com.example.proyector.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -60,14 +63,18 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
         // cargar imagen
         final long MAX_IMAGESIZE = 1024 * 1024;
         imgRef.child("departamentos").child(getImgName(data.get(holder.getAdapterPosition()))).getBytes(MAX_IMAGESIZE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
                     @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bmp  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    public void onComplete(@NonNull Task<byte[]> task) {
+                        Bitmap bmp  = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
                         holder.cardImg.setImageBitmap(bmp);
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.cardImg.setImageDrawable(context.getDrawable(R.drawable.icon_depto));
+                    }
                 });
-        holder.cardImg.setImageDrawable(context.getDrawable(R.drawable.platocomida));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
