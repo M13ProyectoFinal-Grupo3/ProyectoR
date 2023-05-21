@@ -19,6 +19,20 @@
         android:theme="@style/Theme.ProyectoR"
         tools:targetApi="31">
         <activity
+            android:name=".VerQR"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".dialogQR"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".TicketAdmin"
             android:exported="false">
             <meta-data

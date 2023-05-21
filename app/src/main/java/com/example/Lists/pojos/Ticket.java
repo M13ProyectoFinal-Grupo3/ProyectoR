@@ -3,6 +3,7 @@ package com.example.Lists.pojos;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 public class Ticket implements Serializable {
     Restaurante restaurante;
@@ -10,7 +11,8 @@ public class Ticket implements Serializable {
     Date fecha;
     int num_mesa;
     int id_camarero;
-    Lineas_Ticket linea_ticket;
+    List<Lineas_Ticket> lineas_ticket;
+    //Lineas_Ticket linea_ticket;
 
     public Ticket() {
     }
@@ -19,13 +21,13 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero, Lineas_Ticket linea_ticket) {
+    public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero, List<Lineas_Ticket> lineas_ticket) {
         this.restaurante = restaurante;
         this.id = id;
         this.fecha = fecha;
         this.num_mesa = num_mesa;
         this.id_camarero = id_camarero;
-        this.linea_ticket = linea_ticket;
+        this.lineas_ticket = lineas_ticket;
     }
 
     public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero) {
@@ -35,7 +37,6 @@ public class Ticket implements Serializable {
         this.num_mesa = num_mesa;
         this.id_camarero = id_camarero;
     }
-
 
     public Restaurante getRestaurante() {
         return restaurante;
@@ -77,11 +78,11 @@ public class Ticket implements Serializable {
         this.id_camarero = id_camarero;
     }
 
-    public Lineas_Ticket getLinea_ticket() {
-        return linea_ticket;
+    public List<Lineas_Ticket> getLineas_ticket() {
+        return lineas_ticket;
     }
 
-    public void setLinea_ticket(Lineas_Ticket linea_ticket) {
-        this.linea_ticket = linea_ticket;
+    public void setLineas_ticket(List<Lineas_Ticket> lineas_ticket) {
+        this.lineas_ticket = lineas_ticket;
     }
 }

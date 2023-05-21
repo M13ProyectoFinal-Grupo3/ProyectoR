@@ -18,21 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/listviewCarta"
+        android:id="@+id/lvListaDeLineas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/tx_nombrerest2"
         app:layout_constraintStart_toStartOf="parent">
 
     </ListView>
-
-    <ImageView
-        android:id="@+id/imageQR"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        tools:srcCompat="@tools:sample/avatars"
-        tools:ignore="MissingConstraints" />
 
 
     <androidx.constraintlayout.widget.Guideline
