@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".TicketAdmin">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
     <TextView
         android:id="@+id/tx_nombrerest2"
         android:layout_width="wrap_content"
@@ -20,12 +26,43 @@
     <ListView
         android:id="@+id/lvListaDeLineas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tx_nombrerest2"
-        app:layout_constraintStart_toStartOf="parent">
-
+        android:layout_height="350dp"
+        app:layout_constraintGuide_percent="0.5">
     </ListView>
 
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="190dp"
+        android:text="Total"
+        android:textSize="28dp" />
+
+    <TextView
+        android:id="@+id/tvPrecioFinal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="00.00"
+        android:textSize="28dp" />
+
+    <TextView
+        android:id="@+id/tvEuro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="€"
+        android:textSize="28dp" />
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
@@ -73,6 +110,7 @@
     </LinearLayout>
 
 
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

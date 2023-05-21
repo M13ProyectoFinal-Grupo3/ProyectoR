@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -63,6 +64,15 @@ public class TicketAdmin extends AppCompatActivity {
         Date fechaPrueba = new Date();
 
         Ticket ticketPrueba = new Ticket(restPrueba, "idxffffff", fechaPrueba, 4, 4, listaLineas);
+
+        float precioTotal = 0f;
+
+        for (Lineas_Ticket linea : listaLineas) {
+            precioTotal += linea.getProducto().getPrecio();
+        }
+
+        TextView xTotal = (TextView) findViewById(R.id.tvPrecioFinal);
+        xTotal.setText(""+precioTotal+"");
 
 
         // Definimos el adaptador frutas
