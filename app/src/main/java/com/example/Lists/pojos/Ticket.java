@@ -1,16 +1,15 @@
 package com.example.Lists.pojos;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Ticket implements Serializable {
-    String id;
     Restaurante restaurante;
+    String id;
     Date fecha;
     int num_mesa;
     int id_camarero;
-    int comensales; // o Comensal comensales? (segun el diagrama de clases)
     Lineas_Ticket linea_ticket;
 
     public Ticket() {
@@ -20,13 +19,30 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public Ticket(Restaurante restaurante, Date fecha, int num_mesa, int id_camarero, int comensales, Lineas_Ticket linea_ticket) {
+    public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero, Lineas_Ticket linea_ticket) {
         this.restaurante = restaurante;
+        this.id = id;
         this.fecha = fecha;
         this.num_mesa = num_mesa;
         this.id_camarero = id_camarero;
-        this.comensales = comensales;
         this.linea_ticket = linea_ticket;
+    }
+
+    public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero) {
+        this.restaurante = restaurante;
+        this.id = id;
+        this.fecha = fecha;
+        this.num_mesa = num_mesa;
+        this.id_camarero = id_camarero;
+    }
+
+
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
     }
 
     public String getId() {
@@ -35,14 +51,6 @@ public class Ticket implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Restaurante getRestaurante() {
-        return restaurante;
-    }
-
-    public void setRestaurante(Restaurante restaurante) {
-        this.restaurante = restaurante;
     }
 
     public Date getFecha() {
@@ -67,14 +75,6 @@ public class Ticket implements Serializable {
 
     public void setId_camarero(int id_camarero) {
         this.id_camarero = id_camarero;
-    }
-
-    public int getComensales() {
-        return comensales;
-    }
-
-    public void setComensales(int comensales) {
-        this.comensales = comensales;
     }
 
     public Lineas_Ticket getLinea_ticket() {

@@ -20,6 +20,7 @@ public class AdapterAlergeno extends ArrayAdapter<Alergeno> {
     private static class ViewHolder {
         TextView nombre;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Alergeno a = getItem(position);

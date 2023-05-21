@@ -22,6 +22,34 @@
         android:theme="@style/Theme.ProyectoR"
         tools:targetApi="31">
         <activity
+            android:name=".TicketAdmin"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".TicketCliente"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Forms.FormTicket"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="com.example.Lists.ListTicket"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".CartaCliente"
             android:exported="false">
             <meta-data
@@ -56,7 +84,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name="com.example.Forms.FormCarta"
             android:exported="false">
@@ -107,7 +134,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.example.Forms.FormUser"
+            android:name=".LoginUser"
             android:exported="false"
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -115,7 +142,15 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".LoginUser"
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".RegistroActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity">
             <meta-data

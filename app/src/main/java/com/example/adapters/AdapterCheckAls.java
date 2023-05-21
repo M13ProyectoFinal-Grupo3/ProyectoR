@@ -1,7 +1,6 @@
 package com.example.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import com.example.Lists.pojos.cAlergeno;
 import com.example.proyector.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AdapterCheckAls extends ArrayAdapter<cAlergeno> {
     CheckBox check1;

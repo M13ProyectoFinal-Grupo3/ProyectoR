@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.Forms.FormCarta;
-import com.example.Lists.pojos.User;
 import com.example.Lists.pojos.Ticket;
+import com.example.Lists.pojos.User;
 
 public class MainActivity extends AppCompatActivity implements AccesoQR.ifAccesoQR {
     FragmentManager fm = getSupportFragmentManager();
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements AccesoQR.ifAcceso
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
 
 
         Button btnAccess = (Button) findViewById(R.id.btnAcceso);

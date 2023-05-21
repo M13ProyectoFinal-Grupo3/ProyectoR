@@ -45,12 +45,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.zxing.common.StringUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class CartaCliente extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -79,6 +75,7 @@ public class CartaCliente extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carta_cliente);
+        getSupportActionBar().hide();
 
         TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
         tNumMesa = (TextView) findViewById(R.id.tx_numesa);

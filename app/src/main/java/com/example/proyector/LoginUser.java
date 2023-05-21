@@ -33,6 +33,7 @@ public class LoginUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_user);
+        getSupportActionBar().hide();
 
         vNomuser = (EditText) findViewById(R.id.logNomuser);
         vPassword = (EditText) findViewById(R.id.logpassword);

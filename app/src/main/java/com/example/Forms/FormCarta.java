@@ -52,6 +52,7 @@ public class FormCarta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_carta);
+        getSupportActionBar().hide();
 
         Button btnNuevoDep = (Button) findViewById(R.id.btn_nuevoDep);
         //ImageButton btnBack = (ImageButton) findViewById(R.id.btn_backCarta);

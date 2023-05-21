@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.Lists.pojos.Alergeno;
@@ -37,11 +36,15 @@ public class FormAlergenos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_alergenos);
+        getSupportActionBar().hide();
 
         Button btnGuardqar = (Button) findViewById(R.id.btnGuardarAl);
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarAl);
 
         EditText enombre = (EditText) findViewById(R.id.t_pNombre);
+
+        //botón atrás
+        ImageButton backButton = findViewById(R.id.backBtn);
 
         Intent intent = getIntent();
         if(intent.getExtras()!=null) {
@@ -143,6 +146,16 @@ public class FormAlergenos extends AppCompatActivity {
             }
         });
 
+        //funcionalidad botón atrás
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
+
+
 
 }

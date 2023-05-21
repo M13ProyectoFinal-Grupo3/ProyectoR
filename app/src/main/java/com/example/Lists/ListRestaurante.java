@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.activity.result.ActivityResult;
@@ -46,7 +47,9 @@ public class ListRestaurante extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_restaurante);
+        getSupportActionBar().hide();
 
+        ImageButton backButton = findViewById(R.id.backBtn);
         listview1 = (ListView) findViewById(R.id.list_restaurantes);
         adapter = new AdapterRestaurante(ListRestaurante.this, lista);
         listview1.setAdapter(adapter);
@@ -59,6 +62,7 @@ public class ListRestaurante extends AppCompatActivity {
                 intent.putExtra("restaurante", lista.get(position));
                 intent.putExtra("btnBorrarHabilitado", true);
                 intent.putExtra("btnAgregarMesaHabilitado", true);
+                intent.putExtra("btnRegistrarHabilitado", true);
                 activityForm.launch(intent);
                 return false;
             }
@@ -113,7 +117,15 @@ public class ListRestaurante extends AppCompatActivity {
                 Intent intent = new Intent(ListRestaurante.this, FormRestaurante.class);
                 intent.putExtra("btnBorrarHabilitado", false);
                 intent.putExtra("btnAgregarMesaHabilitado", false);
+                intent.putExtra("btnRegistrarHabilitado", false);
                 startActivity(intent);
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

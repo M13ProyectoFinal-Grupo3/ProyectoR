@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,12 +40,15 @@ public class FormMesa extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_mesa);
+        getSupportActionBar().hide();
 
         Button btnGuardar = (Button) findViewById(R.id.btn_dGuardar);
         Button btnBorrar = (Button) findViewById(R.id.btn_aBorrar);
 
         EditText eNum_mesa = (EditText) findViewById(R.id.et_dNum_mesa);
         EditText eUbicacion = (EditText) findViewById(R.id.et_dUbicacion);
+
+        ImageButton backButton = findViewById(R.id.backBtn);
 
         Intent intent = getIntent();
         if (intent.getExtras() != null && intent.getExtras().size() > 1) {
@@ -146,6 +150,13 @@ public class FormMesa extends AppCompatActivity {
                                 }
                             }
                         });
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

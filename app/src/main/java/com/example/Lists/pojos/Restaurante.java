@@ -10,6 +10,8 @@ public class Restaurante implements Serializable {
     String ciudad;
     String codPostal;
     String telefono;
+    // TODO - añadir String Id
+    // TODO - añadir int nº de mesas
 
     public Restaurante() {
     }

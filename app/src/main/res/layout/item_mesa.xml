@@ -2,15 +2,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txANumMesa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/reg_edittext_style"
+        android:fontFamily="@font/open_sans"
         android:text="Número de mesa"
-        android:textSize="20dp" />
+        android:textColor="@color/gray"
+        android:textSize="20sp">
+    </com.google.android.material.textview.MaterialTextView>
 
     <TextView
         android:id="@+id/txAUbicacion"
