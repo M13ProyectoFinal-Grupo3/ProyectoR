@@ -63,10 +63,10 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
         // cargar imagen
         final long MAX_IMAGESIZE = 1024 * 1024;
         imgRef.child("departamentos").child(getImgName(data.get(holder.getAdapterPosition()))).getBytes(MAX_IMAGESIZE)
-                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
-                    public void onComplete(@NonNull Task<byte[]> task) {
-                        Bitmap bmp  = BitmapFactory.decodeByteArray(task.getResult(), 0, task.getResult().length);
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bmp  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         holder.cardImg.setImageBitmap(bmp);
                     }
                 }).addOnFailureListener(new OnFailureListener() {

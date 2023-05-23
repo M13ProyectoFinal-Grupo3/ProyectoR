@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormAdmin">
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/logomini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/tx_nombrerest3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre del restaurante"
+            android:textSize="28dp" />
+
+        <Button
+            android:id="@+id/btnRestaurante"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="DATOS RESTAURANTE" />
+
+        <Button
+            android:id="@+id/btnCarta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CARTA" />
+
+        <Button
+            android:id="@+id/btnAlergenos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ALERGENOS" />
+
+        <Button
+            android:id="@+id/btnRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PERSONAL" />
+
+        <Button
+            android:id="@+id/btnGestionComandas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GESTIÓN DE COMANDAS" />
+
+        <Button
+            android:id="@+id/btnTickets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TICKETS" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="Administrador"
+        android:textColor="#FF0000"
+        android:textSize="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.proyector;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Lists.CardViewGestionComandas;
+import com.example.Lists.pojos.Usuarios;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -33,12 +35,10 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar loginProgress;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private CollectionReference collectionRef;
-    private Intent HomeActivity;
+    private CollectionReference usersRef;
+    private Intent intent;
 
-    String userUID;
-    String userPerfil;
-    String userRestaurante;
+    Usuarios usuario;
 
 
     @Override
@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         db = FirebaseFirestore.getInstance();
-        collectionRef = db.collection("usuarios");
+        usersRef = db.collection("usuarios");
 
         userMail = findViewById(R.id.login_mail);
         userPassword = findViewById(R.id.login_password);
@@ -56,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         loginProgress = findViewById(R.id.login_progress);
         ImageButton backButton = findViewById(R.id.backBtn);
         mAuth = FirebaseAuth.getInstance();
-        HomeActivity = new Intent(this, CardViewGestionComandas.class);
 
 
         loginProgress.setVisibility(View.INVISIBLE);
@@ -94,38 +93,36 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
-
                     FirebaseUser currentUser = mAuth.getCurrentUser();
-                    String uid = null;
-                    if (currentUser != null) {
-                        uid = currentUser.getUid();
-                    }
-                    String finalUid = uid;
-
-                    collectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
-                            for (DocumentSnapshot snapshot : snapshotList) {
-                                if (finalUid.equals(snapshot.getString("UID"))) {
-                                    userUID = snapshot.getString("UID");
-                                    userPerfil = snapshot.getString("Perfil");
-                                    userRestaurante = snapshot.getString("Restaurante");
+                    usersRef.whereEqualTo("UID",currentUser.getUid())
+                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if(task.isSuccessful() && task.getResult().size()>0){
+                                        usuario = task.getResult().toObjects(Usuarios.class).get(0);
+                                        Log.d("usuario",usuario.toString());
+                                        loginProgress.setVisibility(View.INVISIBLE);
+                                        btnLogin.setVisibility(View.VISIBLE);
+                                        switch (usuario.getPerfil()){
+                                            case "camarero":
+                                            case "cocinero":
+                                                intent = new Intent(LoginActivity.this, CardViewGestionComandas.class);
+                                                intent.putExtra("usuario", usuario);
+                                                startActivity(intent);
+                                                break;
+                                            case "Administrador":
+                                                intent = new Intent(LoginActivity.this, FormAdmin.class);
+                                                intent.putExtra("usuario", usuario);
+                                                startActivity(intent);
+                                                break;
+                                            default:
+                                        }
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
                                 }
-                            }
-                        }
-                    });
-
-                    if (userPerfil != null && (userPerfil.equals("Cocinero") || userPerfil.equals("Camarero"))) {
-                        Intent intent = new Intent(LoginActivity.this, CardViewGestionComandas.class);
-                        intent.putExtra("perfil", userPerfil);
-                        intent.putExtra("restaurante", userRestaurante);
-                        startActivity(intent);
-                    }
-
-                    loginProgress.setVisibility(View.INVISIBLE);
-                    btnLogin.setVisibility(View.VISIBLE);
-                    updateUI();
+                            });
 
                 } else {
                     showMessage(task.getException().getLocalizedMessage());
@@ -134,12 +131,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void updateUI() {
-        startActivity(HomeActivity);
-        finish();
-
     }
 
     private void showMessage(String text) {

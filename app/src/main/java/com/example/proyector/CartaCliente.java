@@ -87,12 +87,13 @@ public class CartaCliente extends AppCompatActivity {
         if (intent.getExtras() != null) {
             ticket1 = intent.getExtras().getSerializable("ticket", Ticket.class);
             if (ticket1 != null) {
-                //restaurante1 = ticket1.getRestaurante();
-                //txNombreRest = restaurante1.getNombre();
+                restaurante1 = ticket1.getRestaurante();
+                txNombreRest.setText( restaurante1.getNombre());
                 tNumMesa.setText("Mesa: " + ticket1.getNum_mesa());
             }
         } else {
-            //Error ticket sin identificar
+            Toast.makeText(getApplicationContext(),"Ticket no identificado", Toast.LENGTH_LONG).show();
+            finish();
         }
 
         listView1 = (ListView) findViewById(R.id.listviewCarta);
