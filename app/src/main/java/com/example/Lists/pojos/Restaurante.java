@@ -3,6 +3,7 @@ package com.example.Lists.pojos;
 import java.io.Serializable;
 
 public class Restaurante implements Serializable {
+    String id;
     String nombre;
     String razonSocial;
     String nif;
@@ -10,8 +11,7 @@ public class Restaurante implements Serializable {
     String ciudad;
     String codPostal;
     String telefono;
-    // TODO - añadir String Id
-    // TODO - añadir int nº de mesas
+
 
     public Restaurante() {
     }
@@ -80,5 +80,27 @@ public class Restaurante implements Serializable {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurante{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", razonSocial='" + razonSocial + '\'' +
+                ", nif='" + nif + '\'' +
+                ", provincia='" + provincia + '\'' +
+                ", ciudad='" + ciudad + '\'' +
+                ", codPostal='" + codPostal + '\'' +
+                ", telefono='" + telefono + '\'' +
+                '}';
     }
 }

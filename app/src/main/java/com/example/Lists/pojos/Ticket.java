@@ -9,7 +9,7 @@ public class Ticket implements Serializable {
     Restaurante restaurante;
     String id;
     Date fecha;
-    int num_mesa;
+    String num_mesa;
     int id_camarero;
     List<Lineas_Ticket> lineas_ticket;
     //Lineas_Ticket linea_ticket;
@@ -21,7 +21,7 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero, List<Lineas_Ticket> lineas_ticket) {
+    public Ticket(Restaurante restaurante, String id, Date fecha, String num_mesa, int id_camarero, List<Lineas_Ticket> lineas_ticket) {
         this.restaurante = restaurante;
         this.id = id;
         this.fecha = fecha;
@@ -30,7 +30,7 @@ public class Ticket implements Serializable {
         this.lineas_ticket = lineas_ticket;
     }
 
-    public Ticket(Restaurante restaurante, String id, Date fecha, int num_mesa, int id_camarero) {
+    public Ticket(Restaurante restaurante, String id, Date fecha, String num_mesa, int id_camarero) {
         this.restaurante = restaurante;
         this.id = id;
         this.fecha = fecha;
@@ -62,11 +62,11 @@ public class Ticket implements Serializable {
         this.fecha = fecha;
     }
 
-    public int getNum_mesa() {
+    public String getNum_mesa() {
         return num_mesa;
     }
 
-    public void setNum_mesa(int num_mesa) {
+    public void setNum_mesa(String num_mesa) {
         this.num_mesa = num_mesa;
     }
 
@@ -84,5 +84,17 @@ public class Ticket implements Serializable {
 
     public void setLineas_ticket(List<Lineas_Ticket> lineas_ticket) {
         this.lineas_ticket = lineas_ticket;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "restaurante=" + restaurante +
+                ", id='" + id + '\'' +
+                ", fecha=" + fecha +
+                ", num_mesa='" + num_mesa + '\'' +
+                ", id_camarero=" + id_camarero +
+                ", lineas_ticket=" + lineas_ticket +
+                '}';
     }
 }

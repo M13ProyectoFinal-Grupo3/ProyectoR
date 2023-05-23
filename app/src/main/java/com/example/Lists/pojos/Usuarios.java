@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 public class Usuarios implements Serializable {
     String UID;
-    String perfil;
+    String Perfil;
+    String Restaurante;
+
+    public Usuarios() {
+    }
 
     public String getUID() {
         return UID;
@@ -15,23 +19,27 @@ public class Usuarios implements Serializable {
     }
 
     public String getPerfil() {
-        return perfil;
+        return Perfil;
     }
 
     public void setPerfil(String perfil) {
-        this.perfil = perfil;
+        Perfil = perfil;
     }
 
-    public Usuarios(String UID, String perfil) {
-        this.UID = UID;
-        this.perfil = perfil;
+    public String getRestaurante() {
+        return Restaurante;
+    }
+
+    public void setRestaurante(String restaurante) {
+        Restaurante = restaurante;
     }
 
     @Override
     public String toString() {
         return "Usuarios{" +
                 "UID='" + UID + '\'' +
-                ", perfil='" + perfil + '\'' +
+                ", Perfil='" + Perfil + '\'' +
+                ", Restaurante='" + Restaurante + '\'' +
                 '}';
     }
 }
