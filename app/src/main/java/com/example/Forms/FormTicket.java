@@ -1,72 +1,68 @@
 package com.example.Forms;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.Lists.ListTicket;
-import com.example.Lists.pojos.Alergeno;
-import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Lineas_Ticket;
 import com.example.Lists.pojos.Mesa;
+import com.example.Lists.pojos.Producto;
 import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Ticket;
+import com.example.Lists.pojos.Usuarios;
 import com.example.adapters.AdapterMesa;
-import com.example.adapters.AdapterTicket;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.time.LocalDateTime;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class FormTicket extends AppCompatActivity {
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference ticketCollection = db.collection("tickets");
-    CollectionReference restauranteCollection = db.collection("restaurante");
+    FirebaseUser currentUser;
 
-    String nombreRest;
-    String nifRest;
-    String fecha;
-
-    Ticket t_anterior = null;
-    Ticket t_nuevo = null;
-
+    Usuarios usuario;
     Restaurante restauranteFB;
 
-    //AdapterTicket adaptador; // TODO - necesario?
-    ArrayAdapter<Integer> adaptador;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference ticketCollection = db.collection("tickets");
+
+    CollectionReference collectionRef = db.collection("usuarios");
+    CollectionReference collectionRest = db.collection("restaurante");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    ArrayList<String> listaMesas = new ArrayList<>();
+    ArrayAdapter<String> adapter;
+
+    Spinner mesas;
+
+    Ticket ticket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,164 +70,140 @@ public class FormTicket extends AppCompatActivity {
         setContentView(R.layout.activity_form_ticket);
         getSupportActionBar().hide();
 
-        /*///// TODO - cargar restaurante logeado
-        Intent intent = getIntent();
-        if (intent.getExtras() != null &&
-            (intent.getStringExtra("perfilUsuario").equals("administrador") ||
-            intent.getStringExtra("perfilUsuario").equals("camarero"))) {
-            restauranteFB = getIntent().getExtras().getSerializable("restaurante", Restaurante.class);
-            // o
-            //nombreRestaurante = intent.getStringExtra("nombreRestaurante");
-        }else{
-            //opciones = new String[]{"Camarero", "Cocinero"};
-        }
 
-        /////*/
+        Producto producto1 = new Producto("Cocacola", 2f);
+        Producto producto2 = new Producto("Patatas", 4f);
+        Producto producto3 = new Producto("Olivas", 2f);
+        Producto producto4 = new Producto("Jamon", 8f);
+        Producto producto5 = new Producto("Anchoas", 2f);
 
-        //cargar nombre restaurante logeado
-        TextView restaurante = (TextView) findViewById(R.id.tvNombreRest);
-        //restaurante.setText(restauranteFB.getNombre());
+        Lineas_Ticket linea1 = new Lineas_Ticket(producto1, 2);
+        Lineas_Ticket linea2 = new Lineas_Ticket(producto2, 2);
+        Lineas_Ticket linea3 = new Lineas_Ticket(producto3, 2);
+        Lineas_Ticket linea4 = new Lineas_Ticket(producto4, 2);
+        Lineas_Ticket linea5 = new Lineas_Ticket(producto5, 2);
 
-        //cargar nif restaurante logeado TODO
-        TextView nif = (TextView) findViewById(R.id.tvNifRest);
-        //nif.setText(restauranteFB.getNif());
-
-        //añadir fecha automáticamente
-        TextView fecha = (TextView) findViewById(R.id.tvFecha);
-        Date fechaPrueba = new Date();
-        fecha.setText(""+fechaPrueba+"");
+        List<Lineas_Ticket> listaLineas = new ArrayList<Lineas_Ticket>();
+        listaLineas.add(linea1);
+        listaLineas.add(linea2);
+        listaLineas.add(linea3);
+        listaLineas.add(linea4);
+        listaLineas.add(linea5);
 
 
-        Restaurante restPrueba = new Restaurante("Bar Paco", "Comedor Social SL", "123456789k", "Barcelona", "Vilanova", "08720", "+34123456789");
-        Ticket ticketPrueba = new Ticket(restPrueba, "idxffffff", fechaPrueba, 4, 4);
 
+        //inicializamos las variables
+        mesas = findViewById(R.id.spMesa);
 
-        ListView listviewMesas;
-        AdapterMesa adapter;
-        ArrayList<Mesa> lista = new ArrayList<>();
+        adapter = new ArrayAdapter<String>(FormTicket.this, android.R.layout.simple_spinner_dropdown_item, listaMesas);
+        mesas.setAdapter(adapter);
 
-        listviewMesas = (ListView) findViewById(R.id.listaMesas);
-        adapter = new AdapterMesa(FormTicket.this, lista);
-        listviewMesas.setAdapter(adapter);
+        Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
+        btnGuardar.setEnabled(false);
 
+        ImageButton backButton = findViewById(R.id.backBtn);
 
-            //definimos el desplegable. PROVISIONAL
-            Spinner mesas;
-            List<Integer> listaMesas = new ArrayList<>();
-            //TODO - meter aquícodigo para recuperar nº de mesas. candidadMesas = lo que venga de firebase
-            int cantidadMesas = 8; // 8 solo para pruebas, será lo de firebase
-            for (int i = 1; i <= cantidadMesas; i++) {
-                listaMesas.add(i);
-            }
-            //revertimos el orden de la lista, que por defecto es de mayor a menor
-            //Collections.reverse(listaMesas);
-            adaptador = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, listaMesas);
+        currentUser = mAuth.getCurrentUser();
 
-            //inicializamos las variables
-            mesas = findViewById(R.id.spMesa);
-            mesas.setAdapter(adaptador);
-
-            Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
-            Button btnBorrar = (Button) findViewById(R.id.btnBorrar);
-
-            ImageButton backButton = findViewById(R.id.backBtn);
-
-            //le indicamos lo que tiene que hacer cada vez que el spinner cambie de posición. TODO
-            mesas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                    int numeroMesa = position + 1;
-
-                    ticketPrueba.setNum_mesa(numeroMesa);
-
-
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-
-            btnGuardar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //cargar mesa del spinner seleccionada por el user TODO
-/*
-                // Actualizar ticket o añadir nuevo
-                if(t_anterior !=null) {
-                    // Actualizar
-                    ticketCollection.whereEqualTo("nombre", t_anterior.getNombre())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if(task.getResult().getDocuments().size()>0) {
-                                            DocumentSnapshot d = task.getResult().getDocuments().get(task.getResult().size()-1);
-                                            ticketCollection.document( d.getId()).update("nombre", t_nuevo.getNombre()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    Toast.makeText(FormAlergenos.this, "El Alergeno se modificó correctamente", Toast.LENGTH_SHORT).show();
-                                                    Intent resultIntent = new Intent();
-                                                    resultIntent.putExtra("update", t_nuevo);
-                                                    Log.d("return update","ok");
-                                                    setResult(RESULT_OK, resultIntent);
-                                                    finish();
-                                                }
-                                            });
-
-                                        } else {
-                                            Log.d(TAG,"Documento Alergeno no econtrado para su modificación");
-                                        }
-                                    } else {
-                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                    }
-                                }
-                            });
-
-                } else {
-                    */
-                    // Nuevo Ticket
-                    ticketCollection.add(ticketPrueba).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        collectionRef.whereEqualTo("UID", currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    usuario = task.getResult().getDocuments().get(0).toObject(Usuarios.class);
+                    collectionRest.document(usuario.getRestaurante()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                            ticketPrueba.setId(task.getResult().getId());
-                            ticketCollection.document(ticketPrueba.getId()).update("id", ticketPrueba.getId());
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("new", ticketPrueba);
-                            setResult(RESULT_OK, resultIntent);
-                            Toast.makeText(FormTicket.this, "El Ticket se añadio correctamente", Toast.LENGTH_SHORT).show();
-                            finish();
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()){
+                                restauranteFB = task.getResult().toObject(Restaurante.class);
+                                collectionRest.document(usuario.getRestaurante()).collection("mesa").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for(DocumentSnapshot document : task.getResult()){
+                                                Mesa mesa = document.toObject(Mesa.class);
+                                                listaMesas.add(mesa.getNum_mesa());
+                                            }
+                                            ticketCollection.whereEqualTo("restaurante.id",restauranteFB.getId())
+                                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                            if(task.isSuccessful()){
+                                                                for (DocumentSnapshot document : task.getResult()) {
+                                                                    Ticket t = document.toObject(Ticket.class);
+                                                                    Iterator it = listaMesas.iterator();
+                                                                    while(it.hasNext()){
+                                                                        Object m = it.next();
+                                                                        if(m.equals(t.getNum_mesa())){
+                                                                            listaMesas.remove(m);
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if (listaMesas.size() == 0){
+                                                                    Toast.makeText(FormTicket.this, "Todas las mesas estan ocupadas.", Toast.LENGTH_SHORT).show();
+                                                                    finish();
+                                                                }else {
+                                                                    btnGuardar.setEnabled(true);
+                                                                    adapter.notifyDataSetChanged();
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                            }
+                                        }
+                                });
+
+                            } else {
+                                Log.d("ERROR", "No se pudo obtener la lista de mesas");
+                            }
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            //cargar nombre restaurante logeado
+                            TextView restaurante = (TextView) findViewById(R.id.tvNombreRest);
+                            restaurante.setText(restauranteFB.getNombre());
+
+                            //cargar nif restaurante logeado
+                            TextView nif = (TextView) findViewById(R.id.tvNifRest);
+                            nif.setText(restauranteFB.getNif());
+
+                            //añadir fecha automáticamente
+                            TextView fecha = (TextView) findViewById(R.id.tvFecha);
+                            fecha.setText(""+(new Date())+"");
                         }
                     });
+
                 }
-            });
-
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-        }
-
-
-    }
+            }
+        });
 
 
 
-
-
-
-
-
-
-
-/* codigo viejo, por si acaso hay que recuperarlo
-
+        btnGuardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ticket = new Ticket();
+                ticket.setNum_mesa(mesas.getSelectedItem().toString());
+                ticket.setFecha(new Date());
+                ticket.setRestaurante(restauranteFB);
+                ticket.setId_camarero(4);
+                ticket.setLineas_ticket(listaLineas);
+                // Nuevo Ticket
+                ticketCollection.add(ticket).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        ticket.setId(task.getResult().getId());
+                        ticketCollection.document(ticket.getId()).update("id", ticket.getId());
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("new", ticket);
+                        setResult(RESULT_OK, resultIntent);
+                        Toast.makeText(FormTicket.this, "El Ticket se añadio correctamente", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }
+        });
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,5 +211,7 @@ public class FormTicket extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
- */
+
+}

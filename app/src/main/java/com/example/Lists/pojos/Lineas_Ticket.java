@@ -65,4 +65,16 @@ public class Lineas_Ticket implements Serializable {
     public void setSirve_idperfil(int sirve_idperfil) {
         this.sirve_idperfil = sirve_idperfil;
     }
+
+    @Override
+    public String toString() {
+        return "Lineas_Ticket{" +
+                "idLineaTicket='" + idLineaTicket + '\'' +
+                ", producto=" + producto +
+                ", cantidad=" + cantidad +
+                ", observaciones='" + observaciones + '\'' +
+                ", prepara_idperfil=" + prepara_idperfil +
+                ", sirve_idperfil=" + sirve_idperfil +
+                '}';
+    }
 }

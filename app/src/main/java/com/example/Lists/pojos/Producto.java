@@ -16,7 +16,12 @@ public class Producto implements Serializable {
         setAlergenos(new ArrayList<>());
     }
 
-    public Producto( Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
+    public Producto(String nombre, Float precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public Producto(Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
         this.activo = activo;
         this.nombre = nombre;
         this.descripcion = descripcion;
