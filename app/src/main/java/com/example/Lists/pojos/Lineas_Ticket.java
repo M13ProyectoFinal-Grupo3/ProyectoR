@@ -18,6 +18,12 @@ public class Lineas_Ticket implements Serializable {
         this.cantidad = cantidad;
     }
 
+    public Lineas_Ticket(int cantidad, String observaciones, Producto producto) {
+        this.cantidad = cantidad;
+        this.observaciones = observaciones;
+        this.producto = producto;
+    }
+
     public void setIdLineaTicket(String idLineaTicket) {
         this.idLineaTicket = idLineaTicket;
     }

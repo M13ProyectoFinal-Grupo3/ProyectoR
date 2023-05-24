@@ -3,7 +3,10 @@ package com.example.Lists;
 import static android.content.ContentValues.TAG;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.Lists.pojos.Lineas_Ticket;
+import com.example.Lists.pojos.Producto;
 import com.example.adapters.AdapterRecyclerView;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,35 +26,37 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CardViewGestionComandas extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference myRef1 = db.collection("ticket");
+    CollectionReference myRef1 = db.collection("tickets");
     FirebaseUser currentUser;
+    FirebaseFirestore userDb;
+    List<Lineas_Ticket> listaGestionComandas = new ArrayList<>();
+    int idRestauranteSesionIniciada = 0;
+    String nombreRestauranteUsuarioLogeado;
+    String perfilUsuarioLogeado;
     private FirebaseAuth mAuth;
     private CollectionReference collectionRef;
-    FirebaseFirestore userDb;
-
     private RecyclerView recyclerViewGestionComandas;
     private AdapterRecyclerView adaptadorGestionComandas;
-    List<Lineas_Ticket> listaGestionComandas = new ArrayList<>();
-
-    int idRestauranteSesionIniciada = 0;
-    String nombreRestaurante;
-    String perfilUsuarioLogeado;
+    private Handler handler;
+    private Runnable runnable;
+    private final int intervaloTiempo = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.card_view_gestion_comandas);
-        //getSupportActionBar().hide();
+
+        getSupportActionBar().hide();
+        //ImageButton backButton = findViewById(R.id.backBtn);
+        Button logOutBtn = (Button) findViewById(R.id.logOutBtn);
 
         mAuth = FirebaseAuth.getInstance();
         userDb = FirebaseFirestore.getInstance();
@@ -66,92 +71,81 @@ public class CardViewGestionComandas extends AppCompatActivity {
 
         updateLinearLayout();
 
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                updateLinearLayout();
+                handler.postDelayed(this, intervaloTiempo);
+            }
+        };
+
+        handler.postDelayed(runnable, intervaloTiempo);
+
         adaptadorGestionComandas.setOnItemClickListener(new AdapterRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 String idLineaTicket = listaGestionComandas.get(position).getIdLineaTicket();
 
-                int index = idLineaTicket.indexOf("/", idLineaTicket.indexOf("/") + 1);
-                String documentTicket = idLineaTicket.substring(idLineaTicket.indexOf("/") + 1, index);
+                String documentTicket = idLineaTicket.substring(0, idLineaTicket.indexOf("/"));
+                int caracteresDespuesDeBarra = Integer.parseInt(idLineaTicket.substring(idLineaTicket.indexOf("/") + 1));
 
-                String[] partes = idLineaTicket.split("/");
-                String documentLineaTicket = partes[partes.length - 1];
-
-                DocumentReference documentRef = db.collection("ticket").document(documentTicket).collection("lineaTicket").document(documentLineaTicket);
+                DocumentReference documentRef = db.collection("tickets").document(documentTicket);
 
                 if (perfilUsuarioLogeado.equals("Camarero")) {
-                    documentRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "Documento eliminado correctamente");
-                            listaGestionComandas.clear();
-                            updateLinearLayout();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error al eliminar el documento", e);
+                    documentRef.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
+                                lineas_ticket.remove(caracteresDespuesDeBarra);
+                                documentRef.update("lineas_ticket", lineas_ticket)
+                                        .addOnSuccessListener(aVoid -> {
+                                            listaGestionComandas.clear();
+                                            updateLinearLayout();
+                                        }).addOnFailureListener(e -> {
+                                        });
+                            }
                         }
                     });
-                } else if (perfilUsuarioLogeado.equals("Cocinero")) {
-                    Map<String, Object> actualizacion = new HashMap<>();
-                    actualizacion.put("Perfil", "Camarero");
 
-                    documentRef.update(actualizacion).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "Documento actualizado correctamente");
-                                    listaGestionComandas.clear();
-                                    updateLinearLayout();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error al actualizar documento", e);
-                                }
-                            });
+                } else if (perfilUsuarioLogeado.equals("Cocinero")) {
+                    documentRef.get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
+                                Map<String, Object> lineaTicket = lineas_ticket.get(caracteresDespuesDeBarra);
+
+                                lineaTicket.put("prepara_idperfil", 0L);
+                                lineaTicket.put("sirve_idperfil", 1L);
+
+                                documentRef.update("lineas_ticket", lineas_ticket)
+                                        .addOnSuccessListener(aVoid -> {
+                                            listaGestionComandas.clear();
+                                            updateLinearLayout();
+                                        }).addOnFailureListener(e -> {
+                                        });
+                            }
+                        }
+                    });
                 }
+            }
+        });
+
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.removeCallbacks(runnable);
+                mAuth.signOut();
+                finish();
             }
         });
     }
 
     private void updateLinearLayout() {
 
-        myRef1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        int idRestauranteFirebase = document.getLong("idRestaurante").intValue();
-                        if (idRestauranteFirebase == idRestauranteSesionIniciada) { //Extraemos aqui el nombre del restaurante con nombreRestaurante
-                            String documentoID = document.getId();
-                            String idTicket = "ticket/" + documentoID + "/lineaTicket/";
-                            db.collection("ticket").document(documentoID).collection("lineaTicket").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot querySnapshot) {
-                                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
-                                        String idLineaTicket = idTicket + documentSnapshot.getId();
-                                        //Filtramos aqui segun perfil del personal
-                                        listaGestionComandas.add(documentSnapshot.toObject(Lineas_Ticket.class));
-                                        listaGestionComandas.get(querySnapshot.getDocuments().indexOf(documentSnapshot)).setIdLineaTicket(idLineaTicket);
-                                    }
-                                    adaptadorGestionComandas.notifyDataSetChanged();
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
+        listaGestionComandas.clear();
         currentUser = mAuth.getCurrentUser();
 
         String uid = null;
@@ -166,13 +160,83 @@ public class CardViewGestionComandas extends AppCompatActivity {
                 List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
                 for (DocumentSnapshot snapshot : snapshotList) {
                     if (finalUid.equals(snapshot.getString("UID"))) {
-                        nombreRestaurante = snapshot.getString("Restaurante");
+                        nombreRestauranteUsuarioLogeado = snapshot.getString("Restaurante");
                         perfilUsuarioLogeado = snapshot.getString("Perfil");
                     }
                 }
+
+                myRef1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                Long cantidadLineaTicket = null;
+                                String observacionesLineaTicket = null;
+                                String productoNombreLineaTicket = null;
+                                Producto productoLineaTicket = null;
+                                Long preparaIdPerfilLineaTicket = null;
+                                Long sirveIdPerfilLineaTicket = null;
+                                int indice = 0;
+                                String nombreRestaurante = null;
+
+                                Map<String, Object> mapa = (Map<String, Object>) document.get("restaurante");
+                                for (Map.Entry<String, Object> entry : mapa.entrySet()) {
+                                    if (entry.getKey().equals("nombre")) {
+                                        nombreRestaurante = (String) entry.getValue();
+                                    }
+                                }
+
+                                ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
+
+                                for (Map<String, Object> mapaFila : lineas_ticket) {
+
+                                    // Recorrer el mapa de cada fila
+                                    for (Map.Entry<String, Object> entry : mapaFila.entrySet()) {
+                                        if (entry.getKey().equals("cantidad")) {
+                                            cantidadLineaTicket = (Long) entry.getValue();
+                                        }
+                                        if (entry.getKey().equals("observaciones")) {
+                                            observacionesLineaTicket = entry.getValue() == null ? "N/A" : (String) entry.getValue();
+                                        }
+                                        if (entry.getKey().equals("producto")) {
+                                            Map<String, Object> mapaProducto = (Map<String, Object>) entry.getValue();
+                                            for (Map.Entry<String, Object> entryProducto : mapaProducto.entrySet()) {
+                                                if (entryProducto.getKey().equals("nombre")) {
+                                                    productoNombreLineaTicket = (String) entryProducto.getValue();
+                                                    productoLineaTicket = new Producto();
+                                                    productoLineaTicket.setNombre(productoNombreLineaTicket);
+                                                }
+                                            }
+                                        }
+                                        if (entry.getKey().equals("prepara_idperfil")) {
+                                            preparaIdPerfilLineaTicket = (Long) entry.getValue();
+                                        }
+                                        if (entry.getKey().equals("sirve_idperfil")) {
+                                            sirveIdPerfilLineaTicket = (Long) entry.getValue();
+                                        }
+                                        indice = lineas_ticket.indexOf(mapaFila);
+
+                                    }
+                                    Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), observacionesLineaTicket, productoLineaTicket);
+                                    agregarComanda.setIdLineaTicket(document.getId() + "/" + indice);
+
+                                    if (perfilUsuarioLogeado != null && nombreRestauranteUsuarioLogeado != null) {
+                                        if ((perfilUsuarioLogeado.equals("Cocinero") && preparaIdPerfilLineaTicket == 1 && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante)) || (perfilUsuarioLogeado.equals("Administrador") && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante))) {
+                                            listaGestionComandas.add(agregarComanda);
+                                        } else if ((perfilUsuarioLogeado.equals("Camarero") && sirveIdPerfilLineaTicket == 1 && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante)) || (perfilUsuarioLogeado.equals("Administrador") && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante))) {
+                                            listaGestionComandas.add(agregarComanda);
+                                        }
+                                    }
+                                }
+                            }
+                            adaptadorGestionComandas.notifyDataSetChanged();
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
             }
         });
-
     }
 
 }

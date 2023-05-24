@@ -12,6 +12,7 @@ import com.example.Lists.pojos.Lineas_Ticket;
 import com.example.proyector.R;
 
 import java.util.List;
+import java.util.Locale;
 
 public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerView.ViewHolder> {
 
@@ -74,7 +75,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        //holder.nombre.setText("NOMBRE: " + (String.valueOf(lineasTicketLista.get(position).getId_producto())));
+        holder.nombre.setText((String.valueOf(lineasTicketLista.get(position).getProducto().getNombre())).toUpperCase(Locale.ROOT));
         holder.cantidad.setText("Cantidad: " + (String.valueOf(lineasTicketLista.get(position).getCantidad())));
         holder.observaciones.setText("Observaciones: " + lineasTicketLista.get(position).getObservaciones());
     }
