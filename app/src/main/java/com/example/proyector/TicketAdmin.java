@@ -48,6 +48,8 @@ public class TicketAdmin extends AppCompatActivity {
         Producto producto4 = new Producto("Jamon", 8f);
         Producto producto5 = new Producto("Anchoas", 2f);
 
+        //recoger preparaidperfil, 0 o 1
+
         Lineas_Ticket linea1 = new Lineas_Ticket(producto1, 1);
         Lineas_Ticket linea2 = new Lineas_Ticket(producto2, 2);
         Lineas_Ticket linea3 = new Lineas_Ticket(producto3, 2);
@@ -63,7 +65,7 @@ public class TicketAdmin extends AppCompatActivity {
 
         Date fechaPrueba = new Date();
 
-        Ticket ticketPrueba = new Ticket(restPrueba, "idxffffff", fechaPrueba, 4, 4, listaLineas);
+        Ticket ticketPrueba = new Ticket(restPrueba, "idxffffff", fechaPrueba, "4", 4, listaLineas);
 
         float precioTotal = 0f;
 
@@ -71,6 +73,7 @@ public class TicketAdmin extends AppCompatActivity {
             precioTotal += linea.getProducto().getPrecio();
         }
 
+        //TODO - que se actualice al cambiar las cantidades
         TextView xTotal = (TextView) findViewById(R.id.tvPrecioFinal);
         xTotal.setText(""+precioTotal+"");
 
@@ -92,10 +95,9 @@ public class TicketAdmin extends AppCompatActivity {
 
                 Intent intent = new Intent();
                 intent.setClass(TicketAdmin.this, VerQR.class);
-                //intent.putExtra("id", id); id con numero mesa que venga del primer intent
+                //intent.putExtra("mesa", id); id con numero mesa que venga del primer intent
                 startActivity(intent);
 
-                //TODO - hacerlo como un dialog?
             }
         });
 

@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -42,7 +41,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -64,28 +62,28 @@ public class FormProducto extends AppCompatActivity {
     AdapterCheckAls adaptercheck;
     TextView tAlergs; // TextView donde se muestran los alergenos seleccionados
 
+    final long MAX_IMAGESIZE = 1024 * 1024;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference imgRef = storage.getReference();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
-        getSupportActionBar().hide(); // esconde la barra lila donde pone ProyectoR
 
         cAlergenos = new ArrayList<>();
 
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarProd);
         Button btnGuardar = (Button) findViewById(R.id.btnGuardarAl);
-        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_pFoto);
+        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_dFoto);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
         TextView txDepartamento = (TextView) findViewById(R.id.tx_nomDepto);
 
         xNombre = (EditText) findViewById(R.id.t_pNombre);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
-        imageview1 =(ImageView) findViewById(R.id.imagen1);
+        imageview1 =(ImageView) findViewById(R.id.imagend1);
         tAlergs = (TextView) findViewById(R.id.txFprodAls);
-
-        //botón volver atrás
-        ImageButton backButton = findViewById(R.id.backBtn);
 
         // recupera Producto a editar
         Intent intent = getIntent();
@@ -95,11 +93,9 @@ public class FormProducto extends AppCompatActivity {
             }
             if(intent.getExtras().containsKey("ref")){
                 myRef = db.collection(getIntent().getExtras().getString("ref"));
-                Log.d("myRef",myRef.getPath());
             } else { finish();}
             if(intent.getExtras().containsKey("producto")) {
                 producto = getIntent().getExtras().getSerializable("producto", Producto.class);
-                Log.d("producto",""+producto.toString());
                 xNombre.setText(producto.getNombre());
                 xDescrip.setText(producto.getDescripcion());
                 xPrecio.setText(producto.getPrecio().toString());
@@ -126,7 +122,14 @@ public class FormProducto extends AppCompatActivity {
                             }
                         }
                         mostrarAls();
-                        cargarImagen(producto);
+                        // cargar imagen
+                        imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
+                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                    @Override
+                                    public void onSuccess(byte[] bytes) {
+                                        imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                                    }
+                                });
                     }
                 });
             }
@@ -144,7 +147,7 @@ public class FormProducto extends AppCompatActivity {
 
                 Producto p = new Producto(true, xNombre.getText().toString(), xDescrip.getText().toString(), Float.parseFloat(xPrecio.getText().toString()),getAlergenos(cAlergenos));
 
-                guardarImagen(p);
+                //guardar imagen
 
                 // Update
                 if (producto != null) {
@@ -256,6 +259,7 @@ public class FormProducto extends AppCompatActivity {
                                 try {
                                     InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                    //bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
                                     imageview1.setImageBitmap(bitmap);
                                 }catch (Exception e){
                                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -265,102 +269,18 @@ public class FormProducto extends AppCompatActivity {
                     }
                 });
 
-                btnFoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityGaleria.launch(intent);
-                    }
-                });
-
-        //funcionalidad boton vovler atrás
-        backButton.setOnClickListener(new View.OnClickListener() {
+        btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityGaleria.launch(intent);
             }
         });
 
     }
 
-    private void cargarImagen(Producto p){
-        final long MAX_IMAGESIZE = 1024 * 1024;
-        String name = p.getNombre().replace(" ","")+".jpg";
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference imgRef = storage.getReference();
-        imgRef.child("productos").child(name).getBytes(MAX_IMAGESIZE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        imageview1.setImageBitmap(bitmap);
-                    }
-                });
-    }
 
-    private void guardarImagen(Producto p){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference imgRef = storage.getReference().child("productos");
-        String name = p.getNombre().replace(" ","")+".jpg";
-
-        // comprobar si existe imagen asociada al producto y eliminarla antes de subir la nueva
-        imgRef.listAll().addOnCompleteListener(new OnCompleteListener<ListResult>() {
-            @Override
-            public void onComplete(@NonNull Task<ListResult> task) {
-                if(task.getResult().getItems().size()>0) {
-                    for(StorageReference file:task.getResult().getItems()){
-                        if(file.getName().equals(name)){
-                            StorageReference delRef = storage.getReference().child("productos/"+name);
-                            delRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // File deleted successfully
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Uh-oh, an error occurred!
-                                }
-                            });
-
-                        }
-                    }
-                }
-            }
-        });
-
-        // subir la nueva imagen
-        imgRef = storage.getReference().child("productos/"+name);
-
-        Bitmap bitmap = getBitmapFromView(imageview1);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-        UploadTask uploadTask = imgRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
-    }
-
-    Bitmap getBitmapFromView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888
-        );
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
-    }
 
     ArrayList<Alergeno> getAlergenos(ArrayList<cAlergeno> cAlergenos){
         ArrayList<Alergeno> result = new ArrayList<>();
@@ -381,5 +301,31 @@ public class FormProducto extends AppCompatActivity {
         }
         if(result.size()>0) s = TextUtils.join(",", result);
         tAlergs.setText(s);
+    }
+
+    public void guardarImagen(Producto p, Bitmap bmp) {
+        imgRef = storage.getReference().child("productos/"+getImgName(p));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = imgRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+            }
+        });
+    }
+
+    private String getImgName(Producto p){
+        return p.getId()+".jpg";
     }
 }

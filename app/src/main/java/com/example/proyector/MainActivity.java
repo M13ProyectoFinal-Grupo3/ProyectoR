@@ -1,25 +1,32 @@
 package com.example.proyector;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.Lists.pojos.Ticket;
-import com.example.Lists.pojos.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
-public class MainActivity extends AppCompatActivity implements AccesoQR.ifAccesoQR {
+public class MainActivity extends AppCompatActivity{
     FragmentManager fm = getSupportFragmentManager();
     String RestId=null;
 
-    ImageView imageView;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference myRef = db.collection("tickets");
 
     Ticket ticket1;
     User user1;
@@ -31,120 +38,73 @@ public class MainActivity extends AppCompatActivity implements AccesoQR.ifAcceso
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+        ImageButton btnAccess = (ImageButton) findViewById(R.id.btnLoginProf);
+        ImageView imageView1 = (ImageView) findViewById(R.id.imageView1);
 
-        Button btnAccess = (Button) findViewById(R.id.btnAcceso);
-        Button btnLeerQR = (Button) findViewById(R.id.btnLeerQR);
 
-        fm.setFragmentResultListener("request", MainActivity.this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                user1 = result.getSerializable("user", User.class);
-                ticket1 = result.getSerializable("ticket", Ticket.class);
-                if (user1 != null) {
-                    //cargar fragment menu profesional
-                }
-            }
-        });
-
-        loadFragment(new AccesoQR());
-
+        // acceso profesional
         btnAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new Profesional());
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
 
-        btnLeerQR.setOnClickListener(new View.OnClickListener() {
+        // acceso usuario - leer QR
+        imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new AccesoQR());
-            }
-        });
-
-    }
-
-
-    private void loadFragment(Fragment fragment) {
-    // create a FragmentTransaction to begin the transaction and replace the Fragment
-        fm.beginTransaction()
-            .replace(R.id.frameLayout1, fragment)
-            .commit(); // save the changes
-    }
-
-    @Override
-    public void if_btnCarta() {
-        ticket1 = new Ticket("");
-        Intent intent = new Intent(this, CartaCliente.class);
-        intent.putExtra("ticket",ticket1);
-        startActivity(intent);
-    }
-}
-
-
-/*
-// Create a new user with a first and last name
-
-Map<String, Object> user = new HashMap<>();
-user.put("first", "Ada");
-user.put("last", "Lovelace");
-user.put("born", 1815);
-
-// Add a new document with a generated ID
-db.collection("users")
-        .add(user)
-        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error adding document", e);
-            }
-        });
-
-
-
-        // Create a new user with a first, middle, and last name
-Map<String, Object> user = new HashMap<>();
-user.put("first", "Alan");
-user.put("middle", "Mathison");
-user.put("last", "Turing");
-user.put("born", 1912);
-
-// Add a new document with a generated ID
-db.collection("users")
-        .add(user)
-        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error adding document", e);
-            }
-        });
-
-        //READ DATA
-
-        db.collection("users")
-        .get()
-        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
+                // leer el primer ticket para test
+                myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ticket1 = task.getResult().toObjects(Ticket.class).get(0);
+                            Intent intent = new Intent(MainActivity.this, CartaCliente.class);
+                            intent.putExtra("ticket", ticket1);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Ticket no reconocido", Toast.LENGTH_LONG).show();
+                        }
                     }
-                } else {
-                    Log.w(TAG, "Error getting documents.", task.getException());
-                }
+                });
+                /* escanear qr
+                ScanOptions options = new ScanOptions();
+                options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+                options.setPrompt("ESCANEAR QR");
+                options.setCameraId(0);
+                options.setOrientationLocked(false);
+                options.setBeepEnabled(true);
+                options.setCaptureActivity(CapActivity.class);
+                options.setBarcodeImageEnabled(false);
+                barcodeLauncher.launch(options);
+                */
             }
         });
- */
+
+    }
+
+    // acceso cliente - leer qr
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(), result-> {
+                if (result.getContents() != null) {
+                    String nTicket = result.getContents();
+                    myRef.whereEqualTo("id", nTicket)
+                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        ticket1 = task.getResult().toObjects(Ticket.class).get(0);
+                                        Intent intent = new Intent(MainActivity.this, CartaCliente.class);
+                                        intent.putExtra("ticket", ticket1);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "Ticket no reconocido", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                }
+            });
+
+
+}
