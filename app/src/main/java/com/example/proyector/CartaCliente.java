@@ -40,18 +40,23 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CartaCliente extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
     CollectionReference myRef =  db.collection("Carta").document("carta").collection("Departamentos");
-    CollectionReference pRef;
+    CollectionReference productoRef;
+    CollectionReference ticketRef;
 
     ArrayList<Departamento> departamentos = new ArrayList<>();
     ArrayList<Producto> productos = new ArrayList<>();
@@ -65,6 +70,7 @@ public class CartaCliente extends AppCompatActivity {
     ListView listView1;
 
     Ticket ticket1;
+    Lineas_Ticket lineaT;
     TextView tNomRest;
     TextView tNumMesa;
     TextView tAlergs;
@@ -82,6 +88,8 @@ public class CartaCliente extends AppCompatActivity {
         tAlergs = (TextView) findViewById(R.id.txAlergenos);
 
         ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
+
+        ticketRef = db.collection("tickets");
 
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
@@ -180,8 +188,8 @@ public class CartaCliente extends AppCompatActivity {
 
 
     private void mostrarProductos(Departamento departamento){
-        pRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
-        pRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        productoRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
+        productoRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 productos.removeAll(productos);
@@ -210,10 +218,12 @@ public class CartaCliente extends AppCompatActivity {
                 listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                        Producto p = productos.get(position);
-
-                        Log.d("onItemClick",p.getNombre());
+                        // obtenemos el producto
+                        Producto producto1 = productos.get(position);
+                        // buscamos si ya tiene mas unidades solicitadas y generamos la linea ticket correspondiente
+                        // con las unidades ya solicitadas
+                        Log.d("producto",producto1.toString());
+                        lineaT = ticket1.buscarLinea(producto1);
 
                         // generar Dialog
                         AlertDialog.Builder imageDialog = new AlertDialog.Builder(CartaCliente.this );
@@ -222,8 +232,11 @@ public class CartaCliente extends AppCompatActivity {
                         View layout = inflater.inflate(R.layout.dialog_carta, (ViewGroup) findViewById(R.id.layout_root));
                         ImageView image = (ImageView) layout.findViewById(R.id.imgDialogProd);
                         TextView txNomProducto = (TextView) layout.findViewById(R.id.txDialog1);
+                        TextView txUdsPedidas = (TextView) layout.findViewById(R.id.TxUdsPedidas);
                         EditText eCantidad = (EditText) layout.findViewById(R.id.etCantidad);
-                        txNomProducto.setText(p.getNombre());
+
+                        txNomProducto.setText(producto1.getNombre());
+                        if(lineaT != null){txUdsPedidas.setText("Unidades pedidas: "+lineaT.getCantidad());}
 
                         // cargar imagen
 
@@ -231,14 +244,17 @@ public class CartaCliente extends AppCompatActivity {
 
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         StorageReference imgRef = storage.getReference();
-                        imgRef.child("productos").child(getProductoImgName(p)).getBytes(MAX_IMAGESIZE)
+                        imgRef.child("productos").child(getProductoImgName(producto1)).getBytes(MAX_IMAGESIZE)
                                 .addOnCompleteListener(new OnCompleteListener<byte[]>() {
                                     @Override
                                     public void onComplete(@NonNull Task<byte[]> task) {
                                         if( task.isSuccessful() ) {
                                             byte[] bytes = task.getResult();
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                            image.setImageBitmap(bitmap);
+                                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                            b =Bitmap.createScaledBitmap(b, 50, 50, true);
+                                            image.setImageBitmap(b);
+                                        } else {
+                                            image.setImageResource(R.drawable.platocomida);
                                         }
                                     }
                                 })
@@ -249,15 +265,21 @@ public class CartaCliente extends AppCompatActivity {
                                         imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener(){
                                             public void onClick(DialogInterface dialog, int which) {
 
-                                                CollectionReference tRef = db.collection("Ticket").document(ticket1.getId()).collection("lineaTicket");
+                                                Integer cantidad = Integer.parseInt(eCantidad.getText().toString());
 
-                                                Integer cantidad = 1;
-                                                if(eCantidad.getText().length()>0) cantidad = Integer.parseInt(eCantidad.getText().toString());
-                                                Lineas_Ticket nLinea = new Lineas_Ticket(p, cantidad);
-
-                                                tRef.add(nLinea).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                if(lineaT.getProducto() == null) {
+                                                    // nueva linea
+                                                    lineaT = new Lineas_Ticket(producto1, cantidad);
+                                                    ticket1.addLinea_ticket(lineaT);
+                                                }else {
+                                                    ticket1.addCantidad(producto1,cantidad);
+                                                }
+                                                HashMap<String, Object> data = new HashMap<String, Object>() {
+                                                };
+                                                data.put("lineas_ticket",ticket1.getLineas_ticket());
+                                                ticketRef.document(ticket1.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
-                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                    public void onComplete(@NonNull Task<Void> task) {
                                                         Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
                                                     }
                                                 });
@@ -288,6 +310,11 @@ public class CartaCliente extends AppCompatActivity {
 
     private String getProductoImgName(Producto p){
         return p.getId()+".jpg";
+    }
+
+    private Bitmap reducirImagen(byte[] imageAsBytes){
+        Bitmap b = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+        return Bitmap.createScaledBitmap(b, 60, 60, true);
     }
 
 }

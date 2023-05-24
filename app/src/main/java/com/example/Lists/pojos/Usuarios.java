@@ -3,6 +3,7 @@ package com.example.Lists.pojos;
 import java.io.Serializable;
 
 public class Usuarios implements Serializable {
+    String id;
     String Perfil;
     String Restaurante;
     String UID;
@@ -14,6 +15,14 @@ public class Usuarios implements Serializable {
         Perfil = perfil;
         Restaurante = restaurante;
         this.UID = UID;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPerfil() {

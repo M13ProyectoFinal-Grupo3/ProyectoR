@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D4FFCD"
     tools:context="com.example.Forms.FormProducto">
 
     <ImageButton
@@ -75,16 +74,19 @@
                 android:id="@+id/switch1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
                 android:text="Visible" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="5dp"
                 android:hint="Nombre"
                 app:endIconMode="clear_text">
 
@@ -92,7 +94,7 @@
                     android:id="@+id/t_pNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -100,8 +102,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="5dp"
                 android:hint="Descripción"
                 app:endIconMode="clear_text">
 
@@ -109,7 +112,8 @@
                     android:id="@+id/t_pDescripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -117,8 +121,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="5dp"
                 android:hint="Precio"
                 app:endIconMode="clear_text">
 
@@ -126,14 +131,34 @@
                     android:id="@+id/t_pPrecio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <AutoCompleteTextView
+                android:id="@+id/spinPrepara"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:hint="Preparado por"
+                android:inputType="none"></AutoCompleteTextView>
+
+            <AutoCompleteTextView
+                android:id="@+id/spinServido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:hint="Servido por"
+                android:inputType="none"></AutoCompleteTextView>
 
             <TextView
                 android:id="@+id/tx_pAlergenos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="Alérgenos e intolerancias"
                 android:textColor="#FF0000" />
 
@@ -165,7 +190,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/imagen1"
+                    android:id="@+id/ImgProducto"
                     android:layout_width="wrap_content"
                     android:layout_height="160dp"
                     android:layout_marginTop="10dp"
@@ -174,7 +199,7 @@
                     app:srcCompat="@drawable/platocomida" />
 
                 <ImageButton
-                    android:id="@+id/btn_pFoto"
+                    android:id="@+id/btnImgProducto"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="bottom|right"

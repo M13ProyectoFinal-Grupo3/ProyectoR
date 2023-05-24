@@ -18,18 +18,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.Lists.pojos.Usuarios;
 import com.example.Lists.pojos.cAlergeno;
 import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Producto;
 import com.example.adapters.AdapterCheckAls;
+import com.example.adapters.AdapterUsuarios;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,6 +51,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -56,7 +62,16 @@ public class FormProducto extends AppCompatActivity {
     EditText xNombre;
     EditText xDescrip ;
     EditText xPrecio;
+    TextView txDepartamento;
     ImageView imageview1;
+    Spinner spinPrepara;
+    Spinner spinServido;
+    Switch switch1;
+
+    ArrayList<Usuarios> usuarios;
+    ArrayAdapter<Usuarios> adapter1;
+    ArrayAdapter<Usuarios> adapter2;
+
 
     ArrayList<cAlergeno> cAlergenos; // lista de todos los Alergenos
     AdapterCheckAls adaptercheck;
@@ -75,77 +90,119 @@ public class FormProducto extends AppCompatActivity {
 
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarProd);
         Button btnGuardar = (Button) findViewById(R.id.btnGuardarAl);
-        ImageButton btnFoto = (ImageButton) findViewById(R.id.btn_dFoto);
+        ImageButton btnFoto = (ImageButton) findViewById(R.id.btnImgProducto);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
-        TextView txDepartamento = (TextView) findViewById(R.id.tx_nomDepto);
 
+        txDepartamento = (TextView) findViewById(R.id.tx_nomDepto);
+        spinPrepara = (Spinner) findViewById(R.id.spinPrepara);
+        spinServido = (Spinner) findViewById(R.id.spinServido);
         xNombre = (EditText) findViewById(R.id.t_pNombre);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
-        imageview1 =(ImageView) findViewById(R.id.imagend1);
+        imageview1 =(ImageView) findViewById(R.id.ImgProducto);
         tAlergs = (TextView) findViewById(R.id.txFprodAls);
+        switch1 = (Switch) findViewById(R.id.switch1);
 
-        // recupera Producto a editar
-        Intent intent = getIntent();
-        if(intent.getExtras()!=null) {
-            if(intent.getExtras().containsKey("departamento")){
-                txDepartamento.setText("Departamento: "+getIntent().getExtras().getString("departamento"));
-            }
-            if(intent.getExtras().containsKey("ref")){
-                myRef = db.collection(getIntent().getExtras().getString("ref"));
-            } else { finish();}
-            if(intent.getExtras().containsKey("producto")) {
-                producto = getIntent().getExtras().getSerializable("producto", Producto.class);
-                xNombre.setText(producto.getNombre());
-                xDescrip.setText(producto.getDescripcion());
-                xPrecio.setText(producto.getPrecio().toString());
-                // set Alergenos
-                CollectionReference alRef = db.collection("alergenos");
-                alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Alergeno a = document.toObject(Alergeno.class);
-                                cAlergenos.add(new cAlergeno(a,false));
-                            }
-                        }
+        // set perfiles
+        CollectionReference perfilRef = db.collection("usuarios");
+        perfilRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot doc: task.getResult()){
+                        usuarios.add(doc.toObject(Usuarios.class));
                     }
-                }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(cAlergeno c: cAlergenos){
-                            for(Alergeno a: producto.getAlergenos()){
-                                if(c.getAlergeno().getId().equals(a.getId())){
-                                    c.setChecked(true);
+
+                    adapter1 = new AdapterUsuarios(getApplicationContext(), usuarios);
+                    spinPrepara.setAdapter(adapter1);
+                    spinPrepara.setSelection(0);
+                    adapter2 = new AdapterUsuarios(getApplicationContext(), usuarios);
+                    spinServido.setAdapter(adapter2);
+                    spinServido.setSelection(0);
+
+                } else {
+                    Toast.makeText(FormProducto.this, "ERROR: No existen perfiles de servicio", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                // recupera Producto a editar
+                Intent intent = getIntent();
+                if (intent.getExtras() != null) {
+
+                    if (intent.getExtras().containsKey("departamento")) {
+                        txDepartamento.setText("Departamento: " + getIntent().getExtras().getString("departamento"));
+                    }
+
+                    if (intent.getExtras().containsKey("ref")) {
+                        myRef = db.collection(getIntent().getExtras().getString("ref"));
+                    } else {
+                        finish();
+                    }
+
+                    if (intent.getExtras().containsKey("producto")) {
+                        producto = getIntent().getExtras().getSerializable("producto", Producto.class);
+                        xNombre.setText(producto.getNombre());
+                        xDescrip.setText(producto.getDescripcion());
+                        xPrecio.setText(producto.getPrecio().toString());
+                        switch1.setChecked(producto.getActivo());
+                        spinPrepara.setSelection(buscaUsuario(producto.getPrepara_idperfil()));
+                        spinServido.setSelection(buscaUsuario(producto.getSirve_idperfil()));
+
+                        // set Alergenos
+                        CollectionReference alRef = db.collection("alergenos");
+                        alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Alergeno a = document.toObject(Alergeno.class);
+                                        cAlergenos.add(new cAlergeno(a, false));
+                                    }
                                 }
                             }
-                        }
-                        mostrarAls();
-                        // cargar imagen
-                        imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
-                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                    @Override
-                                    public void onSuccess(byte[] bytes) {
-                                        imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for (cAlergeno c : cAlergenos) {
+                                    for (Alergeno a : producto.getAlergenos()) {
+                                        if (c.getAlergeno().getId().equals(a.getId())) {
+                                            c.setChecked(true);
+                                        }
                                     }
-                                });
+                                }
+                                mostrarAls();
+                                // cargar imagen
+                                imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
+                                        .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                            @Override
+                                            public void onSuccess(byte[] bytes) {
+                                                imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                                            }
+                                        });
+                            }
+                        });
                     }
-                });
+                }
             }
-        } else { finish();}
+
+        });
+
 
         // guardar producto
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.t_pNombre);
-                EditText xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
-                EditText xPrecio = (EditText) findViewById(R.id.t_pPrecio);
-                if(xPrecio.getText().toString().equals("")) xPrecio.setText("0");
+                Producto p = new Producto();
 
-                Producto p = new Producto(true, xNombre.getText().toString(), xDescrip.getText().toString(), Float.parseFloat(xPrecio.getText().toString()),getAlergenos(cAlergenos));
+                p.setActivo(switch1.isChecked());
+                p.setNombre(xNombre.getText().toString());
+                p.setDescripcion(xDescrip.getText().toString());
+                p.setPrecio( Float.parseFloat(xPrecio.getText().toString()));
+                p.setPrepara_idperfil( usuarios.get(spinPrepara.getSelectedItemPosition()).getId());
+                p.setSirve_idperfil( usuarios.get(spinServido.getSelectedItemPosition()).getId());
+                p.setAlergenos(getAlergenos(cAlergenos));
 
                 //guardar imagen
 
@@ -155,12 +212,12 @@ public class FormProducto extends AppCompatActivity {
 
                     HashMap<String, Object> data = new HashMap<String, Object>() {
                     };
-                    data.put("nombre",p.getNombre());
                     data.put("activo", p.getActivo());
+                    data.put("nombre",p.getNombre());
                     data.put("descripcion", p.getDescripcion());
                     data.put("precio", p.getPrecio());
-                    data.put("id_departamento", producto.getPrepara_idperfil());
-                    data.put("id_prepara", producto.getPrepara_idperfil());
+                    data.put("id_departamento", p.getPrepara_idperfil());
+                    data.put("id_prepara", p.getSirve_idperfil());
                     data.put("alergenos",p.getAlergenos());
                     myRef.document(producto.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -327,5 +384,17 @@ public class FormProducto extends AppCompatActivity {
 
     private String getImgName(Producto p){
         return p.getId()+".jpg";
+    }
+
+    private Integer buscaUsuario(String id){
+        Integer pos = 0;
+        for(Integer x=0; x<usuarios.size(); x++){
+            if(usuarios.get(x).getId().equals(id)){
+                pos = x;
+                break;
+            }
+        }
+
+        return pos;
     }
 }

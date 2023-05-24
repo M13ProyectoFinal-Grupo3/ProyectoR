@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.Lists.pojos.Ticket;
+import com.example.Lists.pojos.Usuarios;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -29,7 +30,6 @@ public class MainActivity extends AppCompatActivity{
     CollectionReference myRef = db.collection("tickets");
 
     Ticket ticket1;
-    User user1;
 
 
     @Override

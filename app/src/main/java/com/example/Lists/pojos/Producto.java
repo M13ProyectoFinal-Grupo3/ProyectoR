@@ -10,6 +10,7 @@ public class Producto implements Serializable {
     Boolean activo;
     Float precio;
     String prepara_idperfil;
+    String sirve_idperfil;
     ArrayList<Alergeno> alergenos;
 
     public Producto() {
@@ -19,23 +20,15 @@ public class Producto implements Serializable {
     public Producto(String nombre, Float precio) {
         this.nombre = nombre;
         this.precio = precio;
+        setAlergenos(new ArrayList<>());
     }
 
-    public Producto(Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
-        this.activo = activo;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.alergenos = alergenos;
+    public String getSirve_idperfil() {
+        return sirve_idperfil;
     }
 
-    public Producto(String id, String nombre, String descripcion, Boolean activo, Float precio, ArrayList<Alergeno> alergenos) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.activo = activo;
-        this.precio = precio;
-        this.alergenos = alergenos;
+    public void setSirve_idperfil(String sirve_idperfil) {
+        this.sirve_idperfil = sirve_idperfil;
     }
 
     public ArrayList<Alergeno> getAlergenos() {

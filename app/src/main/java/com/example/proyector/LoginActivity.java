@@ -104,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
                                         loginProgress.setVisibility(View.INVISIBLE);
                                         btnLogin.setVisibility(View.VISIBLE);
                                         switch (usuario.getPerfil()){
-                                            case "camarero":
-                                            case "cocinero":
+                                            case "Camarero":
+                                            case "Cocinero":
                                                 intent = new Intent(LoginActivity.this, CardViewGestionComandas.class);
                                                 intent.putExtra("usuario", usuario);
                                                 startActivity(intent);
