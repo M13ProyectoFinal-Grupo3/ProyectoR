@@ -126,13 +126,12 @@ public class ListTicket extends AppCompatActivity {
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
          @Override
          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-             Log.i("HelloListView", "You clicked Item: " + id + " at position:" + position);
-             // Then you start a new Activity via Intent
              Intent intent = new Intent();
              intent.setClass(ListTicket.this, TicketAdmin.class);
              intent.putExtra("position", position);
-             // Or / And
              intent.putExtra("id", id);
+             intent.putExtra("ticketId", lista.get(position).getId());
+             intent.putExtra("ticket", lista.get(position));
              startActivity(intent);
          }
      });
