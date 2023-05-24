@@ -15,6 +15,7 @@ import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListAlergenos;
 import com.example.Lists.ListRestaurante;
 import com.example.Lists.ListTicket;
+import com.example.Lists.ListUsuarios;
 import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Usuarios;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -104,7 +105,7 @@ public class FormAdmin extends AppCompatActivity {
         btnRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RegistroActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ListUsuarios.class);
                 startActivity(intent);
             }
         });

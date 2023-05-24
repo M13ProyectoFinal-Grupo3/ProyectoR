@@ -3,24 +3,17 @@ package com.example.proyector;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.Lists.pojos.Ticket;
-import com.example.Lists.pojos.User;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -62,6 +55,21 @@ public class MainActivity extends AppCompatActivity{
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // leer el primer ticket para test
+                myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ticket1 = task.getResult().toObjects(Ticket.class).get(0);
+                            Intent intent = new Intent(MainActivity.this, CartaCliente.class);
+                            intent.putExtra("ticket", ticket1);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Ticket no reconocido", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                /* escanear qr
                 ScanOptions options = new ScanOptions();
                 options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
                 options.setPrompt("ESCANEAR QR");
@@ -71,6 +79,7 @@ public class MainActivity extends AppCompatActivity{
                 options.setCaptureActivity(CapActivity.class);
                 options.setBarcodeImageEnabled(false);
                 barcodeLauncher.launch(options);
+                */
             }
         });
 

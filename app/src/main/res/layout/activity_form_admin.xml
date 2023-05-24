@@ -55,7 +55,7 @@
             android:id="@+id/btnRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PERSONAL" />
+            android:text="GESTION DE PERSONAL" />
 
         <Button
             android:id="@+id/btnGestionComandas"
