@@ -70,7 +70,6 @@ public class FormTicket extends AppCompatActivity {
         setContentView(R.layout.activity_form_ticket);
         getSupportActionBar().hide();
 
-
         Producto producto1 = new Producto("Cocacola", 2f);
         Producto producto2 = new Producto("Patatas", 4f);
         Producto producto3 = new Producto("Olivas", 2f);
@@ -89,8 +88,6 @@ public class FormTicket extends AppCompatActivity {
         listaLineas.add(linea3);
         listaLineas.add(linea4);
         listaLineas.add(linea5);
-
-
 
         //inicializamos las variables
         mesas = findViewById(R.id.spMesa);

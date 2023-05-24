@@ -141,7 +141,7 @@
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-<!--   CAMPOS PARA ESCRIBIR, POR SI HACE FALTA CAMBIARLO
+<!--   LAYOUT ANTIGUO, POR SI HACE FALTA CAMBIARLO
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
