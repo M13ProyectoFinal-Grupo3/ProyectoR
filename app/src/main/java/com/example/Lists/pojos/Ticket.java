@@ -1,5 +1,7 @@
 package com.example.Lists.pojos;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -84,6 +86,32 @@ public class Ticket implements Serializable {
 
     public void setLineas_ticket(List<Lineas_Ticket> lineas_ticket) {
         this.lineas_ticket = lineas_ticket;
+    }
+
+    public void addCantidad(Producto producto, Integer cantidad){
+        for(Lineas_Ticket l: lineas_ticket){
+            if(l.getProducto().getId().equals(producto.getId())){
+                l.setCantidad(l.getCantidad()+cantidad);
+                break;
+            }
+        }
+    }
+
+    public void addLinea_ticket(Lineas_Ticket nuevaLinea){
+        lineas_ticket.add(nuevaLinea);
+    }
+
+    public Lineas_Ticket buscarLinea(Producto producto){
+        Lineas_Ticket dev = new Lineas_Ticket();
+        for(Lineas_Ticket l: lineas_ticket){
+            Log.d("linea_ticket",l.getProducto().toString());
+            if(l.getProducto().getId()!=null) {
+                if (l.getProducto().getId().equals(producto.getId())) {
+                    dev = new Lineas_Ticket(producto, l.getCantidad());
+                }
+            }
+        }
+        return dev;
     }
 
     @Override

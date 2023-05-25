@@ -38,10 +38,10 @@ public class FormAlergenos extends AppCompatActivity {
         setContentView(R.layout.activity_form_alergenos);
         getSupportActionBar().hide();
 
-        Button btnGuardqar = (Button) findViewById(R.id.btnGuardarAl);
+        Button btnGuardqar = (Button) findViewById(R.id.btnGuardarDepto);
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarAl);
 
-        EditText enombre = (EditText) findViewById(R.id.t_pNombre);
+        EditText enombre = (EditText) findViewById(R.id.TexNomDepto);
 
         //botón atrás
         ImageButton backButton = findViewById(R.id.backBtn);
@@ -60,7 +60,7 @@ public class FormAlergenos extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // recupera la información introducida por el usuario
-                EditText xNombre = (EditText) findViewById(R.id.t_pNombre);
+                EditText xNombre = (EditText) findViewById(R.id.TexNomDepto);
                 a_nuevo = new Alergeno(xNombre.getText().toString());
                 // Actualizar Alergeno o añadir nuevo
                 if(a_anterior!=null) {

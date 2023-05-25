@@ -46,8 +46,8 @@ public class FormRestaurante extends AppCompatActivity {
         setContentView(R.layout.activity_form_restaurante);
         getSupportActionBar().hide();
 
-        Button btnGuardar = (Button) findViewById(R.id.btnGuardarAl);
-        Button btnBorrar = (Button) findViewById(R.id.btn_borrarDep);
+        Button btnGuardar = (Button) findViewById(R.id.btnGuardarDepto);
+        Button btnBorrar = (Button) findViewById(R.id.btnBorrarDep);
         Button btnMesa = (Button) findViewById(R.id.btn_aMesa);
         Button btnRegistar = (Button) findViewById(R.id.btn_crearCuentaAdmin);
 

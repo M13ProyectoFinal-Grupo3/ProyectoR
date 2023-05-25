@@ -1,6 +1,7 @@
 package com.example.proyector;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -36,6 +37,7 @@ public class FormAdmin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_admin);
+        getSupportActionBar().hide();
 
 
         Button btnCarta = (Button) findViewById(R.id.btnCarta);

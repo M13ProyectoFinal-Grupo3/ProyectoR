@@ -18,6 +18,21 @@ public class Usuarios implements Serializable {
         this.id = id;
     }
 
+    public Usuarios(String perfil, String restaurante, String UID, String id) {
+        this.id = id;
+        Perfil = perfil;
+        Restaurante = restaurante;
+        this.UID = UID;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getPerfil() {
         return Perfil;
     }
@@ -49,7 +64,8 @@ public class Usuarios implements Serializable {
     @Override
     public String toString() {
         return "Usuarios{" +
-                "Perfil='" + Perfil + '\'' +
+                "id='" + id + '\'' +
+                ", Perfil='" + Perfil + '\'' +
                 ", Restaurante='" + Restaurante + '\'' +
                 ", UID='" + UID + '\'' +
                 '}';

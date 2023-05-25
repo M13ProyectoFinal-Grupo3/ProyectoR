@@ -141,6 +141,9 @@ public class RegistroActivity extends AppCompatActivity {
                             db.collection("usuarios").add(userData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
+                                    String id =documentReference.getId();
+                                    db.collection("usuarios").document(id).update("id",id);
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

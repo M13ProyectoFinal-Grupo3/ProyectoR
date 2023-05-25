@@ -27,7 +27,6 @@ import java.util.List;
 
 public class TicketActivity extends AppCompatActivity {
 
-    //TODO CAMBIAR POR EMPTY ACTIVITY
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference myRef1 = db.collection("ticket");
 
@@ -74,29 +73,6 @@ public class TicketActivity extends AppCompatActivity {
         });
 
     }
-
-/*  TODO - ESTO EN CASO DE QUERER CONSULTAR UNA LISTA DE TICKETS
-        // Obtener los datos de Firebase
-        myRef1.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<String> ticketList = new ArrayList<>();
-
-                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String ticket = document.getString("nombreDelCampo"); // TODO Reemplazar "nombreDelCampo" con el nombre real del campo en Firebase
-                    ticketList.add(ticket);
-                }
-
-                // Rellenar el Spinner con los datos obtenidos
-                adaptador = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, ticketList);
-                lista.setAdapter(adaptador);
-            }
-        });
-
-
-        //inicializamos las variables
-        lista = view.findViewById(R.id.elegirTicket);
- */
 
 
 

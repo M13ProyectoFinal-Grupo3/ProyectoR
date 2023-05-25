@@ -7,8 +7,8 @@ public class Lineas_Ticket implements Serializable {
     Producto producto;
     int cantidad;
     String observaciones;
-    int prepara_idperfil;
-    int sirve_idperfil;
+    String prepara_idperfil;
+    String sirve_idperfil;
 
     public Lineas_Ticket() {
     }
@@ -18,10 +18,24 @@ public class Lineas_Ticket implements Serializable {
         this.cantidad = cantidad;
     }
 
+    public Lineas_Ticket(Producto producto, int cantidad, String prepara_idperfil) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.prepara_idperfil = prepara_idperfil;
+    }
+
     public Lineas_Ticket(int cantidad, String observaciones, Producto producto) {
         this.cantidad = cantidad;
         this.observaciones = observaciones;
+        this.producto = producto; }
+
+    public Lineas_Ticket(String idLineaTicket, Producto producto, int cantidad, String observaciones, String prepara_idperfil, String sirve_idperfil) {
+        this.idLineaTicket = idLineaTicket;
         this.producto = producto;
+        this.cantidad = cantidad;
+        this.observaciones = observaciones;
+        this.prepara_idperfil = prepara_idperfil;
+        this.sirve_idperfil = sirve_idperfil;
     }
 
     public void setIdLineaTicket(String idLineaTicket) {
@@ -56,19 +70,19 @@ public class Lineas_Ticket implements Serializable {
         this.observaciones = observaciones;
     }
 
-    public int getPrepara_idperfil() {
+    public String getPrepara_idperfil() {
         return prepara_idperfil;
     }
 
-    public void setPrepara_idperfil(int prepara_idperfil) {
+    public void setPrepara_idperfil(String prepara_idperfil) {
         this.prepara_idperfil = prepara_idperfil;
     }
 
-    public int getSirve_idperfil() {
+    public String getSirve_idperfil() {
         return sirve_idperfil;
     }
 
-    public void setSirve_idperfil(int sirve_idperfil) {
+    public void setSirve_idperfil(String sirve_idperfil) {
         this.sirve_idperfil = sirve_idperfil;
     }
 
