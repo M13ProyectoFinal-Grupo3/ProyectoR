@@ -119,8 +119,10 @@ public class FormCarta extends AppCompatActivity {
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                pos = position;
                 Intent intent = new Intent(FormCarta.this, FormDepartamento.class);
                 intent.putExtra("restaurante",restaurante1);
+                Log.d("onitem depto",lista.get(position).toString());
                 intent.putExtra("departamento", lista.get(position));
                 startActivityDepartamentos.launch(intent);
             }
