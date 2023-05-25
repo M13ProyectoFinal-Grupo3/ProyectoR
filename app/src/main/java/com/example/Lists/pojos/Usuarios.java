@@ -3,15 +3,22 @@ package com.example.Lists.pojos;
 import java.io.Serializable;
 
 public class Usuarios implements Serializable {
-    String id;
     String Perfil;
     String Restaurante;
     String UID;
+    String id;
 
     public Usuarios() {
     }
 
     public Usuarios(String perfil, String restaurante, String UID) {
+        Perfil = perfil;
+        Restaurante = restaurante;
+        this.UID = UID;
+    }
+
+    public Usuarios(String perfil, String restaurante, String UID, String id) {
+        this.id = id;
         Perfil = perfil;
         Restaurante = restaurante;
         this.UID = UID;
@@ -52,7 +59,8 @@ public class Usuarios implements Serializable {
     @Override
     public String toString() {
         return "Usuarios{" +
-                "Perfil='" + Perfil + '\'' +
+                "id='" + id + '\'' +
+                ", Perfil='" + Perfil + '\'' +
                 ", Restaurante='" + Restaurante + '\'' +
                 ", UID='" + UID + '\'' +
                 '}';

@@ -5,32 +5,26 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.Lists.pojos.Producto;
+import com.example.Lists.pojos.Restaurante;
 import com.example.adapters.AdapterDepartamento;
 import com.example.Lists.pojos.Departamento;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,11 +33,12 @@ import java.util.ArrayList;
 
 public class FormCarta extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef =  db.collection("Carta").document("carta").collection("Departamentos");
+    CollectionReference myRef;
 
     ListView listview1;
     AdapterDepartamento adapter;
     ArrayList<Departamento> lista = new ArrayList<>();
+    Restaurante restaurante1;
     Departamento departamento;
 
     int pos=-1;
@@ -52,10 +47,22 @@ public class FormCarta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_carta);
-        getSupportActionBar().hide();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Button btnNuevoDep = (Button) findViewById(R.id.btn_nuevoDep);
-        //ImageButton btnBack = (ImageButton) findViewById(R.id.btn_backCarta);
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null){
+            if(intent.getExtras().containsKey("restaurante")) {
+                restaurante1 = intent.getSerializableExtra("restaurante", Restaurante.class);
+            }
+        } else {
+            Toast.makeText(this, "ERROR: Restaurante desconocido", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        myRef =  db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta").collection("Departamentos");
+
+        Button btnNuevoDep = (Button) findViewById(R.id.btnNuevoDep);
 
         listview1 = (ListView) findViewById(R.id.lista_prods);
         adapter = new AdapterDepartamento(FormCarta.this,lista);
@@ -79,7 +86,7 @@ public class FormCarta extends AppCompatActivity {
         });
 
         // Result activity departamento
-        ActivityResultLauncher<Intent> startActivityDepartamento= registerForActivityResult(
+        ActivityResultLauncher<Intent> startActivityDepartamentos= registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -88,16 +95,10 @@ public class FormCarta extends AppCompatActivity {
                             // Recibe objeto producto
                             Intent intent =  result.getData();
                             if(intent.getExtras() != null) {
-                                if(intent.getExtras().containsKey("update")){
-                                    Departamento d = intent.getSerializableExtra("update", Departamento.class);
-                                    myRef.document(d.getId()).update("nombre", d.getnombre()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            Toast.makeText(FormCarta.this, "El Departamento se modificó correctamente", Toast.LENGTH_SHORT).show();
-                                            lista.set(pos, d);
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
+                                if(intent.getExtras().containsKey("new")){
+                                    Departamento d = intent.getSerializableExtra("new", Departamento.class);
+                                    lista.add(d);
+                                    adapter.notifyDataSetChanged();
                                 } else if(intent.getExtras().containsKey("delete")){
                                     lista.remove(lista.get(pos));
                                     adapter.notifyDataSetChanged();
@@ -111,15 +112,17 @@ public class FormCarta extends AppCompatActivity {
                 });
 
 
+
+
         // editar productos departamento
 
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pos = position;
                 Intent intent = new Intent(FormCarta.this, FormDepartamento.class);
+                intent.putExtra("restaurante",restaurante1);
                 intent.putExtra("departamento", lista.get(position));
-                startActivityDepartamento.launch(intent);
+                startActivityDepartamentos.launch(intent);
             }
         });
 
@@ -127,47 +130,12 @@ public class FormCarta extends AppCompatActivity {
         btnNuevoDep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FormCarta.this);
-                builder.setTitle("Nuevo departamento");
-
-                final EditText input = new EditText(FormCarta.this);
-
-                input.setInputType(InputType.TYPE_CLASS_TEXT );
-                builder.setView(input);
-
-                builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Departamento d = new Departamento(input.getText().toString());
-
-                        myRef.whereNotEqualTo("departamento",d.getnombre())
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        myRef.add(d).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                        d.setId(task.getResult().getId());
-                                                        myRef.document(d.getId()).update("id",d.getId());
-                                                        lista.add(d);
-                                                        adapter.notifyDataSetChanged();
-                                                    }
-                                                });
-                                    }});
-                        }
-                    });
-
-                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
+                Intent intent = new Intent(FormCarta.this, FormDepartamento.class);
+                intent.putExtra("restaurante",restaurante1);
+                startActivityDepartamentos.launch(intent);
             }
         });
+
 
     }
 

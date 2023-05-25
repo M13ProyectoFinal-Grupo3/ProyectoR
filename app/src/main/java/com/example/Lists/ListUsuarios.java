@@ -18,10 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.Forms.FormAlergenos;
-import com.example.Lists.pojos.Alergeno;
 import com.example.Lists.pojos.Usuarios;
-import com.example.adapters.AdapterAlergeno;
 import com.example.adapters.AdapterUsuarios;
 import com.example.proyector.R;
 import com.example.proyector.RegistroActivity;
@@ -48,10 +45,10 @@ public class ListUsuarios extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_alergenos);
+        setContentView(R.layout.activity_list_usuarios);
         getSupportActionBar().hide();
 
-        listview1 = (ListView) findViewById(R.id.list_alergenos);
+        listview1 = (ListView) findViewById(R.id.list_productos);
         adapter = new AdapterUsuarios(ListUsuarios.this, lista);
         listview1.setAdapter(adapter);
 

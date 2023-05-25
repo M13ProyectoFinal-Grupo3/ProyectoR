@@ -3,6 +3,7 @@ package com.example.Forms;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -18,17 +19,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.Lists.pojos.Departamento;
+import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Usuarios;
 import com.example.Lists.pojos.cAlergeno;
 import com.example.Lists.pojos.Alergeno;
@@ -51,22 +55,27 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FormProducto extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef;
+    CollectionReference rootRef;
+    Restaurante restaurante1;
+    Departamento departamento1;
+
     Producto producto = null;
     EditText xNombre;
     EditText xDescrip ;
     EditText xPrecio;
     TextView txDepartamento;
     ImageView imageview1;
-    Spinner spinPrepara;
-    Spinner spinServido;
+    AutoCompleteTextView spinPrepara;
+    AutoCompleteTextView spinServido;
     Switch switch1;
+
+    Usuarios userPrepara;
+    Usuarios userSirve;
 
     ArrayList<Usuarios> usuarios;
     ArrayAdapter<Usuarios> adapter1;
@@ -86,22 +95,27 @@ public class FormProducto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         cAlergenos = new ArrayList<>();
 
         ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarProd);
-        Button btnGuardar = (Button) findViewById(R.id.btnGuardarAl);
-        ImageButton btnFoto = (ImageButton) findViewById(R.id.btnImgProducto);
+        Button btnGuardar = (Button) findViewById(R.id.btnGuardarDepto);
+        ImageButton btnFoto = (ImageButton) findViewById(R.id.btnImgDepto);
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
 
-        txDepartamento = (TextView) findViewById(R.id.tx_nomDepto);
-        spinPrepara = (Spinner) findViewById(R.id.spinPrepara);
-        spinServido = (Spinner) findViewById(R.id.spinServido);
-        xNombre = (EditText) findViewById(R.id.t_pNombre);
+        txDepartamento = (TextView) findViewById(R.id.TxDepartamento);
+        spinPrepara = (AutoCompleteTextView) findViewById(R.id.spinPrepara);
+        spinServido = (AutoCompleteTextView) findViewById(R.id.spinServido);
+        xNombre = (EditText) findViewById(R.id.TexNomDepto);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
-        imageview1 =(ImageView) findViewById(R.id.ImgProducto);
+        imageview1 =(ImageView) findViewById(R.id.ImgDepto);
         tAlergs = (TextView) findViewById(R.id.txFprodAls);
         switch1 = (Switch) findViewById(R.id.switch1);
+
+        usuarios = new ArrayList<>();
 
         // set perfiles
         CollectionReference perfilRef = db.collection("usuarios");
@@ -120,6 +134,30 @@ public class FormProducto extends AppCompatActivity {
                     spinServido.setAdapter(adapter2);
                     spinServido.setSelection(0);
 
+                    spinPrepara.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            userPrepara = usuarios.get(position);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            userPrepara = null;
+                        }
+                    });
+
+                    spinServido.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            userSirve = usuarios.get(position);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            userSirve = null;
+                        }
+                    });
+
                 } else {
                     Toast.makeText(FormProducto.this, "ERROR: No existen perfiles de servicio", Toast.LENGTH_SHORT).show();
                 }
@@ -132,14 +170,18 @@ public class FormProducto extends AppCompatActivity {
                 if (intent.getExtras() != null) {
 
                     if (intent.getExtras().containsKey("departamento")) {
-                        txDepartamento.setText("Departamento: " + getIntent().getExtras().getString("departamento"));
+                        departamento1 = getIntent().getSerializableExtra("departamento",Departamento.class);
+                        txDepartamento.setText("Departamento: " + departamento1.getnombre());
                     }
 
-                    if (intent.getExtras().containsKey("ref")) {
-                        myRef = db.collection(getIntent().getExtras().getString("ref"));
+                    if (intent.getExtras().containsKey("restaurante")) {
+                        restaurante1 = getIntent().getSerializableExtra("restaurante",Restaurante.class);
                     } else {
                         finish();
                     }
+
+                    rootRef = db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta")
+                            .collection("Departamentos").document(departamento1.getId()).collection("productos");
 
                     if (intent.getExtras().containsKey("producto")) {
                         producto = getIntent().getExtras().getSerializable("producto", Producto.class);
@@ -183,6 +225,8 @@ public class FormProducto extends AppCompatActivity {
                                         });
                             }
                         });
+                    } else {
+                        btnBorrar.setEnabled(false);
                     }
                 }
             }
@@ -194,14 +238,19 @@ public class FormProducto extends AppCompatActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(userPrepara == null || userSirve == null){
+                    Toast.makeText(FormProducto.this, "ERROR: Debe seleccionar los perfiles de preparación y servicio", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Producto p = new Producto();
 
                 p.setActivo(switch1.isChecked());
                 p.setNombre(xNombre.getText().toString());
                 p.setDescripcion(xDescrip.getText().toString());
                 p.setPrecio( Float.parseFloat(xPrecio.getText().toString()));
-                p.setPrepara_idperfil( usuarios.get(spinPrepara.getSelectedItemPosition()).getId());
-                p.setSirve_idperfil( usuarios.get(spinServido.getSelectedItemPosition()).getId());
+                p.setPrepara_idperfil( userPrepara.getId());
+                p.setSirve_idperfil( userSirve.getId());
                 p.setAlergenos(getAlergenos(cAlergenos));
 
                 //guardar imagen
@@ -219,7 +268,7 @@ public class FormProducto extends AppCompatActivity {
                     data.put("id_departamento", p.getPrepara_idperfil());
                     data.put("id_prepara", p.getSirve_idperfil());
                     data.put("alergenos",p.getAlergenos());
-                    myRef.document(producto.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    rootRef.document(producto.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
@@ -232,16 +281,16 @@ public class FormProducto extends AppCompatActivity {
 
                 } else {
                     // Nuevo Producto
-                    myRef.whereNotEqualTo("nombre",p.getNombre())
+                    rootRef.whereNotEqualTo("nombre",p.getNombre())
                             .get()
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
                                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    myRef.add(p).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    rootRef.add(p).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             p.setId(task.getResult().getId());
-                                            myRef.document(p.getId()).update("id",p.getId());
+                                            rootRef.document(p.getId()).update("id",p.getId());
 
                                             Intent resultIntent = new Intent();
                                             resultIntent.putExtra("new",p);
@@ -260,7 +309,7 @@ public class FormProducto extends AppCompatActivity {
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRef.document( producto.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                rootRef.document( producto.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(FormProducto.this, "El Producto ha sido eliminado correctamente", Toast.LENGTH_SHORT).show();
@@ -397,4 +446,5 @@ public class FormProducto extends AppCompatActivity {
 
         return pos;
     }
+
 }

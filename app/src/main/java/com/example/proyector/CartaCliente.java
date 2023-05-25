@@ -35,6 +35,7 @@ import com.example.adapters.AdapterCartaDep;
 import com.example.adapters.AdapterCartaProducto;
 import com.example.adapters.AdapterCheckAls;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -265,27 +266,37 @@ public class CartaCliente extends AppCompatActivity {
                                         imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener(){
                                             public void onClick(DialogInterface dialog, int which) {
 
-                                                Integer cantidad = Integer.parseInt(eCantidad.getText().toString());
-
-                                                if(lineaT.getProducto() == null) {
-                                                    // nueva linea
-                                                    lineaT = new Lineas_Ticket(producto1, cantidad);
-                                                    ticket1.addLinea_ticket(lineaT);
-                                                }else {
-                                                    ticket1.addCantidad(producto1,cantidad);
-                                                }
-                                                HashMap<String, Object> data = new HashMap<String, Object>() {
-                                                };
-                                                data.put("lineas_ticket",ticket1.getLineas_ticket());
-                                                ticketRef.document(ticket1.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                ticketRef.document(ticket1.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                     @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
+                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                        Integer cantidad = Integer.parseInt(eCantidad.getText().toString());
+
+                                                        if(lineaT.getProducto() == null) {
+                                                            // nueva linea
+                                                            lineaT = new Lineas_Ticket(producto1, cantidad);
+                                                            ticket1.addLinea_ticket(lineaT);
+                                                        }else {
+                                                            ticket1.addCantidad(producto1,cantidad);
+                                                        }
+                                                        HashMap<String, Object> data = new HashMap<String, Object>() {
+                                                        };
+                                                        data.put("lineas_ticket",ticket1.getLineas_ticket());
+                                                        ticketRef.document(ticket1.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
+                                                            }
+                                                        });
+
+                                                        dialog.dismiss();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(CartaCliente.this, "Ticket finalizado", Toast.LENGTH_SHORT).show();
+                                                        finish();
                                                     }
                                                 });
-
-                                                dialog.dismiss();
-
                                             }
 
                                         });

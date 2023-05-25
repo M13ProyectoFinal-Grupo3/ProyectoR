@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 // leer el primer ticket para test
+
                 myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -69,8 +70,8 @@ public class MainActivity extends AppCompatActivity{
                         }
                     }
                 });
-                /* escanear qr
-                ScanOptions options = new ScanOptions();
+                //escanear qr
+                /*ScanOptions options = new ScanOptions();
                 options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
                 options.setPrompt("ESCANEAR QR");
                 options.setCameraId(0);
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity{
                 options.setCaptureActivity(CapActivity.class);
                 options.setBarcodeImageEnabled(false);
                 barcodeLauncher.launch(options);
-                */
+*/
             }
         });
 
