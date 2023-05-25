@@ -18,13 +18,6 @@ public class Usuarios implements Serializable {
         this.id = id;
     }
 
-    public Usuarios(String perfil, String restaurante, String UID, String id) {
-        this.id = id;
-        Perfil = perfil;
-        Restaurante = restaurante;
-        this.UID = UID;
-    }
-
     public String getId() {
         return id;
     }
@@ -55,10 +48,6 @@ public class Usuarios implements Serializable {
 
     public void setUID(String UID) {
         this.UID = UID;
-    }
-
-    public String getId() {
-        return id;
     }
 
     @Override
