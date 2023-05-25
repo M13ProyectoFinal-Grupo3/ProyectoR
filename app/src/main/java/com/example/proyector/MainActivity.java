@@ -1,16 +1,16 @@
 package com.example.proyector;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.Lists.pojos.Ticket;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity{
     CollectionReference myRef = db.collection("tickets");
 
     Ticket ticket1;
-    User user1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

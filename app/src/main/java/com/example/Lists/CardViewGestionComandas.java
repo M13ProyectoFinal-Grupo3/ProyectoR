@@ -41,6 +41,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
     int idRestauranteSesionIniciada = 0;
     String nombreRestauranteUsuarioLogeado;
     String perfilUsuarioLogeado;
+    String idPerfil;
     private FirebaseAuth mAuth;
     private CollectionReference collectionRef;
     private RecyclerView recyclerViewGestionComandas;
@@ -98,7 +99,9 @@ public class CardViewGestionComandas extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
-                                lineas_ticket.remove(caracteresDespuesDeBarra);
+                                Map<String, Object> lineaTicket = lineas_ticket.get(caracteresDespuesDeBarra);
+                                lineaTicket.put("sirve_idperfil", "");
+
                                 documentRef.update("lineas_ticket", lineas_ticket)
                                         .addOnSuccessListener(aVoid -> {
                                             listaGestionComandas.clear();
@@ -116,9 +119,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
                             if (document.exists()) {
                                 ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
                                 Map<String, Object> lineaTicket = lineas_ticket.get(caracteresDespuesDeBarra);
-
-                                lineaTicket.put("prepara_idperfil", 0L);
-                                lineaTicket.put("sirve_idperfil", 1L);
+                                lineaTicket.put("prepara_idperfil", "");
 
                                 documentRef.update("lineas_ticket", lineas_ticket)
                                         .addOnSuccessListener(aVoid -> {
@@ -162,6 +163,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
                     if (finalUid.equals(snapshot.getString("UID"))) {
                         nombreRestauranteUsuarioLogeado = snapshot.getString("Restaurante");
                         perfilUsuarioLogeado = snapshot.getString("Perfil");
+                        idPerfil = snapshot.getString("id");
                     }
                 }
 
@@ -174,8 +176,8 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                 String observacionesLineaTicket = null;
                                 String productoNombreLineaTicket = null;
                                 Producto productoLineaTicket = null;
-                                Long preparaIdPerfilLineaTicket = null;
-                                Long sirveIdPerfilLineaTicket = null;
+                                String preparaIdPerfilLineaTicket = null;
+                                String sirveIdPerfilLineaTicket = null;
                                 int indice = 0;
                                 String nombreRestaurante = null;
 
@@ -209,10 +211,10 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                             }
                                         }
                                         if (entry.getKey().equals("prepara_idperfil")) {
-                                            preparaIdPerfilLineaTicket = (Long) entry.getValue();
+                                            preparaIdPerfilLineaTicket = (String) entry.getValue();
                                         }
                                         if (entry.getKey().equals("sirve_idperfil")) {
-                                            sirveIdPerfilLineaTicket = (Long) entry.getValue();
+                                            sirveIdPerfilLineaTicket = (String) entry.getValue();
                                         }
                                         indice = lineas_ticket.indexOf(mapaFila);
 
@@ -220,12 +222,10 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                     Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), observacionesLineaTicket, productoLineaTicket);
                                     agregarComanda.setIdLineaTicket(document.getId() + "/" + indice);
 
-                                    if (perfilUsuarioLogeado != null && nombreRestauranteUsuarioLogeado != null) {
-                                        if ((perfilUsuarioLogeado.equals("Cocinero") && preparaIdPerfilLineaTicket == 1 && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante)) || (perfilUsuarioLogeado.equals("Administrador") && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante))) {
-                                            listaGestionComandas.add(agregarComanda);
-                                        } else if ((perfilUsuarioLogeado.equals("Camarero") && sirveIdPerfilLineaTicket == 1 && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante)) || (perfilUsuarioLogeado.equals("Administrador") && nombreRestauranteUsuarioLogeado.equals(nombreRestaurante))) {
-                                            listaGestionComandas.add(agregarComanda);
-                                        }
+                                    if(perfilUsuarioLogeado.equals("Camarero") && idPerfil.equals(sirveIdPerfilLineaTicket) && (preparaIdPerfilLineaTicket == null || preparaIdPerfilLineaTicket.equals(""))){
+                                        listaGestionComandas.add(agregarComanda);
+                                    }else if(perfilUsuarioLogeado.equals("Cocinero") && idPerfil.equals(preparaIdPerfilLineaTicket)){
+                                        listaGestionComandas.add(agregarComanda);
                                     }
                                 }
                             }
