@@ -34,16 +34,10 @@
             android:textSize="28dp" />
 
         <Button
-            android:id="@+id/btnRestaurante"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="DATOS RESTAURANTE" />
-
-        <Button
             android:id="@+id/btnCarta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="CARTA" />
 
         <Button
@@ -58,17 +52,6 @@
             android:layout_height="wrap_content"
             android:text="GESTION DE PERSONAL" />
 
-        <Button
-            android:id="@+id/btnGestionComandas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="GESTIÓN DE COMANDAS" />
-
-        <Button
-            android:id="@+id/btnTickets"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TICKETS" />
 
     </LinearLayout>
 

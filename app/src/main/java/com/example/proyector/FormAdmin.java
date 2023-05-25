@@ -1,9 +1,5 @@
 package com.example.proyector;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,11 +7,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.Forms.FormCarta;
-import com.example.Lists.CardViewGestionComandas;
 import com.example.Lists.ListAlergenos;
-import com.example.Lists.ListRestaurante;
-import com.example.Lists.ListTicket;
 import com.example.Lists.ListUsuarios;
 import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Usuarios;
@@ -41,11 +37,8 @@ public class FormAdmin extends AppCompatActivity {
 
 
         Button btnCarta = (Button) findViewById(R.id.btnCarta);
-        Button btnRest = (Button) findViewById(R.id.btnRestaurante);
         Button brnAlergs = (Button) findViewById(R.id.btnAlergenos);
-        Button btnGestionComandas = (Button) findViewById(R.id.btnGestionComandas);
         Button btnRegistro = (Button) findViewById(R.id.btnRegistro);
-        Button btnTickets = (Button) findViewById(R.id.btnTickets);
         TextView nomRest = (TextView) findViewById(R.id.tx_nombrerest3);
 
         Intent intent = getIntent();
@@ -70,13 +63,6 @@ public class FormAdmin extends AppCompatActivity {
             }
         }
 
-        btnRest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ListRestaurante.class);
-                startActivity(intent);
-            }
-        });
 
         btnCarta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,31 +80,15 @@ public class FormAdmin extends AppCompatActivity {
             }
         });
 
-
-        btnGestionComandas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CardViewGestionComandas.class);
-                startActivity(intent);
-            }
-        });
-
-
         btnRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListUsuarios.class);
+                intent.putExtra("nombreRestaurante", restaurante.getNombre());
                 startActivity(intent);
             }
         });
 
-        btnTickets.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ListTicket.class);
-                startActivity(intent);
-            }
-        });
 
     }
 }
