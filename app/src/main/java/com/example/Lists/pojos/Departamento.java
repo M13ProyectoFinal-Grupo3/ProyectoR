@@ -33,4 +33,12 @@ public class Departamento implements Serializable {
     public void setnombre(String nombre) {
         this.nombre = nombre;
     }
+
+    @Override
+    public String toString() {
+        return "Departamento{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                '}';
+    }
 }

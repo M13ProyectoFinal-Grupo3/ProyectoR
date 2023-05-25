@@ -113,6 +113,7 @@ public class FormDepartamento extends AppCompatActivity {
             if(intent.getExtras().containsKey("departamento")){
                 departamento = getIntent().getExtras().getSerializable("departamento", Departamento.class);
                 txDepto.setText(departamento.getnombre());
+                Log.d("departamentoId", departamento.getId());
                 // cargar imagen
                 imgRef.child("departamentos").child(getImgName(departamento)).getBytes(MAX_IMAGESIZE)
                         .addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -126,8 +127,42 @@ public class FormDepartamento extends AppCompatActivity {
             }
 
             // si hay productos los muestra
-            if(departamento != null) {
-                muestraProductos();
+
+            Log.d("dep",departamento.toString());
+            if(departamento.getId() != null) {
+
+                rootRef = db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta")
+                        .collection("Departamentos");
+
+
+
+                CollectionReference productosRef = rootRef.document(departamento.getId()).collection("productos");
+                Log.d("ok",productosRef.getPath());
+                productosRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                listaProductos.add(doc.toObject(Producto.class));
+                            }
+                            adapter = new AdapterProducto(getApplicationContext(), listaProductos);
+                            listViewProds.setAdapter(adapter);
+
+                            listViewProds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    pos = position;
+                                    Intent intent = new Intent(getApplicationContext(), FormProducto.class);
+                                    intent.putExtra("producto", listaProductos.get(position));
+                                    intent.putExtra("restaurante", restaurante1);
+                                    intent.putExtra("departamento", departamento);
+                                    activityForm.launch(intent);
+                                }
+                            });
+
+                        }
+                    }
+                });
             } else {
                 listViewProds.setEnabled(false);
                 btnNuevoProducto.setEnabled(false);
@@ -235,7 +270,7 @@ public class FormDepartamento extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentReference> task) {
                                         nuevoDep.setId(task.getResult().getId());
-                                        rootRef.document(nuevoDep.getId()).update("id",nuevoDep.getId());
+                                        deptoRef.document(nuevoDep.getId()).update("id",nuevoDep.getId());
                                         Toast.makeText(FormDepartamento.this, "El Departamento ha sido almacenado correctamente", Toast.LENGTH_SHORT).show();
                                         Intent resultIntent = new Intent();
                                         resultIntent.putExtra("new", nuevoDep);
@@ -282,38 +317,6 @@ public class FormDepartamento extends AppCompatActivity {
 
     }
 
-    private void muestraProductos() {
-        rootRef = db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta")
-                .collection("Departamentos");
-
-        CollectionReference productosRef = rootRef.document(departamento.getId()).collection("productos");
-
-        productosRef.document(departamento.getId()).collection("productos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        listaProductos.add(doc.toObject(Producto.class));
-                    }
-                    adapter = new AdapterProducto(getApplicationContext(), listaProductos);
-                    listViewProds.setAdapter(adapter);
-
-                    listViewProds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            pos = position;
-                            Intent intent = new Intent(getApplicationContext(), FormProducto.class);
-                            intent.putExtra("producto", listaProductos.get(position));
-                            intent.putExtra("restaurante", restaurante1);
-                            intent.putExtra("departamento", departamento);
-                            activityForm.launch(intent);
-                        }
-                    });
-
-                }
-            }
-        });
-    }
 
     public void guardarImagen(Departamento d, Bitmap bmp) {
         imgRef = storage.getReference().child("departamentos/"+getImgName(d));
