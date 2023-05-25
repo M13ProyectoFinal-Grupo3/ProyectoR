@@ -55,7 +55,7 @@ import java.util.HashMap;
 
 public class CartaCliente extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
-    CollectionReference myRef =  db.collection("Carta").document("carta").collection("Departamentos");
+    CollectionReference rootRef;
     CollectionReference productoRef;
     CollectionReference ticketRef;
 
@@ -107,7 +107,9 @@ public class CartaCliente extends AppCompatActivity {
 
         listView1 = (ListView) findViewById(R.id.listviewCarta);
 
-        myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        rootRef=  db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta").collection("Departamentos");
+
+        rootRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {

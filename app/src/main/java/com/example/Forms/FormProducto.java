@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,8 +79,8 @@ public class FormProducto extends AppCompatActivity {
     Usuarios userSirve;
 
     ArrayList<Usuarios> usuarios;
-    ArrayAdapter<Usuarios> adapter1;
-    ArrayAdapter<Usuarios> adapter2;
+    ArrayAdapter adapter1;
+    ArrayAdapter adapter2;
 
 
     ArrayList<cAlergeno> cAlergenos; // lista de todos los Alergenos
@@ -106,8 +107,8 @@ public class FormProducto extends AppCompatActivity {
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
 
         txDepartamento = (TextView) findViewById(R.id.TxDepartamento);
-        spinPrepara = (AutoCompleteTextView) findViewById(R.id.spinPrepara);
-        spinServido = (AutoCompleteTextView) findViewById(R.id.spinServido);
+        spinPrepara = (AutoCompleteTextView) findViewById(R.id.spinner1);
+        spinServido = (AutoCompleteTextView) findViewById(R.id.spinner2);
         xNombre = (EditText) findViewById(R.id.TexNomDepto);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
@@ -117,46 +118,51 @@ public class FormProducto extends AppCompatActivity {
 
         usuarios = new ArrayList<>();
 
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+
+            if (intent.getExtras().containsKey("departamento")) {
+                departamento1 = getIntent().getSerializableExtra("departamento", Departamento.class);
+                txDepartamento.setText("Departamento: " + departamento1.getnombre());
+            }
+
+            if (intent.getExtras().containsKey("restaurante")) {
+                restaurante1 = getIntent().getSerializableExtra("restaurante", Restaurante.class);
+            } else {
+                finish();
+            }
+
+            rootRef = db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta")
+                    .collection("Departamentos").document(departamento1.getId()).collection("productos");
+
+            if (intent.getExtras().containsKey("producto")) {
+                producto = getIntent().getExtras().getSerializable("producto", Producto.class);
+            }
+        }
+
         // set perfiles
         CollectionReference perfilRef = db.collection("usuarios");
-        perfilRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        perfilRef.whereEqualTo("Restaurante",restaurante1.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     for(QueryDocumentSnapshot doc: task.getResult()){
                         usuarios.add(doc.toObject(Usuarios.class));
+                        Log.d("usuario",doc.toObject(Usuarios.class).toString());
                     }
 
-                    adapter1 = new AdapterUsuarios(getApplicationContext(), usuarios);
+                    ArrayList<String> sUsers = new ArrayList<>();
+                    for(Usuarios u: usuarios){
+                        sUsers.add(u.getPerfil());
+                    }
+
+                    adapter1 = new ArrayAdapter<String>(getApplicationContext(),R.layout.drop_down_item, sUsers);
                     spinPrepara.setAdapter(adapter1);
                     spinPrepara.setSelection(0);
-                    adapter2 = new AdapterUsuarios(getApplicationContext(), usuarios);
+                    adapter2 = new ArrayAdapter<String>(getApplicationContext(),R.layout.drop_down_item, sUsers);
                     spinServido.setAdapter(adapter2);
                     spinServido.setSelection(0);
 
-                    spinPrepara.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            userPrepara = usuarios.get(position);
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                            userPrepara = null;
-                        }
-                    });
-
-                    spinServido.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            userSirve = usuarios.get(position);
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                            userSirve = null;
-                        }
-                    });
 
                 } else {
                     Toast.makeText(FormProducto.this, "ERROR: No existen perfiles de servicio", Toast.LENGTH_SHORT).show();
@@ -166,71 +172,52 @@ public class FormProducto extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 // recupera Producto a editar
-                Intent intent = getIntent();
-                if (intent.getExtras() != null) {
 
-                    if (intent.getExtras().containsKey("departamento")) {
-                        departamento1 = getIntent().getSerializableExtra("departamento",Departamento.class);
-                        txDepartamento.setText("Departamento: " + departamento1.getnombre());
-                    }
+                if (producto != null) {
+                    xNombre.setText(producto.getNombre());
+                    xDescrip.setText(producto.getDescripcion());
+                    xPrecio.setText(producto.getPrecio().toString());
+                    switch1.setChecked(producto.getActivo());
+                    spinPrepara.setText(buscaUsuario(producto.getPrepara_idperfil()));
+                    spinServido.setText(buscaUsuario(producto.getSirve_idperfil()));
 
-                    if (intent.getExtras().containsKey("restaurante")) {
-                        restaurante1 = getIntent().getSerializableExtra("restaurante",Restaurante.class);
-                    } else {
-                        finish();
-                    }
-
-                    rootRef = db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta")
-                            .collection("Departamentos").document(departamento1.getId()).collection("productos");
-
-                    if (intent.getExtras().containsKey("producto")) {
-                        producto = getIntent().getExtras().getSerializable("producto", Producto.class);
-                        xNombre.setText(producto.getNombre());
-                        xDescrip.setText(producto.getDescripcion());
-                        xPrecio.setText(producto.getPrecio().toString());
-                        switch1.setChecked(producto.getActivo());
-                        spinPrepara.setSelection(buscaUsuario(producto.getPrepara_idperfil()));
-                        spinServido.setSelection(buscaUsuario(producto.getSirve_idperfil()));
-
-                        // set Alergenos
-                        CollectionReference alRef = db.collection("alergenos");
-                        alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Alergeno a = document.toObject(Alergeno.class);
-                                        cAlergenos.add(new cAlergeno(a, false));
+                    // set Alergenos
+                    CollectionReference alRef = db.collection("alergenos");
+                    alRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Alergeno a = document.toObject(Alergeno.class);
+                                    cAlergenos.add(new cAlergeno(a, false));
+                                }
+                            }
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for (cAlergeno c : cAlergenos) {
+                                for (Alergeno a : producto.getAlergenos()) {
+                                    if (c.getAlergeno().getId().equals(a.getId())) {
+                                        c.setChecked(true);
                                     }
                                 }
                             }
-                        }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                for (cAlergeno c : cAlergenos) {
-                                    for (Alergeno a : producto.getAlergenos()) {
-                                        if (c.getAlergeno().getId().equals(a.getId())) {
-                                            c.setChecked(true);
+                            mostrarAls();
+                            // cargar imagen
+                            imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
+                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                        @Override
+                                        public void onSuccess(byte[] bytes) {
+                                            imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
                                         }
-                                    }
-                                }
-                                mostrarAls();
-                                // cargar imagen
-                                imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
-                                        .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                            @Override
-                                            public void onSuccess(byte[] bytes) {
-                                                imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                                            }
-                                        });
-                            }
-                        });
-                    } else {
-                        btnBorrar.setEnabled(false);
-                    }
+                                    });
+                        }
+                    });
+                } else {
+                    btnBorrar.setEnabled(false);
                 }
             }
-
         });
 
 
@@ -238,6 +225,22 @@ public class FormProducto extends AppCompatActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.d("spin",spinPrepara.getText().toString());
+                for( Integer i=0;i<usuarios.size();i++){
+                    if(usuarios.get(i).getPerfil().equals(spinPrepara.getText().toString())){
+                        userPrepara = usuarios.get(i);
+                        break;
+                    }
+                }
+
+                for( Integer i=0;i<usuarios.size();i++){
+                    if(usuarios.get(i).getPerfil().equals(spinPrepara.getText().toString())){
+                        userSirve = usuarios.get(i);
+                        break;
+                    }
+                }
+                Log.d("userP",userPrepara.toString());
                 if(userPrepara == null || userSirve == null){
                     Toast.makeText(FormProducto.this, "ERROR: Debe seleccionar los perfiles de preparación y servicio", Toast.LENGTH_SHORT).show();
                     return;
@@ -435,7 +438,7 @@ public class FormProducto extends AppCompatActivity {
         return p.getId()+".jpg";
     }
 
-    private Integer buscaUsuario(String id){
+    private String buscaUsuario(String id){
         Integer pos = 0;
         for(Integer x=0; x<usuarios.size(); x++){
             if(usuarios.get(x).getId().equals(id)){
@@ -444,7 +447,7 @@ public class FormProducto extends AppCompatActivity {
             }
         }
 
-        return pos;
+        return usuarios.get(pos).getPerfil();
     }
 
 }
