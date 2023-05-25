@@ -20,6 +20,7 @@ public class VerQR extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_qr);
+        getSupportActionBar().hide();
 
         Intent intent = getIntent();
         Ticket ticket = intent.getExtras().getSerializable("ticket", Ticket.class);

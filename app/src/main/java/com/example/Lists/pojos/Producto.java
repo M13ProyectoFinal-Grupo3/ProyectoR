@@ -21,6 +21,12 @@ public class Producto implements Serializable {
         this.precio = precio;
     }
 
+    public Producto(String nombre, Float precio, String id) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.id = id;
+    }
+
     public Producto(Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
         this.activo = activo;
         this.nombre = nombre;

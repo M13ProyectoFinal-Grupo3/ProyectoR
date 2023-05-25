@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,6 +47,8 @@ import java.util.List;
 public class FormTicket extends AppCompatActivity {
 
     FirebaseUser currentUser;
+
+    final String OLD_FORMAT = "dd/MM/yyyy";
 
     Usuarios usuario;
     Restaurante restauranteFB;
@@ -70,6 +73,7 @@ public class FormTicket extends AppCompatActivity {
         setContentView(R.layout.activity_form_ticket);
         getSupportActionBar().hide();
 
+        /*
         Producto producto1 = new Producto("Cocacola", 2f);
         Producto producto2 = new Producto("Patatas", 4f);
         Producto producto3 = new Producto("Olivas", 2f);
@@ -88,6 +92,9 @@ public class FormTicket extends AppCompatActivity {
         listaLineas.add(linea3);
         listaLineas.add(linea4);
         listaLineas.add(linea5);
+
+
+         */
 
         //inicializamos las variables
         mesas = findViewById(R.id.spMesa);
@@ -167,15 +174,14 @@ public class FormTicket extends AppCompatActivity {
 
                             //añadir fecha automáticamente
                             TextView fecha = (TextView) findViewById(R.id.tvFecha);
-                            fecha.setText(""+(new Date())+"");
+                            SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+                            fecha.setText(sdf.format(new Date()));
                         }
                     });
 
                 }
             }
         });
-
-
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +191,7 @@ public class FormTicket extends AppCompatActivity {
                 ticket.setFecha(new Date());
                 ticket.setRestaurante(restauranteFB);
                 ticket.setId_camarero(4);
-                ticket.setLineas_ticket(listaLineas);
+                //ticket.setLineas_ticket(listaLineas);
                 // Nuevo Ticket
                 ticketCollection.add(ticket).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.Lists.pojos.Lineas_Ticket;
@@ -44,9 +45,9 @@ public class AdapterLineaTicket extends ArrayAdapter<Lineas_Ticket> {
         TextView xCantidad = (TextView) convertView.findViewById(R.id.tvAmount);
         xCantidad.setText("" + lineaTicket.getCantidad() + "");
 
-        Button botonSumar = (Button) convertView.findViewById(R.id.mas);
-        Button botonRestar = (Button) convertView.findViewById(R.id.menos);
-        Button botonBorrar = (Button) convertView.findViewById(R.id.borrar);
+        ImageButton botonSumar = (ImageButton) convertView.findViewById(R.id.mas);
+        ImageButton botonRestar = (ImageButton) convertView.findViewById(R.id.menos);
+        ImageButton botonBorrar = (ImageButton) convertView.findViewById(R.id.borrar);
 
 
         botonSumar.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +78,7 @@ public class AdapterLineaTicket extends ArrayAdapter<Lineas_Ticket> {
         botonBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ANTES DE ELIMINAR LINEA???", lineaTicket.toString());
                 remove(lineaTicket);
-                Log.d("DESPUES ELIMINAR LINEA???", lineaTicket.toString());
                 notifyDataSetChanged();
             }
         });

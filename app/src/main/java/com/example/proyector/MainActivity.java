@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity{
     CollectionReference myRef = db.collection("tickets");
 
     Ticket ticket1;
-    User user1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
