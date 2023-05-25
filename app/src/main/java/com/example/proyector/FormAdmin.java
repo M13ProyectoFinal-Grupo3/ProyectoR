@@ -37,8 +37,7 @@ public class FormAdmin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_admin);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
 
         Button btnCarta = (Button) findViewById(R.id.btnCarta);
@@ -83,7 +82,6 @@ public class FormAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), FormCarta.class);
-                intent.putExtra("restaurante", restaurante);
                 startActivity(intent);
             }
         });

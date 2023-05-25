@@ -27,6 +27,20 @@ public class Producto implements Serializable {
         return sirve_idperfil;
     }
 
+    public Producto(String nombre, Float precio, String id) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.id = id;
+    }
+
+    public Producto(Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
+        this.activo = activo;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.alergenos = alergenos;
+    }
+
     public void setSirve_idperfil(String sirve_idperfil) {
         this.sirve_idperfil = sirve_idperfil;
     }

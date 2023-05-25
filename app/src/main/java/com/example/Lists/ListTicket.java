@@ -71,13 +71,9 @@ public class ListTicket extends AppCompatActivity {
 
         ListView listview1;
 
-
-
         int pos = -1;
 
         ImageButton backButton = findViewById(R.id.backBtn);
-
-        // TODO - getIntent
 
         listview1 = (ListView) findViewById(R.id.listTickets);
         adapter = new AdapterTicket(ListTicket.this, lista);
@@ -121,8 +117,6 @@ public class ListTicket extends AppCompatActivity {
             }
         });
 
-
-
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
          @Override
          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -135,8 +129,6 @@ public class ListTicket extends AppCompatActivity {
              startActivity(intent);
          }
      });
-
-
 
         // form ticket
         activityForm = registerForActivityResult(
@@ -164,15 +156,12 @@ public class ListTicket extends AppCompatActivity {
                     }
                 });
 
-
-
         // Nuevo ticket
         Button btnNuevo = (Button) findViewById(R.id.btnNuevo);
         btnNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ListTicket.this, FormTicket.class);
-                //TODO - putExtra
                 activityForm.launch(intent);
             }
         });
@@ -186,11 +175,8 @@ public class ListTicket extends AppCompatActivity {
 
     }
 
+
 }
-
-
-
-
      /*
         collectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -199,7 +185,6 @@ public class ListTicket extends AppCompatActivity {
                 for (DocumentSnapshot snapshot : snapshotList) {
                         nombreRestaurante = snapshot.getString("Restaurante");
                         perfilUsuarioLogeado = snapshot.getString("Perfil");
-
                 }
             }
         });*/

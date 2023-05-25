@@ -6,24 +6,56 @@
     android:layout_height="match_parent"
     tools:context=".TicketAdmin">
 
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="Modificar Ticket"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/backBtn"
+        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintTop_toTopOf="@+id/backBtn" />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/textView"
+        >
 
-    <TextView
-        android:id="@+id/tx_nombrerest2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:text="Nombre del restaurante"
-        android:textSize="28dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tx_nombrerest2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Nombre del restaurante"
+            android:textColor="@color/black"
+            android:textSize="28dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ListView
+        <ListView
         android:id="@+id/lvListaDeLineas"
         android:layout_width="match_parent"
         android:layout_height="350dp"
@@ -44,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="190dp"
         android:text="Total"
+        android:textColor="@color/black"
         android:textSize="28dp" />
 
     <TextView
@@ -52,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:text="00.00"
+        android:textColor="@color/black"
         android:textSize="28dp" />
 
     <TextView
@@ -60,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="€"
+        android:textColor="@color/black"
         android:textSize="28dp" />
 
     </LinearLayout>
