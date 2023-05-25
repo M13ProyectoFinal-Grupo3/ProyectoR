@@ -79,7 +79,7 @@ public class TicketCliente extends AppCompatActivity {
             xTotal.setText("" + precioTotal + "");
 
             ImageButton backButton = findViewById(R.id.backBtn);
-            
+
 
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
