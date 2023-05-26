@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private Intent intent;
 
+
     Usuarios usuario;
 
 

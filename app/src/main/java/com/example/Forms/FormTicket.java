@@ -92,8 +92,6 @@ public class FormTicket extends AppCompatActivity {
         listaLineas.add(linea3);
         listaLineas.add(linea4);
         listaLineas.add(linea5);
-
-
          */
 
         //inicializamos las variables

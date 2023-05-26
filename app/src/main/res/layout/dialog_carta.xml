@@ -8,6 +8,7 @@
     android:background="#0D450E"
     android:orientation="vertical">
 
+
     <TextView
         android:id="@+id/txDialog1"
         android:layout_width="wrap_content"

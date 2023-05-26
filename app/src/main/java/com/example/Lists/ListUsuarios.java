@@ -49,6 +49,7 @@ public class ListUsuarios extends AppCompatActivity {
         setContentView(R.layout.activity_list_usuarios);
         getSupportActionBar().hide();
 
+
         listview1 = (ListView) findViewById(R.id.list_productos);
         adapter = new AdapterUsuarios(ListUsuarios.this, lista);
         listview1.setAdapter(adapter);

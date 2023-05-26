@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".VerQR">
 
+
     <ImageView
         android:id="@+id/imageQR"
         android:layout_width="410dp"

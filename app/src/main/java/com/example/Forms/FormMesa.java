@@ -36,6 +36,7 @@ public class FormMesa extends AppCompatActivity {
     Boolean btnBorrarHabilitado=false;
     String idDocumentoRestaurante;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

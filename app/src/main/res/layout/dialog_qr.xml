@@ -14,6 +14,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.15" />
 
+
     <ImageView
         android:id="@+id/imageQR"
         android:layout_width="match_parent"

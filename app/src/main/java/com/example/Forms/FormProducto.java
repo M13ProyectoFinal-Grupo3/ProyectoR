@@ -95,9 +95,7 @@ public class FormProducto extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_producto);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         cAlergenos = new ArrayList<>();
 
@@ -466,5 +464,6 @@ public class FormProducto extends AppCompatActivity {
 
         return pos;
     }
+
 
 }

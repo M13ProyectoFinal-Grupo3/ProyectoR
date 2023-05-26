@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+
         ImageButton btnAccess = (ImageButton) findViewById(R.id.btnLoginProf);
         ImageView imageView1 = (ImageView) findViewById(R.id.imageView1);
 

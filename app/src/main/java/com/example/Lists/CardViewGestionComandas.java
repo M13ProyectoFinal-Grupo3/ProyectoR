@@ -50,6 +50,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
     private Runnable runnable;
     private final int intervaloTiempo = 5000;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

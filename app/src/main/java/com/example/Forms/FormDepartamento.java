@@ -85,8 +85,7 @@ public class FormDepartamento extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_departamento);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         Button btnGuardar= (Button) findViewById(R.id.btnGuardarDepto);
         Button btnNuevoProducto = (Button) findViewById(R.id.btnNuevoProducto);
@@ -312,6 +311,15 @@ public class FormDepartamento extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityGaleria.launch(intent);
+            }
+        });
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

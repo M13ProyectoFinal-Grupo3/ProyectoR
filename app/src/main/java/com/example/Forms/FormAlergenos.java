@@ -93,7 +93,6 @@ public class FormAlergenos extends AppCompatActivity {
                                 }
                             }
                         });
-
                 } else {
                     // Nuevo Alergeno
                    myRef.add(a_nuevo).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -109,8 +108,6 @@ public class FormAlergenos extends AppCompatActivity {
                        }
                     });
                 }
-
-
             }
         });
 

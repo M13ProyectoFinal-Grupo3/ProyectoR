@@ -10,7 +10,7 @@
         android:background="@drawable/reg_edittext_style"
         android:fontFamily="@font/open_sans"
         android:text="Nombre"
-        android:textColor="@color/gray"
+        android:textColor="@color/black"
         android:textSize="20sp">
     </com.google.android.material.textview.MaterialTextView>
 
