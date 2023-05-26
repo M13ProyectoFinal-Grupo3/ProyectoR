@@ -6,6 +6,7 @@
     android:background="@color/cardview_shadow_start_color">
 
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

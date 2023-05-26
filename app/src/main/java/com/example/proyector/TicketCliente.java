@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.Lists.ListTicket;
 import com.example.Lists.pojos.Lineas_Ticket;
 import com.example.Lists.pojos.Ticket;
 import com.example.adapters.AdapterLineaTicket;
@@ -20,13 +21,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class TicketCliente extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference ticketCollection = db.collection("tickets");
+    CollectionReference collectionTickets = db.collection("tickets");
 
     Ticket ticketOriginal = new Ticket();
 
@@ -60,33 +63,30 @@ public class TicketCliente extends AppCompatActivity {
                 for (Lineas_Ticket linea : ticketOriginal.getLineas_ticket()) {
                     arrayLineas.add(linea);
                 }
-
             }
         }
 
-            // Definimos el adaptador
-            AdapterLineaTicket lineasAdapter = new AdapterLineaTicket(this, (ArrayList) arrayLineas);
-            // Attach the adapter to a ListView
-            ListView lineasProductos = (ListView) findViewById(R.id.lvListaDeLineas);
-            lineasProductos.setAdapter(lineasAdapter);
+        // Definimos el adaptador
+        AdapterLineaTicket lineasAdapter = new AdapterLineaTicket(this, (ArrayList) arrayLineas);
+        // Attach the adapter to a ListView
+        ListView lineasProductos = (ListView) findViewById(R.id.lvListaDeLineas);
+        lineasProductos.setAdapter(lineasAdapter);
 
-            for (Lineas_Ticket linea : arrayLineas) {
-                precioTotal += (linea.getProducto().getPrecio() * linea.getCantidad());
+        for (Lineas_Ticket linea : arrayLineas) {
+            precioTotal += (linea.getProducto().getPrecio() * linea.getCantidad());
+        }
+
+        TextView xTotal = (TextView) findViewById(R.id.tvPrecioFinal);
+        xTotal.setText("" + precioTotal + "");
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
-
-            //TODO - que se actualice al cambiar las cantidades
-            TextView xTotal = (TextView) findViewById(R.id.tvPrecioFinal);
-            xTotal.setText("" + precioTotal + "");
-
-            ImageButton backButton = findViewById(R.id.backBtn);
-
-
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+        });
 
     }
 

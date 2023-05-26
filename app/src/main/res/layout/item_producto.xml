@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.15085158" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,6 +38,7 @@
             android:inputType="numberDecimal"
             android:text="TextView"
             android:textSize="14dp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
@@ -46,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:layout_weight="5"
+            android:textColor="@color/black"
             android:text="TextView"
             android:textSize="8dp" />
     </LinearLayout>

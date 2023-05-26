@@ -49,6 +49,7 @@ public class ListRestaurante extends AppCompatActivity {
         setContentView(R.layout.activity_list_restaurante);
         getSupportActionBar().hide();
 
+
         ImageButton backButton = findViewById(R.id.backBtn);
         listview1 = (ListView) findViewById(R.id.list_restaurantes);
         adapter = new AdapterRestaurante(ListRestaurante.this, lista);

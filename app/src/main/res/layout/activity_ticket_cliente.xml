@@ -128,13 +128,20 @@
 
     </LinearLayout>
 
+        <TextView
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/tvLinea"
+            android:layout_width="match_parent"
+            android:layout_weight="0.2"
+            android:layout_height="15dp"
+            android:text="------------------------------------------------------------------------------------------------------"
+            android:textSize="15sp" />
+
         <ListView
             android:id="@+id/lvListaDeLineas"
             android:layout_width="match_parent"
             android:layout_height="400dp">
         </ListView>
-
-
 
         <LinearLayout
             android:id="@+id/linearLayout4"

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.Lists.pojos.Permisos;
@@ -47,6 +48,15 @@ public class FormPermiso extends AppCompatActivity{
             p_anterior = (Permisos) getIntent().getExtras().get("permisos");
             enombre.setText(p_anterior.getNombre());
         }
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         btnGuardqar.setOnClickListener(new View.OnClickListener() {
             @Override

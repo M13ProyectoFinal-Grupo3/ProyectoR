@@ -176,15 +176,7 @@ public class ListTicket extends AppCompatActivity {
     }
 
 
+
+
 }
-     /*
-        collectionRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
-                for (DocumentSnapshot snapshot : snapshotList) {
-                        nombreRestaurante = snapshot.getString("Restaurante");
-                        perfilUsuarioLogeado = snapshot.getString("Perfil");
-                }
-            }
-        });*/
+

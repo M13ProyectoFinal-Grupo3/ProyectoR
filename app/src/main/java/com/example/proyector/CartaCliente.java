@@ -185,6 +185,15 @@ public class CartaCliente extends AppCompatActivity {
                 dialog1.show();
             }
         });
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 

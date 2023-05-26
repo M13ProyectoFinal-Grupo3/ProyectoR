@@ -79,12 +79,12 @@ public class TicketAdmin extends AppCompatActivity {
         nombreRestaurante.setText(ticketOriginal.getRestaurante().getNombre());
 
         if (ticketOriginal.getLineas_ticket() != null){
-            //if (!ticketOriginal.getLineas_ticket().isEmpty()){
+            if(!ticketOriginal.getLineas_ticket().isEmpty()){
                 for (Lineas_Ticket linea : ticketOriginal.getLineas_ticket()) {
                     arrayLineas.add(linea);
                 }
 
-            //}
+            }
         }
 
         // Definimos el adaptador
