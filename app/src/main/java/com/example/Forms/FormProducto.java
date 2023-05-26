@@ -174,6 +174,7 @@ public class FormProducto extends AppCompatActivity {
                 // recupera Producto a editar
 
                 if (producto != null) {
+                    switch1.setChecked(producto.getActivo());
                     xNombre.setText(producto.getNombre());
                     xDescrip.setText(producto.getDescripcion());
                     xPrecio.setText(producto.getPrecio().toString());
@@ -217,6 +218,7 @@ public class FormProducto extends AppCompatActivity {
                     });
                 } else {
                     btnBorrar.setEnabled(false);
+                    switch1.setChecked(true);
                 }
             }
         });

@@ -84,7 +84,7 @@ public class CartaCliente extends AppCompatActivity {
         setContentView(R.layout.activity_carta_cliente);
         getSupportActionBar().hide();
 
-        TextView txNombreRest = (TextView) findViewById(R.id.tx_nombrerest2);
+        tNomRest = (TextView) findViewById(R.id.tx_nombrerest2);
         tNumMesa = (TextView) findViewById(R.id.tx_numesa);
         tAlergs = (TextView) findViewById(R.id.txAlergenos);
 
@@ -97,7 +97,7 @@ public class CartaCliente extends AppCompatActivity {
             ticket1 = intent.getExtras().getSerializable("ticket", Ticket.class);
             if (ticket1 != null) {
                 restaurante1 = ticket1.getRestaurante();
-                txNombreRest.setText( restaurante1.getNombre());
+                tNomRest.setText( restaurante1.getNombre());
                 tNumMesa.setText("Mesa: " + ticket1.getNum_mesa());
             }
         } else {
@@ -191,21 +191,24 @@ public class CartaCliente extends AppCompatActivity {
 
 
     private void mostrarProductos(Departamento departamento){
-        productoRef = db.collection("Carta").document("carta").collection("Departamentos").document(departamento.getId()).collection("productos");
+        productoRef = rootRef.document(departamento.getId()).collection("productos");
         productoRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 productos.removeAll(productos);
                 for(DocumentSnapshot document:task.getResult()){
+                    Log.d("size",task.getResult().size()+"");
                     Producto p = document.toObject(Producto.class);
                     // producto activo
                     Boolean activo = p.getActivo();
+                    Log.d("activo",p.getActivo()+"");
                     // filtrar alergenos
                     if(activo) {
                         for (Alergeno a1 : p.getAlergenos()) {
                             for (cAlergeno a2 : cAlergenos) {
                                 if (a1.getId().equals(a2.getAlergeno().getId()) && a2.getChecked()) {
                                     activo = false;
+                                    Log.d("a2",""+activo);
                                     break;
                                 }
                             }
