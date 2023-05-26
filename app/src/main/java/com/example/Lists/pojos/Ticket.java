@@ -90,6 +90,8 @@ public class Ticket implements Serializable {
 
     public void addCantidad(Producto producto, Integer cantidad){
         for(Lineas_Ticket l: lineas_ticket){
+            Log.d("l",l.getProducto().toString());
+            Log.d("l2",producto.toString());
             if(l.getProducto().getId().equals(producto.getId())){
                 l.setCantidad(l.getCantidad()+cantidad);
                 break;

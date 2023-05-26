@@ -2,13 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clayout"
     android:layout_width="match_parent"
-    android:layout_height="60dp">
+    android:layout_height="60dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="20dp"
+    android:background="@drawable/gradient2">
 
     <ImageView
         android:id="@+id/img_prod"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
         android:layout_marginStart="5dp"
         app:layout_constraintEnd_toStartOf="@id/guideline11"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,36 +25,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15085158" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@id/guideline11"
+        app:layout_constraintStart_toEndOf="@+id/img_prod"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/txNombre"
+            android:id="@+id/itemNombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:layout_weight="1"
             android:inputType="numberDecimal"
             android:text="TextView"
-            android:textSize="14dp"
             android:textColor="@color/black"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txDescrip"
+            android:id="@+id/itemDescrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:layout_weight="5"
-            android:textColor="@color/black"
             android:text="TextView"
-            android:textSize="8dp" />
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="italic" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/itemPrecio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:gravity="right"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

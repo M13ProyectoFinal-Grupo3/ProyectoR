@@ -150,7 +150,7 @@ public class CartaCliente extends AppCompatActivity {
                                 cAlergeno a = new cAlergeno( document.toObject(Alergeno.class),false);
                                 cAlergenos.add(a);
                             }
-                       }
+                        }
                     }
                 });
             }
@@ -196,6 +196,7 @@ public class CartaCliente extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
 
@@ -290,6 +291,7 @@ public class CartaCliente extends AppCompatActivity {
                                                             lineaT = new Lineas_Ticket(producto1, cantidad);
                                                             ticket1.addLinea_ticket(lineaT);
                                                         }else {
+                                                            Log.d("producto",producto1.toString());
                                                             ticket1.addCantidad(producto1,cantidad);
                                                         }
                                                         HashMap<String, Object> data = new HashMap<String, Object>() {

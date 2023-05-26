@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.Lists.pojos.Alergeno;
-import com.example.Lists.pojos.Departamento;
 import com.example.Lists.pojos.Ticket;
 import com.example.proyector.R;
 
@@ -32,7 +30,7 @@ public class AdapterTicket extends ArrayAdapter<Ticket> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_ticket, parent, false);
         }
-        TextView xNombre = (TextView) convertView.findViewById(R.id.txDescrip);
+        TextView xNombre = (TextView) convertView.findViewById(R.id.itemDescrip);
         xNombre.setText("Ticket mesa " + t.getNum_mesa() +  "");
 
         return convertView;

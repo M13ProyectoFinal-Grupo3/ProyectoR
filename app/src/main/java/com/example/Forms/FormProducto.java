@@ -57,6 +57,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class FormProducto extends AppCompatActivity {
     FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -86,10 +87,6 @@ public class FormProducto extends AppCompatActivity {
     ArrayList<cAlergeno> cAlergenos; // lista de todos los Alergenos
     AdapterCheckAls adaptercheck;
     TextView tAlergs; // TextView donde se muestran los alergenos seleccionados
-
-    final long MAX_IMAGESIZE = 1024 * 1024;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference imgRef = storage.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,13 +202,7 @@ public class FormProducto extends AppCompatActivity {
                             }
                             mostrarAls();
                             // cargar imagen
-                            imgRef.child("productos").child(getImgName(producto)).getBytes(MAX_IMAGESIZE)
-                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                        @Override
-                                        public void onSuccess(byte[] bytes) {
-                                            imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                                        }
-                                    });
+                            new ImageLib().leerImagen("productos",producto.getId().toString(),imageview1);
                         }
                     });
                 } else {
@@ -228,21 +219,7 @@ public class FormProducto extends AppCompatActivity {
             public void onClick(View v) {
                 userPrepara = usuarios.get(spinPrepara.getSelectedItemPosition());
                 userSirve = usuarios.get(spinServido.getSelectedItemPosition());
-/*                Log.d("spin",spinPrepara.getText().toString());
-                for( Integer i=0;i<usuarios.size();i++){
-                    if(usuarios.get(i).getPerfil().equals(spinPrepara.getText().toString())){
-                        userPrepara = usuarios.get(i);
-                        break;
-                    }
-                }
 
-                for( Integer i=0;i<usuarios.size();i++){
-                    if(usuarios.get(i).getPerfil().equals(spinPrepara.getText().toString())){
-                        userSirve = usuarios.get(i);
-                        break;
-                    }
-                }*/
-                Log.d("userP",userPrepara.toString());
                 if(userPrepara == null || userSirve == null){
                     Toast.makeText(FormProducto.this, "ERROR: Debe seleccionar los perfiles de preparación y servicio", Toast.LENGTH_SHORT).show();
                     return;
@@ -257,8 +234,6 @@ public class FormProducto extends AppCompatActivity {
                 p.setPrepara_idperfil( userPrepara.getId());
                 p.setSirve_idperfil( userSirve.getId());
                 p.setAlergenos(getAlergenos(cAlergenos));
-
-                //guardar imagen
 
                 // Update
                 if (producto != null) {
@@ -276,6 +251,8 @@ public class FormProducto extends AppCompatActivity {
                     rootRef.document(producto.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+                            //guardar imagen
+                            new ImageLib().guardarImagen("productos",p.getId(),new ImageLib().getBitmapFromView(imageview1));
                             Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("update", p);
@@ -296,7 +273,8 @@ public class FormProducto extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             p.setId(task.getResult().getId());
                                             rootRef.document(p.getId()).update("id",p.getId());
-
+                                            //guardar imagen
+                                            new ImageLib().guardarImagen("productos",p.getId(),new ImageLib().getBitmapFromView(imageview1));
                                             Intent resultIntent = new Intent();
                                             resultIntent.putExtra("new",p);
                                             setResult(RESULT_OK, resultIntent);
@@ -414,31 +392,6 @@ public class FormProducto extends AppCompatActivity {
         tAlergs.setText(s);
     }
 
-    public void guardarImagen(Producto p, Bitmap bmp) {
-        imgRef = storage.getReference().child("productos/"+getImgName(p));
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-        UploadTask uploadTask = imgRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
-    }
-
-    private String getImgName(Producto p){
-        return p.getId()+".jpg";
-    }
 
     private Integer buscaPerfilUsuario(String perfil){
         Integer pos = 0;

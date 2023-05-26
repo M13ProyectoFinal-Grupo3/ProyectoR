@@ -112,22 +112,14 @@ public class FormDepartamento extends AppCompatActivity {
             if(intent.getExtras().containsKey("departamento")){
                 departamento = getIntent().getExtras().getSerializable("departamento", Departamento.class);
                 txDepto.setText(departamento.getnombre());
-                Log.d("departamentoId", departamento.getId());
-                // cargar imagen
-                imgRef.child("departamentos").child(getImgName(departamento)).getBytes(MAX_IMAGESIZE)
-                        .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                            @Override
-                            public void onSuccess(byte[] bytes) {
-                                imageview1.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                            }
-                        });
+                new ImageLib().leerImagen("departamentos",departamento.getId(),imageview1);
             } else {
+                departamento = new Departamento();
                 btnBorrar.setEnabled(false);
             }
 
             // si hay productos los muestra
 
-            Log.d("dep",departamento.toString());
             if(departamento.getId() != null) {
 
                 rootRef = db.collection("restaurante").document(restaurante1.getId()).collection("Carta").document("carta")
@@ -270,6 +262,8 @@ public class FormDepartamento extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<DocumentReference> task) {
                                         nuevoDep.setId(task.getResult().getId());
                                         deptoRef.document(nuevoDep.getId()).update("id",nuevoDep.getId());
+                                        new ImageLib().guardarImagen("departamentos",nuevoDep.getId(),new ImageLib().getBitmapFromView(imageview1));
+
                                         Toast.makeText(FormDepartamento.this, "El Departamento ha sido almacenado correctamente", Toast.LENGTH_SHORT).show();
                                         Intent resultIntent = new Intent();
                                         resultIntent.putExtra("new", nuevoDep);
@@ -296,7 +290,6 @@ public class FormDepartamento extends AppCompatActivity {
                                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                                     bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
                                     imageview1.setImageBitmap(bitmap);
-                                    guardarImagen(departamento,bitmap);
                                 }catch (Exception e){
                                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
@@ -325,31 +318,5 @@ public class FormDepartamento extends AppCompatActivity {
 
     }
 
-
-    public void guardarImagen(Departamento d, Bitmap bmp) {
-        imgRef = storage.getReference().child("departamentos/"+getImgName(d));
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-        UploadTask uploadTask = imgRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
-    }
-
-    private String getImgName(Departamento d){
-        return d.getId()+".jpg";
-    }
 
 }

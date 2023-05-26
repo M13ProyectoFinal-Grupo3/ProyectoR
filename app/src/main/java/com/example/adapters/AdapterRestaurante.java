@@ -23,7 +23,7 @@ public class AdapterRestaurante extends ArrayAdapter<Restaurante> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_restaurante, parent, false);
         }
-        TextView xNombre = (TextView) convertView.findViewById(R.id.txDescrip);
+        TextView xNombre = (TextView) convertView.findViewById(R.id.itemDescrip);
         xNombre.setText(a.getNombre());
 
         return convertView;
