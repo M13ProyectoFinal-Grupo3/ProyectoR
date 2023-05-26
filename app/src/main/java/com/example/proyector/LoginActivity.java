@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Lists.CardViewGestionComandas;
+import com.example.Lists.ListRestaurante;
 import com.example.Lists.pojos.Usuarios;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -109,6 +110,10 @@ public class LoginActivity extends AppCompatActivity {
                                             case "Administrador":
                                                 intent = new Intent(LoginActivity.this, FormAdmin.class);
                                                 intent.putExtra("usuario", usuario);
+                                                startActivity(intent);
+                                                break;
+                                            case "Superusuario":
+                                                intent = new Intent(LoginActivity.this, ListRestaurante.class);
                                                 startActivity(intent);
                                                 break;
                                             default:

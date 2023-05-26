@@ -41,6 +41,7 @@ public class ListUsuarios extends AppCompatActivity {
     Integer pos=0;
 
     ActivityResultLauncher<Intent> activityForm;
+    String nombreRestaurante;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +53,20 @@ public class ListUsuarios extends AppCompatActivity {
         adapter = new AdapterUsuarios(ListUsuarios.this, lista);
         listview1.setAdapter(adapter);
 
+        Intent intent = getIntent();
+
+        if (intent != null && intent.hasExtra("nombreRestaurante")) {
+            nombreRestaurante = intent.getStringExtra("nombreRestaurante");
+        }
 
         myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        lista.add(document.toObject(Usuarios.class));
+                        if(document.getString("Restaurante").equals(nombreRestaurante)){
+                            lista.add(document.toObject(Usuarios.class));
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 } else {
