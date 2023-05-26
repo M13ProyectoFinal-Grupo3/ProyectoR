@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,7 @@ public class FormAdmin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_admin);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
 
         Button btnCarta = (Button) findViewById(R.id.btnCarta);
@@ -90,6 +90,15 @@ public class FormAdmin extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ListUsuarios.class);
                 intent.putExtra("nombreRestaurante", restaurante.getNombre());
                 startActivity(intent);
+            }
+        });
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
