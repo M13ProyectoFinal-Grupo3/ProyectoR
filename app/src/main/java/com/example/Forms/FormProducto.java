@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -71,8 +70,8 @@ public class FormProducto extends AppCompatActivity {
     EditText xPrecio;
     TextView txDepartamento;
     ImageView imageview1;
-    AutoCompleteTextView spinPrepara;
-    AutoCompleteTextView spinServido;
+    Spinner spinPrepara;
+    Spinner spinServido;
     Switch switch1;
 
     Usuarios userPrepara;
@@ -81,6 +80,7 @@ public class FormProducto extends AppCompatActivity {
     ArrayList<Usuarios> usuarios;
     ArrayAdapter adapter1;
     ArrayAdapter adapter2;
+    ArrayList<String> sUsers;
 
 
     ArrayList<cAlergeno> cAlergenos; // lista de todos los Alergenos
@@ -107,8 +107,8 @@ public class FormProducto extends AppCompatActivity {
         ImageButton btnAlergenos = (ImageButton) findViewById(R.id.btn_pAlergenos);
 
         txDepartamento = (TextView) findViewById(R.id.TxDepartamento);
-        spinPrepara = (AutoCompleteTextView) findViewById(R.id.spinner1);
-        spinServido = (AutoCompleteTextView) findViewById(R.id.spinner2);
+        spinPrepara = (Spinner) findViewById(R.id.spinner1);
+        spinServido = (Spinner) findViewById(R.id.spinner2);
         xNombre = (EditText) findViewById(R.id.TexNomDepto);
         xDescrip = (EditText) findViewById(R.id.t_pDescripcion);
         xPrecio = (EditText) findViewById(R.id.t_pPrecio);
@@ -151,15 +151,15 @@ public class FormProducto extends AppCompatActivity {
                         Log.d("usuario",doc.toObject(Usuarios.class).toString());
                     }
 
-                    ArrayList<String> sUsers = new ArrayList<>();
+                    sUsers = new ArrayList<>();
                     for(Usuarios u: usuarios){
                         sUsers.add(u.getPerfil());
                     }
 
-                    adapter1 = new ArrayAdapter<String>(getApplicationContext(),R.layout.drop_down_item, sUsers);
+                    adapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, sUsers);
                     spinPrepara.setAdapter(adapter1);
                     spinPrepara.setSelection(0);
-                    adapter2 = new ArrayAdapter<String>(getApplicationContext(),R.layout.drop_down_item, sUsers);
+                    adapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, sUsers);
                     spinServido.setAdapter(adapter2);
                     spinServido.setSelection(0);
 
@@ -178,8 +178,9 @@ public class FormProducto extends AppCompatActivity {
                     xDescrip.setText(producto.getDescripcion());
                     xPrecio.setText(producto.getPrecio().toString());
                     switch1.setChecked(producto.getActivo());
-                    spinPrepara.setText(buscaUsuario(producto.getPrepara_idperfil()));
-                    spinServido.setText(buscaUsuario(producto.getSirve_idperfil()));
+                    Log.d("preapra",""+buscaUsuario(producto.getPrepara_idperfil()));
+                    spinPrepara.setSelection(buscaUsuario(producto.getPrepara_idperfil()));
+                    spinServido.setSelection(buscaUsuario(producto.getSirve_idperfil()));
 
                     // set Alergenos
                     CollectionReference alRef = db.collection("alergenos");
@@ -225,8 +226,9 @@ public class FormProducto extends AppCompatActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.d("spin",spinPrepara.getText().toString());
+                userPrepara = usuarios.get(spinPrepara.getSelectedItemPosition());
+                userSirve = usuarios.get(spinServido.getSelectedItemPosition());
+/*                Log.d("spin",spinPrepara.getText().toString());
                 for( Integer i=0;i<usuarios.size();i++){
                     if(usuarios.get(i).getPerfil().equals(spinPrepara.getText().toString())){
                         userPrepara = usuarios.get(i);
@@ -239,7 +241,7 @@ public class FormProducto extends AppCompatActivity {
                         userSirve = usuarios.get(i);
                         break;
                     }
-                }
+                }*/
                 Log.d("userP",userPrepara.toString());
                 if(userPrepara == null || userSirve == null){
                     Toast.makeText(FormProducto.this, "ERROR: Debe seleccionar los perfiles de preparación y servicio", Toast.LENGTH_SHORT).show();
@@ -438,7 +440,20 @@ public class FormProducto extends AppCompatActivity {
         return p.getId()+".jpg";
     }
 
-    private String buscaUsuario(String id){
+    private Integer buscaPerfilUsuario(String perfil){
+        Integer pos = 0;
+        for(Integer x=0; x<usuarios.size(); x++){
+            if(usuarios.get(x).getPerfil().equals(perfil)){
+                pos = x;
+                break;
+            }
+        }
+
+        return pos;
+    }
+
+
+    private Integer buscaUsuario(String id){
         Integer pos = 0;
         for(Integer x=0; x<usuarios.size(); x++){
             if(usuarios.get(x).getId().equals(id)){
@@ -447,7 +462,7 @@ public class FormProducto extends AppCompatActivity {
             }
         }
 
-        return usuarios.get(pos).getPerfil();
+        return pos;
     }
 
 }

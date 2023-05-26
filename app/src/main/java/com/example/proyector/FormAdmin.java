@@ -82,6 +82,7 @@ public class FormAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), FormCarta.class);
+                intent.putExtra("restaurante",restaurante);
                 startActivity(intent);
             }
         });
