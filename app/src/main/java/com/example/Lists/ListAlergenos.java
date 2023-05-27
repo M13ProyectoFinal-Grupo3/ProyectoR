@@ -90,7 +90,7 @@ public class ListAlergenos extends AppCompatActivity {
                             } else if (intent.getSerializableExtra("delete", Alergeno.class) != null) {
                                 Alergeno a_dev = (Alergeno) intent.getSerializableExtra("delete", Alergeno.class);
                                 Log.d("delete", pos + " " + a_dev.getNombre());
-                                lista.remove(a_dev);
+                                lista.remove(lista.get(pos));
                                 adapter.notifyDataSetChanged();
                             }
 

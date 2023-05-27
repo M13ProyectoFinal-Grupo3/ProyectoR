@@ -38,14 +38,16 @@ public class AdapterLineaTicketCliente extends ArrayAdapter<Lineas_Ticket> {
 
         Log.d("adaptador", lineaTicket.toString());
 
-        TextView xCantidad = (TextView) convertView.findViewById(R.id.tvAmount);
-        xCantidad.setText("" + lineaTicket.getCantidad() + "");
-
         TextView xPrecio = (TextView) convertView.findViewById(R.id.tvPrecioUnitario);
-        xPrecio.setText("" + lineaTicket.getProducto().getPrecio() + "");
+        xPrecio.setText( lineaTicket.getProducto().getPrecio().toString());
 
         TextView xTotal = (TextView) convertView.findViewById(R.id.tvPrecioTotal);
         xTotal.setText("" + (lineaTicket.getProducto().getPrecio() * lineaTicket.getCantidad())+ "");
+
+
+        TextView xCantidad = (TextView) convertView.findViewById(R.id.tvCantidad);
+        xCantidad.setText( Integer.toString(lineaTicket.getCantidad()));
+
 
         return convertView;
     }

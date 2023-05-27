@@ -54,6 +54,8 @@ public class ListTicket extends AppCompatActivity {
     String perfilUsuarioLogeado;
     String nombreRestaurante;
 
+    Integer pos;
+
     Usuarios usuario;
     Restaurante restaurante;
 
@@ -71,7 +73,7 @@ public class ListTicket extends AppCompatActivity {
 
         ListView listview1;
 
-        int pos = -1;
+        pos = -1;
 
         ImageButton backButton = findViewById(R.id.backBtn);
 
@@ -120,13 +122,14 @@ public class ListTicket extends AppCompatActivity {
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
          @Override
          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-             Intent intent = new Intent();
+             pos = position;
+             Intent intent = new Intent(ListTicket.this, TicketAdmin.class);
              intent.setClass(ListTicket.this, TicketAdmin.class);
              intent.putExtra("position", position);
              intent.putExtra("id", id);
              intent.putExtra("ticketId", lista.get(position).getId());
              intent.putExtra("ticket", lista.get(position));
-             startActivity(intent);
+             activityForm.launch(intent);
          }
      });
 
@@ -148,7 +151,7 @@ public class ListTicket extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             } else if (intent.getSerializableExtra("delete", Ticket.class) != null) {
                                 Ticket t_dev = (Ticket) intent.getSerializableExtra("delete", Ticket.class);
-                                lista.remove(t_dev);
+                                lista.remove(lista.get(pos));
                                 adapter.notifyDataSetChanged();
                             }
 

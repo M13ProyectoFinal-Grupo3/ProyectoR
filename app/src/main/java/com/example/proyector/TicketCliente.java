@@ -48,7 +48,6 @@ public class TicketCliente extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             if (intent.getExtras().containsKey("ticket")) {
-                ticketOriginal = new Ticket();
                 ticketOriginal = intent.getSerializableExtra("ticket", Ticket.class);
             }
         } else {
@@ -68,7 +67,7 @@ public class TicketCliente extends AppCompatActivity {
         }
 
         // Definimos el adaptador
-        AdapterLineaTicketCliente lineasAdapter = new AdapterLineaTicketCliente(this, (ArrayList) arrayLineas);
+        AdapterLineaTicketCliente lineasAdapter = new AdapterLineaTicketCliente(this, arrayLineas);
         // Attach the adapter to a ListView
         ListView lineasProductos = (ListView) findViewById(R.id.lvListaDeLineas);
         lineasProductos.setAdapter(lineasAdapter);
