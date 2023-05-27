@@ -23,20 +23,37 @@ public class ImageLib {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference imgRef = storage.getReference();
 
-    public void leerImagen(String ref,String name, ImageView imgView){
+    Bitmap bmp;
+
+    public ImageLib() {
+    }
+
+    public ImageLib(Bitmap bmp) {
+        this.bmp = bmp;
+    }
+
+    public Bitmap getBmp() {
+        return bmp;
+    }
+
+    public void setBmp(Bitmap bmp) {
+        this.bmp = bmp;
+    }
+
+    public void leerImagen(String ref, String name, ImageView imgView){
         Log.d("saveIm",ref+" "+name+" "+imgView.getHeight());
         imgRef = imgRef.child(ref).child(name+".jpg");
         imgRef.getBytes(MAX_IMAGESIZE)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         imgView.setImageBitmap(bmp);
                     }
                 });
     }
 
-    public void guardarImagen(String ref,String name, Bitmap bmp) {
+    public void guardarImagen(String ref,String name) {
         Log.d("saveIm",ref+" "+name+" "+bmp.getHeight());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);

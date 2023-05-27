@@ -39,14 +39,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -85,7 +81,7 @@ public class CartaCliente extends AppCompatActivity {
         getSupportActionBar().hide();
 
         tNomRest = (TextView) findViewById(R.id.tx_nombrerest2);
-        tNumMesa = (TextView) findViewById(R.id.tx_numesa);
+        tNumMesa = (TextView) findViewById(R.id.txNumMesacc);
         tAlergs = (TextView) findViewById(R.id.txAlergenos);
 
         ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
@@ -220,6 +216,8 @@ public class CartaCliente extends AppCompatActivity {
                     if(activo) productos.add(p);
                 }
 
+                //for
+
                 adapterPro = new AdapterCartaProducto(CartaCliente.this, productos);
                 listView1.setAdapter(adapterPro);
 
@@ -244,74 +242,66 @@ public class CartaCliente extends AppCompatActivity {
                         EditText eCantidad = (EditText) layout.findViewById(R.id.etCantidad);
 
                         txNomProducto.setText(producto1.getNombre());
-                        if(lineaT != null){txUdsPedidas.setText("Unidades pedidas: "+lineaT.getCantidad());}
+                        if(lineaT != null) {
+                            txUdsPedidas.setText("Unidades pedidas: " + lineaT.getCantidad());
 
-                        // cargar imagen
-
-                        final long MAX_IMAGESIZE = 1024 * 1024;
-
-                        FirebaseStorage storage = FirebaseStorage.getInstance();
-                        StorageReference imgRef = storage.getReference();
-                        imgRef.child("productos").child(getProductoImgName(producto1)).getBytes(MAX_IMAGESIZE)
-                                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<byte[]> task) {
-                                        if( task.isSuccessful() ) {
-                                            byte[] bytes = task.getResult();
-                                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                            b =Bitmap.createScaledBitmap(b, 50, 50, true);
-                                            image.setImageBitmap(b);
-                                        } else {
-                                            image.setImageResource(R.drawable.platocomida);
+                            // cargar imagen
+                            final long MAX_IMAGESIZE = 1024 * 1024;
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference imgRef = storage.getReference();
+                            imgRef = imgRef.child("productos").child(producto1.getId() + ".jpg");
+                            imgRef.getBytes(MAX_IMAGESIZE)
+                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                        @Override
+                                        public void onSuccess(byte[] bytes) {
+                                            image.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
                                         }
-                                    }
-                                })
-                                .addOnCompleteListener(new OnCompleteListener<byte[]>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<byte[]> task) {
-                                        imageDialog.setView(layout);
-                                        imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener(){
-                                            public void onClick(DialogInterface dialog, int which) {
+                                    }).addOnCompleteListener(new OnCompleteListener<byte[]>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<byte[]> task) {
+                                            imageDialog.setView(layout);
+                                            imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
 
-                                                ticketRef.document(ticket1.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                        Integer cantidad = Integer.parseInt(eCantidad.getText().toString());
+                                                    ticketRef.document(ticket1.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                            Integer cantidad = Integer.parseInt(eCantidad.getText().toString());
 
-                                                        if(lineaT.getProducto() == null) {
-                                                            // nueva linea
-                                                            lineaT = new Lineas_Ticket(producto1, cantidad);
-                                                            ticket1.addLinea_ticket(lineaT);
-                                                        }else {
-                                                            Log.d("producto",producto1.toString());
-                                                            ticket1.addCantidad(producto1,cantidad);
-                                                        }
-                                                        HashMap<String, Object> data = new HashMap<String, Object>() {
-                                                        };
-                                                        data.put("lineas_ticket",ticket1.getLineas_ticket());
-                                                        ticketRef.document(ticket1.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
+                                                            if (lineaT.getProducto() == null) {
+                                                                // nueva linea
+                                                                lineaT = new Lineas_Ticket(producto1, cantidad);
+                                                                ticket1.addLinea_ticket(lineaT);
+                                                            } else {
+                                                                Log.d("producto", producto1.toString());
+                                                                ticket1.addCantidad(producto1, cantidad);
                                                             }
-                                                        });
+                                                            HashMap<String, Object> data = new HashMap<String, Object>() {
+                                                            };
+                                                            data.put("lineas_ticket", ticket1.getLineas_ticket());
+                                                            ticketRef.document(ticket1.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();
+                                                                }
+                                                            });
 
-                                                        dialog.dismiss();
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(CartaCliente.this, "Ticket finalizado", Toast.LENGTH_SHORT).show();
-                                                        finish();
-                                                    }
-                                                });
-                                            }
-
-                                        });
-                                        imageDialog.create();
-                                        imageDialog.show();
-                                    }
-                                });
+                                                            dialog.dismiss();
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(CartaCliente.this, "Ticket finalizado", Toast.LENGTH_SHORT).show();
+                                                            finish();
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                            imageDialog.create();
+                                            imageDialog.show();
+                                        }
+                                    });
+                        }
                     }
                 });
             }

@@ -48,8 +48,7 @@ public class ListAlergenos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_alergenos);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         listview1 = (ListView) findViewById(R.id.list_productos);
         adapter = new AdapterAlergeno(ListAlergenos.this, lista);
@@ -119,16 +118,6 @@ public class ListAlergenos extends AppCompatActivity {
                 activityForm.launch(intent);
             }
         });
-
-        ImageButton backButton = findViewById(R.id.backBtn);
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
 
     }
 }

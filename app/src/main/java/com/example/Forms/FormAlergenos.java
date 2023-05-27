@@ -39,7 +39,7 @@ public class FormAlergenos extends AppCompatActivity {
         getSupportActionBar().hide();
 
         Button btnGuardqar = (Button) findViewById(R.id.btnGuardarDepto);
-        ImageButton btnBorrar = (ImageButton) findViewById(R.id.btn_borrarAl);
+        Button btnBorrar = (Button) findViewById(R.id.btn_borrarAl);
 
         EditText enombre = (EditText) findViewById(R.id.TexNomDepto);
 

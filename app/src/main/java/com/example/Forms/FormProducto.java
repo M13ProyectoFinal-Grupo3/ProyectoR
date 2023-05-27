@@ -83,6 +83,7 @@ public class FormProducto extends AppCompatActivity {
     ArrayAdapter adapter2;
     ArrayList<String> sUsers;
 
+    ImageLib oFoto;
 
     ArrayList<cAlergeno> cAlergenos; // lista de todos los Alergenos
     AdapterCheckAls adaptercheck;
@@ -112,6 +113,7 @@ public class FormProducto extends AppCompatActivity {
         switch1 = (Switch) findViewById(R.id.switch1);
 
         usuarios = new ArrayList<>();
+        oFoto = new ImageLib();
 
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
@@ -202,7 +204,8 @@ public class FormProducto extends AppCompatActivity {
                             }
                             mostrarAls();
                             // cargar imagen
-                            new ImageLib().leerImagen("productos",producto.getId().toString(),imageview1);
+                            oFoto.leerImagen("productos",producto.getId().toString(),imageview1);
+
                         }
                     });
                 } else {
@@ -253,7 +256,7 @@ public class FormProducto extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             //guardar imagen
                             Log.d("update producto",p.getId());
-                            new ImageLib().guardarImagen("productos",p.getId(),new ImageLib().getBitmapFromView(imageview1));
+                            oFoto.guardarImagen("productos",p.getId());
                             Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("update", p);
@@ -276,7 +279,7 @@ public class FormProducto extends AppCompatActivity {
                                             rootRef.document(p.getId()).update("id",p.getId());
                                             //guardar imagen
                                             Log.d("new producto",p.getId());
-                                            new ImageLib().guardarImagen("productos",p.getId(),new ImageLib().getBitmapFromView(imageview1));
+                                            oFoto.guardarImagen("productos",p.getId());
                                             Intent resultIntent = new Intent();
                                             resultIntent.putExtra("new",p);
                                             setResult(RESULT_OK, resultIntent);
@@ -349,9 +352,8 @@ public class FormProducto extends AppCompatActivity {
                             if (selectedImageUri != null){
                                 try {
                                     InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    //bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
-                                    imageview1.setImageBitmap(bitmap);
+                                    oFoto = new ImageLib( BitmapFactory.decodeStream(inputStream));
+                                    imageview1.setImageBitmap(oFoto.getBmp());
                                 }catch (Exception e){
                                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }

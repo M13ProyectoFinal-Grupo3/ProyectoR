@@ -84,6 +84,7 @@
         </activity>
         <activity
             android:name="com.example.Lists.ListAlergenos"
+            android:parentActivityName=".FormAdmin"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

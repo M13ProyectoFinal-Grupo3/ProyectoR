@@ -78,8 +78,8 @@ public class FormDepartamento extends AppCompatActivity {
 
     int pos=-1;
 
-    final long MAX_IMAGESIZE = 1024 * 1024;
     ImageView imageview1;
+    ImageLib oFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +95,8 @@ public class FormDepartamento extends AppCompatActivity {
         TextInputEditText txDepto = (TextInputEditText) findViewById(R.id.TexNomDepto);
         imageview1 = (ImageView) findViewById(R.id.ImgDepto);
         listViewProds = (ListView) findViewById(R.id.list_productos);
+
+        oFoto = new ImageLib();
 
         // recupera Departamento y muestra sus productos
         Intent intent = getIntent();
@@ -112,7 +114,7 @@ public class FormDepartamento extends AppCompatActivity {
             if(intent.getExtras().containsKey("departamento")){
                 departamento = getIntent().getExtras().getSerializable("departamento", Departamento.class);
                 txDepto.setText(departamento.getnombre());
-                new ImageLib().leerImagen("departamentos",departamento.getId(),imageview1);
+                oFoto.leerImagen("departamentos",departamento.getId(),imageview1);
             } else {
                 departamento = new Departamento();
                 btnBorrar.setEnabled(false);
@@ -262,7 +264,7 @@ public class FormDepartamento extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<DocumentReference> task) {
                                         nuevoDep.setId(task.getResult().getId());
                                         deptoRef.document(nuevoDep.getId()).update("id",nuevoDep.getId());
-                                        new ImageLib().guardarImagen("departamentos",nuevoDep.getId(),new ImageLib().getBitmapFromView(imageview1));
+                                        oFoto.guardarImagen("departamentos",nuevoDep.getId());
 
                                         Toast.makeText(FormDepartamento.this, "El Departamento ha sido almacenado correctamente", Toast.LENGTH_SHORT).show();
                                         Intent resultIntent = new Intent();
@@ -287,9 +289,8 @@ public class FormDepartamento extends AppCompatActivity {
                             if (selectedImageUri != null){
                                 try {
                                     InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    bitmap = Bitmap.createScaledBitmap(bitmap,50, 50, false);
-                                    imageview1.setImageBitmap(bitmap);
+                                    oFoto = new ImageLib(BitmapFactory.decodeStream(inputStream));
+                                    imageview1.setImageBitmap(Bitmap.createScaledBitmap(oFoto.getBmp(),50, 50, false));
                                 }catch (Exception e){
                                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
