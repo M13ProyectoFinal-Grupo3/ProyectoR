@@ -25,7 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TicketCliente extends AppCompatActivity {
 
@@ -33,6 +35,8 @@ public class TicketCliente extends AppCompatActivity {
     CollectionReference collectionTickets = db.collection("tickets");
 
     Ticket ticketOriginal = new Ticket();
+
+    final String OLD_FORMAT = "dd/MM/yyyy";
 
     ArrayList<Lineas_Ticket> arrayLineas = new ArrayList<>();
 
@@ -65,6 +69,15 @@ public class TicketCliente extends AppCompatActivity {
                 }
             }
         }
+
+        //cargar nif restaurante logeado
+        TextView nif = (TextView) findViewById(R.id.tvNifRest);
+        nif.setText(ticketOriginal.getRestaurante().getNif());
+
+        //añadir fecha automáticamente
+        TextView fecha = (TextView) findViewById(R.id.tvFecha);
+        SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+        fecha.setText(sdf.format(new Date()));
 
         // Definimos el adaptador
         AdapterLineaTicketCliente lineasAdapter = new AdapterLineaTicketCliente(this, arrayLineas);

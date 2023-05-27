@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 // leer el primer ticket para test
-                /*
+
                 myRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity{
                             Toast.makeText(MainActivity.this, "Ticket no reconocido", Toast.LENGTH_LONG).show();
                         }
                     }
-                });*/
+                });
+/*
                 //escanear qr
                 ScanOptions options = new ScanOptions();
                 options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity{
                 options.setCaptureActivity(CapActivity.class);
                 options.setBarcodeImageEnabled(false);
                 barcodeLauncher.launch(options);
+
+                 */
 
             }
         });
