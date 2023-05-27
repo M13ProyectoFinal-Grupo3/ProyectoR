@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Forms.FormCarta;
@@ -88,7 +87,7 @@ public class FormAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListUsuarios.class);
-                intent.putExtra("nombreRestaurante", restaurante.getNombre());
+                intent.putExtra("nombreRestaurante", restaurante.getId());
                 startActivity(intent);
             }
         });

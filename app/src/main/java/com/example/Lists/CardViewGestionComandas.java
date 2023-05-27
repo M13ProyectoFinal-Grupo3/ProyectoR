@@ -101,7 +101,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
                             if (document.exists()) {
                                 ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
                                 Map<String, Object> lineaTicket = lineas_ticket.get(caracteresDespuesDeBarra);
-                                lineaTicket.put("sirve_idperfil", "");
+                                lineaTicket.put("sirve_idperfil", "finalizado");
 
                                 documentRef.update("lineas_ticket", lineas_ticket)
                                         .addOnSuccessListener(aVoid -> {
@@ -120,7 +120,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
                             if (document.exists()) {
                                 ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
                                 Map<String, Object> lineaTicket = lineas_ticket.get(caracteresDespuesDeBarra);
-                                lineaTicket.put("prepara_idperfil", "");
+                                lineaTicket.put("prepara_idperfil", "finalizado");
 
                                 documentRef.update("lineas_ticket", lineas_ticket)
                                         .addOnSuccessListener(aVoid -> {
@@ -177,58 +177,65 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                 String observacionesLineaTicket = null;
                                 String productoNombreLineaTicket = null;
                                 Producto productoLineaTicket = null;
+                                String preparaIdPerfilLineaTicketProducto = null;
+                                String sirveIdPerfilLineaTicketProducto = null;
                                 String preparaIdPerfilLineaTicket = null;
                                 String sirveIdPerfilLineaTicket = null;
                                 int indice = 0;
-                                String nombreRestaurante = null;
-
-                                Map<String, Object> mapa = (Map<String, Object>) document.get("restaurante");
-                                for (Map.Entry<String, Object> entry : mapa.entrySet()) {
-                                    if (entry.getKey().equals("nombre")) {
-                                        nombreRestaurante = (String) entry.getValue();
-                                    }
-                                }
 
                                 ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
 
-                                for (Map<String, Object> mapaFila : lineas_ticket) {
+                                if (lineas_ticket != null){
+                                    for (Map<String, Object> mapaFila : lineas_ticket) {
 
-                                    // Recorrer el mapa de cada fila
-                                    for (Map.Entry<String, Object> entry : mapaFila.entrySet()) {
-                                        if (entry.getKey().equals("cantidad")) {
-                                            cantidadLineaTicket = (Long) entry.getValue();
-                                        }
-                                        if (entry.getKey().equals("observaciones")) {
-                                            observacionesLineaTicket = entry.getValue() == null ? "N/A" : (String) entry.getValue();
-                                        }
-                                        if (entry.getKey().equals("producto")) {
-                                            Map<String, Object> mapaProducto = (Map<String, Object>) entry.getValue();
-                                            for (Map.Entry<String, Object> entryProducto : mapaProducto.entrySet()) {
-                                                if (entryProducto.getKey().equals("nombre")) {
-                                                    productoNombreLineaTicket = (String) entryProducto.getValue();
-                                                    productoLineaTicket = new Producto();
-                                                    productoLineaTicket.setNombre(productoNombreLineaTicket);
+                                        // Recorrer el mapa de cada fila
+                                        for (Map.Entry<String, Object> entry : mapaFila.entrySet()) {
+                                            if (entry.getKey().equals("cantidad")) {
+                                                cantidadLineaTicket = (Long) entry.getValue();
+                                            }
+                                            if (entry.getKey().equals("observaciones")) {
+                                                observacionesLineaTicket = entry.getValue() == null ? "N/A" : (String) entry.getValue();
+                                            }
+                                            if (entry.getKey().equals("producto")) {
+                                                Map<String, Object> mapaProducto = (Map<String, Object>) entry.getValue();
+                                                for (Map.Entry<String, Object> entryProducto : mapaProducto.entrySet()) {
+                                                    if (entryProducto.getKey().equals("nombre")) {
+                                                        productoNombreLineaTicket = (String) entryProducto.getValue();
+                                                        productoLineaTicket = new Producto();
+                                                        productoLineaTicket.setNombre(productoNombreLineaTicket);
+                                                    }
+
+                                                    if (entryProducto.getKey().equals("prepara_idperfil")) {
+                                                        preparaIdPerfilLineaTicketProducto = (String) entryProducto.getValue();
+                                                    }
+                                                    if (entryProducto.getKey().equals("sirve_idperfil")) {
+                                                        sirveIdPerfilLineaTicketProducto = (String) entryProducto.getValue();
+                                                    }
                                                 }
                                             }
-                                        }
-                                        if (entry.getKey().equals("prepara_idperfil")) {
-                                            preparaIdPerfilLineaTicket = (String) entry.getValue();
-                                        }
-                                        if (entry.getKey().equals("sirve_idperfil")) {
-                                            sirveIdPerfilLineaTicket = (String) entry.getValue();
-                                        }
-                                        indice = lineas_ticket.indexOf(mapaFila);
 
-                                    }
-                                    Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), observacionesLineaTicket, productoLineaTicket);
-                                    agregarComanda.setIdLineaTicket(document.getId() + "/" + indice);
+                                            if (entry.getKey().equals("prepara_idperfil")) {
+                                                preparaIdPerfilLineaTicket = (String) entry.getValue();
+                                            }
+                                            if (entry.getKey().equals("sirve_idperfil")) {
+                                                sirveIdPerfilLineaTicket = (String) entry.getValue();
+                                                if(preparaIdPerfilLineaTicketProducto != null && preparaIdPerfilLineaTicket == null){sirveIdPerfilLineaTicket = "pendienteCocina";}
 
-                                    if(perfilUsuarioLogeado.equals("Camarero") && idPerfil.equals(sirveIdPerfilLineaTicket) && (preparaIdPerfilLineaTicket == null || preparaIdPerfilLineaTicket.equals(""))){
-                                        listaGestionComandas.add(agregarComanda);
-                                    }else if(perfilUsuarioLogeado.equals("Cocinero") && idPerfil.equals(preparaIdPerfilLineaTicket)){
-                                        listaGestionComandas.add(agregarComanda);
+                                            }
+
+                                            indice = lineas_ticket.indexOf(mapaFila);
+
+                                        }
+                                        Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), observacionesLineaTicket, productoLineaTicket);
+                                        agregarComanda.setIdLineaTicket(document.getId() + "/" + indice);
+
+                                        if ((perfilUsuarioLogeado.equals("Camarero") && idPerfil.equals(sirveIdPerfilLineaTicketProducto)) && (sirveIdPerfilLineaTicket == null || (!sirveIdPerfilLineaTicket.equals("pendienteCocina") && !sirveIdPerfilLineaTicket.equals("finalizado")))) {
+                                            listaGestionComandas.add(agregarComanda);
+                                        } else if ((perfilUsuarioLogeado.equals("Cocinero") && idPerfil.equals(preparaIdPerfilLineaTicketProducto)) && preparaIdPerfilLineaTicket == null) {
+                                            listaGestionComandas.add(agregarComanda);
+                                        }
                                     }
-                                }
+                            }
                             }
                             adaptadorGestionComandas.notifyDataSetChanged();
                         } else {
