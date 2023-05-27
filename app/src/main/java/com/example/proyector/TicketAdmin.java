@@ -120,7 +120,7 @@ public class TicketAdmin extends AppCompatActivity {
                 xTotal.setText(""+precioTotal+"");
             }
         });
-
+/*
         lineasProductos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +130,8 @@ public class TicketAdmin extends AppCompatActivity {
                 xTotal.setText(""+precioTotal+"");
             }
         });
+
+ */
 
         //////////////////////////////////////
 
@@ -167,6 +169,9 @@ public class TicketAdmin extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(TicketAdmin.this, "Ticket modificado", Toast.LENGTH_SHORT).show();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("update", ticketOriginal);
+                        setResult(RESULT_OK, resultIntent);
                         finish();
                     }
                 });

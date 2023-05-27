@@ -6,19 +6,31 @@
     android:layout_height="match_parent"
     tools:context="com.example.Forms.FormProducto">
 
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
 
     <TextView
         android:id="@+id/TxDepartamento"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:fontFamily="@font/open_sans_bold"
         android:text="Departamento"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/backBtn"
+        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintTop_toTopOf="@+id/backBtn"/>
 
 
     <TextView

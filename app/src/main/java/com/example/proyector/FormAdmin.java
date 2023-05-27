@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Forms.FormCarta;
 import com.example.Lists.ListAlergenos;
+import com.example.Lists.ListTicket;
 import com.example.Lists.ListUsuarios;
 import com.example.Lists.pojos.Restaurante;
 import com.example.Lists.pojos.Usuarios;
@@ -42,6 +43,7 @@ public class FormAdmin extends AppCompatActivity {
         Button btnCarta = (Button) findViewById(R.id.btnCarta);
         Button brnAlergs = (Button) findViewById(R.id.btnAlergenos);
         Button btnRegistro = (Button) findViewById(R.id.btnRegistro);
+        Button btnTicket = (Button) findViewById(R.id.btnTicket);
         TextView nomRest = (TextView) findViewById(R.id.tx_nombrerest3);
 
         Intent intent = getIntent();
@@ -89,6 +91,15 @@ public class FormAdmin extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListUsuarios.class);
                 intent.putExtra("nombreRestaurante", restaurante.getId());
+                startActivity(intent);
+            }
+        });
+
+        btnTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ListTicket.class);
+                //intent.putExtra("nombreRestaurante", restaurante.getId());
                 startActivity(intent);
             }
         });
