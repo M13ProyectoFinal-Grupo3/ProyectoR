@@ -119,5 +119,16 @@ public class ListAlergenos extends AppCompatActivity {
             }
         });
 
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
     }
 }
