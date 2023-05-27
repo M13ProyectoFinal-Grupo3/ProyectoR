@@ -48,7 +48,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
     private AdapterRecyclerView adaptadorGestionComandas;
     private Handler handler;
     private Runnable runnable;
-    private final int intervaloTiempo = 5000;
+    private final int intervaloTiempo = 1000;
 
 
     @Override
