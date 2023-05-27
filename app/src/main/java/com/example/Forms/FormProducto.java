@@ -252,6 +252,7 @@ public class FormProducto extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             //guardar imagen
+                            Log.d("update producto",p.getId());
                             new ImageLib().guardarImagen("productos",p.getId(),new ImageLib().getBitmapFromView(imageview1));
                             Toast.makeText(FormProducto.this, "El producto se modificó correctamente", Toast.LENGTH_SHORT).show();
                             Intent resultIntent = new Intent();
@@ -274,6 +275,7 @@ public class FormProducto extends AppCompatActivity {
                                             p.setId(task.getResult().getId());
                                             rootRef.document(p.getId()).update("id",p.getId());
                                             //guardar imagen
+                                            Log.d("new producto",p.getId());
                                             new ImageLib().guardarImagen("productos",p.getId(),new ImageLib().getBitmapFromView(imageview1));
                                             Intent resultIntent = new Intent();
                                             resultIntent.putExtra("new",p);

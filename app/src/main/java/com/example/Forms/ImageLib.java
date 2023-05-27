@@ -3,6 +3,7 @@ package com.example.Forms;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -23,20 +24,25 @@ public class ImageLib {
     StorageReference imgRef = storage.getReference();
 
     public void leerImagen(String ref,String name, ImageView imgView){
-        imgRef.child(ref).child(name).getBytes(MAX_IMAGESIZE)
+        Log.d("saveIm",ref+" "+name+" "+imgView.getHeight());
+        imgRef = imgRef.child(ref).child(name+".jpg");
+        imgRef.getBytes(MAX_IMAGESIZE)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
-                        imgView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        imgView.setImageBitmap(bmp);
                     }
                 });
     }
 
     public void guardarImagen(String ref,String name, Bitmap bmp) {
+        Log.d("saveIm",ref+" "+name+" "+bmp.getHeight());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
+        imgRef  = imgRef.child(ref).child(name+".jpg");
         UploadTask uploadTask = imgRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
