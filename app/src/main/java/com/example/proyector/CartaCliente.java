@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -86,6 +87,8 @@ public class CartaCliente extends AppCompatActivity {
 
         ImageButton btnFiltrar = (ImageButton) findViewById(R.id.btnFiltrar);
 
+        Button bntTicketCliente = (Button) findViewById(R.id.bntTicketCliente);
+
         ticketRef = db.collection("tickets");
 
         Intent intent = getIntent();
@@ -149,6 +152,15 @@ public class CartaCliente extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+
+        bntTicketCliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CartaCliente.this, TicketCliente.class);
+                intent.putExtra("ticket", ticket1);
+                startActivity(intent);
             }
         });
 

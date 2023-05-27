@@ -17,6 +17,7 @@ import com.example.Lists.ListTicket;
 import com.example.Lists.pojos.Lineas_Ticket;
 import com.example.Lists.pojos.Ticket;
 import com.example.adapters.AdapterLineaTicket;
+import com.example.adapters.AdapterLineaTicketCliente;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -67,7 +68,7 @@ public class TicketCliente extends AppCompatActivity {
         }
 
         // Definimos el adaptador
-        AdapterLineaTicket lineasAdapter = new AdapterLineaTicket(this, (ArrayList) arrayLineas);
+        AdapterLineaTicketCliente lineasAdapter = new AdapterLineaTicketCliente(this, (ArrayList) arrayLineas);
         // Attach the adapter to a ListView
         ListView lineasProductos = (ListView) findViewById(R.id.lvListaDeLineas);
         lineasProductos.setAdapter(lineasAdapter);
@@ -75,6 +76,8 @@ public class TicketCliente extends AppCompatActivity {
         for (Lineas_Ticket linea : arrayLineas) {
             precioTotal += (linea.getProducto().getPrecio() * linea.getCantidad());
         }
+
+        Log.d("COMPROBARRRR", precioTotal+"");
 
         TextView xTotal = (TextView) findViewById(R.id.tvPrecioFinal);
         xTotal.setText("" + precioTotal + "");

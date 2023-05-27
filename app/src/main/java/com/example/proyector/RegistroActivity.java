@@ -154,8 +154,7 @@ public class RegistroActivity extends AppCompatActivity {
 
                             Toast.makeText(getApplicationContext(), "Registro completado", Toast.LENGTH_LONG).show();
 
-                            Intent intent = new Intent(RegistroActivity.this, MainActivity.class);
-                            startActivity(intent);
+                            finish();
 
                         } else {
 

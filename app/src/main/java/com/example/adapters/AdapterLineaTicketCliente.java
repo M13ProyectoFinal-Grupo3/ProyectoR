@@ -1,6 +1,7 @@
 package com.example.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ public class AdapterLineaTicketCliente extends ArrayAdapter<Lineas_Ticket> {
         }
         TextView xNombre = (TextView) convertView.findViewById(R.id.tvProducto);
         xNombre.setText(lineaTicket.getProducto().getNombre());
+
+        Log.d("adaptador", lineaTicket.toString());
 
         TextView xCantidad = (TextView) convertView.findViewById(R.id.tvAmount);
         xCantidad.setText("" + lineaTicket.getCantidad() + "");

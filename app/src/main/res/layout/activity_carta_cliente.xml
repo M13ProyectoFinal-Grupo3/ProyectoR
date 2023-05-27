@@ -88,7 +88,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnFiltrar" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/bntTicketCliente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"

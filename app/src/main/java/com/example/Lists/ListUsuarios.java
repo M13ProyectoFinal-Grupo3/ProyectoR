@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.activity.result.ActivityResult;
@@ -101,7 +102,7 @@ public class ListUsuarios extends AppCompatActivity {
                         }
                     }
                 });
-
+/*
         // editar usuario
         listview1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,6 +114,8 @@ public class ListUsuarios extends AppCompatActivity {
             }
         });
 
+ */
+
         // Nuevo usuario
         Button btnNuevo = (Button) findViewById(R.id.btn_listaNuevo);
         btnNuevo.setOnClickListener(new View.OnClickListener() {
@@ -122,5 +125,16 @@ public class ListUsuarios extends AppCompatActivity {
                 activityForm.launch(intent);
             }
         });
+
+        ImageButton backButton = findViewById(R.id.backBtn);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
     }
 }
