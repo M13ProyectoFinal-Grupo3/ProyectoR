@@ -109,31 +109,29 @@ public class TicketAdmin extends AppCompatActivity {
 
         Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
 
-        /*
-        lineasAdapter.setOnClickListener(new AdapterLineaTicket.OnClickListener() {
-            @Override
-            public void onClick(int position, Ticket ticket) {
-                for (Lineas_Ticket linea : arrayLineas) {
-                    precioTotal += (linea.getProducto().getPrecio() * linea.getCantidad());
-                    xTotal.setText(""+precioTotal+"");
-                }
-                lineasAdapter.notifyDataSetChanged();
-            }
-        });
-        */
+        // probar una de estas 2
 
-        /*
         lineasProductos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 for (Lineas_Ticket linea : arrayLineas) {
                     precioTotal += (linea.getProducto().getPrecio() * linea.getCantidad());
-                    xTotal.setText("" + precioTotal + "");
                 }
+                xTotal.setText(""+precioTotal+"");
             }
         });
-        */
 
+        lineasProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Lineas_Ticket linea : arrayLineas) {
+                    precioTotal += (linea.getProducto().getPrecio() * linea.getCantidad());
+                }
+                xTotal.setText(""+precioTotal+"");
+            }
+        });
+
+        //////////////////////////////////////
 
         btnFinalizar.setOnClickListener(new View.OnClickListener() {
             @Override

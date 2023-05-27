@@ -88,8 +88,17 @@ public class FormAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListUsuarios.class);
-                intent.putExtra("nombreRestaurante", restaurante.getNombre());
+                intent.putExtra("nombreRestaurante", restaurante.getId());
                 startActivity(intent);
+            }
+        });
+
+        Button logOutBtn = (Button) findViewById(R.id.logOutBtn);
+
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
