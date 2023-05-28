@@ -223,8 +223,6 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                             }
                                             if (entry.getKey().equals("sirve_idperfil")) {
                                                 sirveIdPerfilLineaTicket = (String) entry.getValue();
-                                                if(preparaIdPerfilLineaTicketProducto != null && preparaIdPerfilLineaTicket == null && !preparaIdPerfilLineaTicketProducto.equals(sirveIdPerfilLineaTicketProducto)){sirveIdPerfilLineaTicket = "pendienteCocina";}
-
                                             }
 
                                             indice = lineas_ticket.indexOf(mapaFila);
@@ -233,7 +231,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                         Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), num_mesa, productoLineaTicket);
                                         agregarComanda.setIdLineaTicket(document.getId() + "/" + indice);
 
-                                        if ((perfilUsuarioLogeado.equals("Camarero") && idPerfil.equals(sirveIdPerfilLineaTicketProducto)) && (sirveIdPerfilLineaTicket == null || (!sirveIdPerfilLineaTicket.equals("pendienteCocina") && !sirveIdPerfilLineaTicket.equals("finalizado")))) {
+                                        if ((perfilUsuarioLogeado.equals("Camarero") && idPerfil.equals(sirveIdPerfilLineaTicketProducto)) && ((sirveIdPerfilLineaTicket == null && preparaIdPerfilLineaTicket != null && preparaIdPerfilLineaTicket.equals("finalizado")) ||sirveIdPerfilLineaTicket == null && preparaIdPerfilLineaTicket == null && preparaIdPerfilLineaTicketProducto.equals(sirveIdPerfilLineaTicketProducto))) {
                                             listaGestionComandas.add(agregarComanda);
                                         } else if ((perfilUsuarioLogeado.equals("Cocinero") && idPerfil.equals(preparaIdPerfilLineaTicketProducto)) && preparaIdPerfilLineaTicket == null) {
                                             listaGestionComandas.add(agregarComanda);
