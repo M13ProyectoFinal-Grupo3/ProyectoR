@@ -77,7 +77,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.nombre.setText((String.valueOf(lineasTicketLista.get(position).getProducto().getNombre())).toUpperCase(Locale.ROOT));
         holder.cantidad.setText("Cantidad: " + (String.valueOf(lineasTicketLista.get(position).getCantidad())));
-        holder.observaciones.setText("Observaciones: " + lineasTicketLista.get(position).getObservaciones());
+        holder.observaciones.setText("Mesa: " + lineasTicketLista.get(position).getObservaciones());
     }
 
     @Override

@@ -48,7 +48,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
     private AdapterRecyclerView adaptadorGestionComandas;
     private Handler handler;
     private Runnable runnable;
-    private final int intervaloTiempo = 1000;
+    private final int intervaloTiempo = 5000;
 
 
     @Override
@@ -87,7 +87,8 @@ public class CardViewGestionComandas extends AppCompatActivity {
         adaptadorGestionComandas.setOnItemClickListener(new AdapterRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String idLineaTicket = listaGestionComandas.get(position).getIdLineaTicket();
+                if (!listaGestionComandas.isEmpty()){
+                    String idLineaTicket = listaGestionComandas.get(position).getIdLineaTicket();
 
                 String documentTicket = idLineaTicket.substring(0, idLineaTicket.indexOf("/"));
                 int caracteresDespuesDeBarra = Integer.parseInt(idLineaTicket.substring(idLineaTicket.indexOf("/") + 1));
@@ -132,6 +133,7 @@ public class CardViewGestionComandas extends AppCompatActivity {
                         }
                     });
                 }
+            }
             }
         });
 
@@ -183,6 +185,8 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                 String sirveIdPerfilLineaTicket = null;
                                 int indice = 0;
 
+                                String num_mesa = (String) document.get("num_mesa");
+
                                 ArrayList<Map<String, Object>> lineas_ticket = (ArrayList<Map<String, Object>>) document.get("lineas_ticket");
 
                                 if (lineas_ticket != null){
@@ -219,14 +223,14 @@ public class CardViewGestionComandas extends AppCompatActivity {
                                             }
                                             if (entry.getKey().equals("sirve_idperfil")) {
                                                 sirveIdPerfilLineaTicket = (String) entry.getValue();
-                                                if(preparaIdPerfilLineaTicketProducto != null && preparaIdPerfilLineaTicket == null){sirveIdPerfilLineaTicket = "pendienteCocina";}
+                                                if(preparaIdPerfilLineaTicketProducto != null && preparaIdPerfilLineaTicket == null && !preparaIdPerfilLineaTicketProducto.equals(sirveIdPerfilLineaTicketProducto)){sirveIdPerfilLineaTicket = "pendienteCocina";}
 
                                             }
 
                                             indice = lineas_ticket.indexOf(mapaFila);
 
                                         }
-                                        Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), observacionesLineaTicket, productoLineaTicket);
+                                        Lineas_Ticket agregarComanda = new Lineas_Ticket(cantidadLineaTicket.intValue(), num_mesa, productoLineaTicket);
                                         agregarComanda.setIdLineaTicket(document.getId() + "/" + indice);
 
                                         if ((perfilUsuarioLogeado.equals("Camarero") && idPerfil.equals(sirveIdPerfilLineaTicketProducto)) && (sirveIdPerfilLineaTicket == null || (!sirveIdPerfilLineaTicket.equals("pendienteCocina") && !sirveIdPerfilLineaTicket.equals("finalizado")))) {
