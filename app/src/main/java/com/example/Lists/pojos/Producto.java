@@ -40,12 +40,15 @@ public class Producto implements Serializable {
         this.id = id;
     }
 
-    public Producto(Boolean activo, String nombre, String descripcion, Float precio, ArrayList<Alergeno> alergenos) {
-        this.activo = activo;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.alergenos = alergenos;
+    public Producto(Producto p) {
+        this.id =p.getId();
+        this.activo = p.getActivo();
+        this.nombre = p.getNombre();
+        this.descripcion = p.getDescripcion();
+        this.precio = p.getPrecio();
+        this.alergenos = p.getAlergenos();
+        this.prepara_idperfil = p.getPrepara_idperfil();
+        this.sirve_idperfil = p.getSirve_idperfil();
     }
 
     public void setSirve_idperfil(String sirve_idperfil) {
