@@ -5,6 +5,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/tvCantidad"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:text="Cant."
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvProducto"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="Producto"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvPrecioUnitario"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:text="Precio Unidad"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvPrecioTotal"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:text="Total"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--
+
     <TextView
         android:id="@+id/tvCantidad"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -66,5 +126,7 @@
         android:text="Total"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/guideline11" />
+
+        -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

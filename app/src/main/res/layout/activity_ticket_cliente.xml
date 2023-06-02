@@ -140,8 +140,20 @@
         <ListView
             android:id="@+id/lvListaDeLineas"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp">
+        </ListView>
+
+        <!-- viejo
+        <ListView
+            android:id="@+id/lvListaDeLineas"
+            android:layout_width="match_parent"
             android:layout_height="400dp">
         </ListView>
+        -->
+
+
 
         <LinearLayout
             android:id="@+id/linearLayout4"
