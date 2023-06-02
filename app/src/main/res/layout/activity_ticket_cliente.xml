@@ -85,48 +85,48 @@
             android:layout_marginEnd="5dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:weightSum="1"
             tools:ignore="MissingConstraints">
 
-        <TextView
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/tvCantidad"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="30dp"
-            android:text="Cant."
-            android:textSize="16sp" />
+            <TextView
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:id="@+id/tvCantidad"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="Cant."
+                android:textSize="16sp" />
 
-        <TextView
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/tvProducto"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.4"
-            android:layout_height="30dp"
-            android:text="Producto"
-            android:textSize="16sp" />
+            <TextView
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:id="@+id/tvProducto"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="0.4"
+                android:text="Producto"
+                android:textSize="16sp" />
 
-        <TextView
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/tvPrecioUnitario"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="30dp"
-            android:layout_marginLeft="80dp"
-            android:text="Precio Unidad"
-            android:textSize="16sp" />
+            <TextView
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:id="@+id/tvPrecioUnitario"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="Precio Unidad"
+                android:textSize="16sp"
+                android:gravity="end" />
 
-        <TextView
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/tvPrecioTotal"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="30dp"
-            android:layout_marginLeft="40dp"
-            android:text="Total"
-            android:textSize="16sp" />
+            <TextView
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:id="@+id/tvPrecioTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="Total"
+                android:textSize="16sp"
+                android:gravity="end" />
 
-    </LinearLayout>
+        </LinearLayout>
+
 
         <TextView
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
