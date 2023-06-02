@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import com.example.Forms.ImageLib;
 import com.example.Lists.pojos.Producto;
+import com.example.proyector.CartaCliente;
 import com.example.proyector.R;
 
 import java.util.ArrayList;
 
-public class AdapterCartaProducto extends ArrayAdapter<Producto> {
-    public AdapterCartaProducto(Context context, ArrayList<Producto> productos) {
+public class AdapterCartaProducto extends ArrayAdapter<CartaCliente.eProducto> {
+    public AdapterCartaProducto(Context context, ArrayList<CartaCliente.eProducto> productos) {
         super(context,0,productos);
     }
 
@@ -27,7 +28,7 @@ public class AdapterCartaProducto extends ArrayAdapter<Producto> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Producto producto = getItem(position);
+        CartaCliente.eProducto producto = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_producto, parent, false);
@@ -38,7 +39,11 @@ public class AdapterCartaProducto extends ArrayAdapter<Producto> {
         TextView xDescrip = (TextView) convertView.findViewById(R.id.itemDescrip);
         TextView xPrecio = (TextView) convertView.findViewById(R.id.itemPrecio);
 
-        new ImageLib().leerImagen("productos",producto.getId(),xImg);
+        if(producto.getImagen() != null) {
+            xImg.setImageBitmap(producto.getImagen());
+        } else {
+            xImg.setImageDrawable(getContext().getDrawable(R.drawable.platocomida));
+        }
         xNombre.setText(producto.getNombre());
         xDescrip.setText(producto.getDescripcion());
         xPrecio.setText(String.format("%.2f",producto.getPrecio()));

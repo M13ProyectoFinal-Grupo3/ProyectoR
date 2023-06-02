@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.Lists.pojos.Departamento;
+import com.example.proyector.CartaCliente;
 import com.example.proyector.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,11 +28,11 @@ import java.util.ArrayList;
 
 public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHolder> {
 
-    ArrayList<Departamento> data;
+    ArrayList<CartaCliente.eDepartamento> data;
     Context context;
 
     private OnClickListener onClickListener;
-    public AdapterCartaDep(ArrayList<Departamento> data) {
+    public AdapterCartaDep(ArrayList<CartaCliente.eDepartamento> data) {
         this.data = data;
     }
 
@@ -48,7 +49,7 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
     }
 
     public interface OnClickListener {
-        void onClick(int position, Departamento departamento);
+        void onClick(int position, CartaCliente.eDepartamento departamento);
     }
 
     public void setOnClickListener(OnClickListener onClickListener) {
@@ -59,22 +60,11 @@ public class AdapterCartaDep extends RecyclerView.Adapter<AdapterCartaDep.MyHold
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
 
         holder.cardText.setText(data.get(holder.getAdapterPosition()).getnombre());
-        Drawable d =(Drawable) context.getDrawable(R.drawable.platocomida);
-        // cargar imagen
-        final long MAX_IMAGESIZE = 1024 * 1024;
-        imgRef.child("departamentos").child(getImgName(data.get(holder.getAdapterPosition()))).getBytes(MAX_IMAGESIZE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bmp  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        holder.cardImg.setImageBitmap(bmp);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        holder.cardImg.setImageDrawable(context.getDrawable(R.drawable.icon_depto));
-                    }
-                });
+        if(data.get(holder.getAdapterPosition()).getImagen() != null) {
+            holder.cardImg.setImageBitmap(data.get(holder.getAdapterPosition()).getImagen());
+        } else {
+            holder.cardImg.setImageDrawable(context.getDrawable(R.drawable.icon_depto));
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

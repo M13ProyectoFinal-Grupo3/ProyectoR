@@ -3,7 +3,10 @@ package com.example.Lists.pojos;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,17 +16,17 @@ public class Ticket implements Serializable {
     Date fecha;
     String num_mesa;
     int id_camarero;
-    List<Lineas_Ticket> lineas_ticket;
+    ArrayList<Lineas_Ticket> lineas_ticket;
     //Lineas_Ticket linea_ticket;
 
-    public Ticket() {
-    }
+    public Ticket() { lineas_ticket = new ArrayList<>();    }
 
     public Ticket(String id) {
         this.id = id;
+        lineas_ticket = new ArrayList<>();
     }
 
-    public Ticket(Restaurante restaurante, String id, Date fecha, String num_mesa, int id_camarero, List<Lineas_Ticket> lineas_ticket) {
+    public Ticket(Restaurante restaurante, String id, Date fecha, String num_mesa, int id_camarero, ArrayList<Lineas_Ticket> lineas_ticket) {
         this.restaurante = restaurante;
         this.id = id;
         this.fecha = fecha;
@@ -38,6 +41,7 @@ public class Ticket implements Serializable {
         this.fecha = fecha;
         this.num_mesa = num_mesa;
         this.id_camarero = id_camarero;
+        lineas_ticket = new ArrayList<>();
     }
 
     public Restaurante getRestaurante() {
@@ -84,7 +88,7 @@ public class Ticket implements Serializable {
         return lineas_ticket;
     }
 
-    public void setLineas_ticket(List<Lineas_Ticket> lineas_ticket) {
+    public void setLineas_ticket(ArrayList<Lineas_Ticket> lineas_ticket) {
         this.lineas_ticket = lineas_ticket;
     }
 
@@ -105,14 +109,16 @@ public class Ticket implements Serializable {
 
     public Lineas_Ticket buscarLinea(Producto producto){
         Lineas_Ticket dev = new Lineas_Ticket();
+        if(lineas_ticket == null){
+            lineas_ticket = new ArrayList<>();
+        }
         for(Lineas_Ticket l: lineas_ticket){
             Log.d("linea_ticket",l.getProducto().toString());
             if(l.getProducto().getId()!=null) {
                 if (l.getProducto().getId().equals(producto.getId())) {
                     dev = new Lineas_Ticket(producto, l.getCantidad());
                 }
-            }
-        }
+        }}
         return dev;
     }
 
