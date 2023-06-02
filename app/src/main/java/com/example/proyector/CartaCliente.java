@@ -44,11 +44,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -56,6 +59,7 @@ import com.google.firebase.storage.StorageReference;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.grpc.Context;
 
@@ -364,11 +368,14 @@ public class CartaCliente extends AppCompatActivity {
 
                     // cargar imagen
 
-                    image.setImageBitmap(producto1.getImagen());
+                    if(producto1.getImagen()!=null) {
+                        Bitmap b = Bitmap.createScaledBitmap(producto1.getImagen(), 500, 500, false);
+                        image.setImageBitmap(b);
+                    }
                     imageDialog.setView(layout);
                     imageDialog.setPositiveButton("PEDIR", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("pulsa", "boton");
+
                             ticketRef.document(ticket1.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -382,10 +389,13 @@ public class CartaCliente extends AppCompatActivity {
                                         Log.d("producto", producto1.toString());
                                         ticket1.addCantidad(producto1, cantidad);
                                     }
-                                    HashMap<String, Object> data = new HashMap<String, Object>() {
-                                    };
-                                    data.put("lineas_ticket", ticket1.getLineas_ticket());
-                                    ticketRef.document(ticket1.getId()).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                    ArrayList<Lineas_Ticket> saveLineas = new ArrayList<>();
+                                    for(Lineas_Ticket l: ticket1.getLineas_ticket()){
+                                        saveLineas.add(l);
+                                        saveLineas.get(saveLineas.size()-1).setProducto(new Producto(l.getProducto()));
+                                    }
+                                    ticketRef.document(ticket1.getId()).update("lineas_ticket", saveLineas).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             Toast.makeText(CartaCliente.this, "Petición en curso", Toast.LENGTH_LONG).show();

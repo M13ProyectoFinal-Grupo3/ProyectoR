@@ -3,6 +3,7 @@ package com.example.Lists.pojos;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.example.proyector.CartaCliente;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;

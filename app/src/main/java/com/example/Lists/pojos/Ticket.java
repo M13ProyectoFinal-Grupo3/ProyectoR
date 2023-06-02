@@ -2,6 +2,8 @@ package com.example.Lists.pojos;
 
 import android.util.Log;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
@@ -9,6 +11,8 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+@IgnoreExtraProperties
 
 public class Ticket implements Serializable {
     Restaurante restaurante;
@@ -84,7 +88,7 @@ public class Ticket implements Serializable {
         this.id_camarero = id_camarero;
     }
 
-    public List<Lineas_Ticket> getLineas_ticket() {
+    public ArrayList<Lineas_Ticket> getLineas_ticket() {
         return lineas_ticket;
     }
 
